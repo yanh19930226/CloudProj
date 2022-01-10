@@ -1,0 +1,259 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\Stocks\**" />
+    <Compile Remove="Models\**" />
+    <Compile Remove="Views\**" />
+    <Compile Remove="wwwroot\views\common\**" />
+    <Compile Remove="wwwroot\views\demo\**" />
+    <Compile Remove="wwwroot\views\system\sysCodeGenerator\**" />
+    <Content Remove="Controllers\Stocks\**" />
+    <Content Remove="Models\**" />
+    <Content Remove="Views\**" />
+    <Content Remove="wwwroot\views\common\**" />
+    <Content Remove="wwwroot\views\demo\**" />
+    <Content Remove="wwwroot\views\system\sysCodeGenerator\**" />
+    <EmbeddedResource Remove="Controllers\Stocks\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="Views\**" />
+    <EmbeddedResource Remove="wwwroot\views\common\**" />
+    <EmbeddedResource Remove="wwwroot\views\demo\**" />
+    <EmbeddedResource Remove="wwwroot\views\system\sysCodeGenerator\**" />
+    <None Remove="Controllers\Stocks\**" />
+    <None Remove="Models\**" />
+    <None Remove="Views\**" />
+    <None Remove="wwwroot\views\common\**" />
+    <None Remove="wwwroot\views\demo\**" />
+    <None Remove="wwwroot\views\system\sysCodeGenerator\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.21" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.19" />
+    <PackageReference Include="NLog" Version="4.7.12" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.14.0" />
+    <PackageReference Include="NPOI" Version="2.5.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Net.Auth\Core.Net.Auth.csproj" />
+    <ProjectReference Include="..\Core.Net.Configuration\Core.Net.Configuration.csproj" />
+    <ProjectReference Include="..\Core.Net.Entity\Core.Net.Entity.csproj" />
+    <ProjectReference Include="..\Core.Net.Filter\Core.Net.Filter.csproj" />
+    <ProjectReference Include="..\Core.Net.Loging\Core.Net.Loging.csproj" />
+    <ProjectReference Include="..\Core.Net.Middlewares\Core.Net.Middlewares.csproj" />
+    <ProjectReference Include="..\Core.Net.Service\Core.Net.Service.csproj" />
+    <ProjectReference Include="..\Core.Net\Core.Net.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\files\2021-05-01\20210501075941520-CoreCmsBillDelivery导出%28查询结果%29.xls" />
+    <None Include="wwwroot\files\2021-05-02\20210502104200309-数据库表导出.xls" />
+    <None Include="wwwroot\json\console\prograss.js" />
+    <None Include="wwwroot\json\console\top-card.js" />
+    <None Include="wwwroot\json\console\top-search.js" />
+    <None Include="wwwroot\json\content\comment.js" />
+    <None Include="wwwroot\json\content\list.js" />
+    <None Include="wwwroot\json\content\tags.js" />
+    <None Include="wwwroot\json\forum\list.js" />
+    <None Include="wwwroot\json\forum\replys.js" />
+    <None Include="wwwroot\json\layer\photos.js" />
+    <None Include="wwwroot\json\layim\getList.js" />
+    <None Include="wwwroot\json\layim\getMembers.js" />
+    <None Include="wwwroot\json\mall\order.js" />
+    <None Include="wwwroot\json\menu.js" />
+    <None Include="wwwroot\json\message\all.js" />
+    <None Include="wwwroot\json\message\detail.js" />
+    <None Include="wwwroot\json\message\direct.js" />
+    <None Include="wwwroot\json\message\new.js" />
+    <None Include="wwwroot\json\message\notice.js" />
+    <None Include="wwwroot\json\table\demo.js" />
+    <None Include="wwwroot\json\table\demo2.js" />
+    <None Include="wwwroot\json\table\demo3.js" />
+    <None Include="wwwroot\json\table\user.js" />
+    <None Include="wwwroot\json\table\user30.js" />
+    <None Include="wwwroot\json\upload\demo.js" />
+    <None Include="wwwroot\json\useradmin\mangadmin.js" />
+    <None Include="wwwroot\json\useradmin\role.js" />
+    <None Include="wwwroot\json\useradmin\webuser.js" />
+    <None Include="wwwroot\json\user\forget.js" />
+    <None Include="wwwroot\json\user\login.js" />
+    <None Include="wwwroot\json\user\logout.js" />
+    <None Include="wwwroot\json\user\reg.js" />
+    <None Include="wwwroot\json\user\resetpass.js" />
+    <None Include="wwwroot\json\user\session.js" />
+    <None Include="wwwroot\json\user\sms.js" />
+    <None Include="wwwroot\json\workorder\demo.js" />
+    <None Include="wwwroot\lib\bootstrap\css\bootstrap-grid.css.map" />
+    <None Include="wwwroot\lib\bootstrap\css\bootstrap-grid.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\css\bootstrap-reboot.css.map" />
+    <None Include="wwwroot\lib\bootstrap\css\bootstrap-reboot.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\css\bootstrap.css.map" />
+    <None Include="wwwroot\lib\bootstrap\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.bundle.js" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.bundle.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.js" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.min.js" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.min.js.map" />
+    <None Include="wwwroot\lib\ckeditor5\ckeditor.js" />
+    <None Include="wwwroot\lib\ckeditor5\ckeditor.js.map" />
+    <None Include="wwwroot\lib\ckeditor5\LICENSE.md" />
+    <None Include="wwwroot\lib\ckeditor5\README.md" />
+    <None Include="wwwroot\lib\ckeditor5\sample\img\github.svg" />
+    <None Include="wwwroot\lib\ckeditor5\sample\img\logo.svg" />
+    <None Include="wwwroot\lib\ckeditor5\translations\af.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\ar.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\ast.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\az.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\bg.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\ca.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\cs.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\da.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\de-ch.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\de.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\el.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\en-au.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\en-gb.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\eo.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\es.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\et.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\eu.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\fa.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\fi.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\fr.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\gl.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\gu.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\he.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\hi.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\hr.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\hu.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\id.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\it.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\ja.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\kk.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\km.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\kn.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\ko.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\ku.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\lt.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\lv.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\ms.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\nb.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\ne.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\nl.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\no.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\oc.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\pl.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\pt-br.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\pt.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\ro.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\ru.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\si.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\sk.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\sl.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\sq.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\sr-latn.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\sr.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\sv.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\th.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\tk.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\tr.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\tt.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\ug.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\uk.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\vi.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\zh-cn.js" />
+    <None Include="wwwroot\lib\ckeditor5\translations\zh.js" />
+    <None Include="wwwroot\lib\custom\css\iconfont.svg" />
+    <None Include="wwwroot\lib\custom\css\iconfont.woff2" />
+    <None Include="wwwroot\lib\custom\element\index.js" />
+    <None Include="wwwroot\lib\custom\element\main.js" />
+    <None Include="wwwroot\lib\custom\js\main.js" />
+    <None Include="wwwroot\lib\custom\js\sortable.min.js" />
+    <None Include="wwwroot\lib\custom\js\vue.min.js" />
+    <None Include="wwwroot\lib\custom\js\vuedraggable.min.js" />
+    <None Include="wwwroot\lib\jquery\doT.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery-2.1.4.js" />
+    <None Include="wwwroot\lib\jquery\jquery-2.1.4.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery-3.3.1.js" />
+    <None Include="wwwroot\lib\jquery\jquery-3.3.1.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery-3.3.1.min.map" />
+    <None Include="wwwroot\lib\jquery\jquery.fileDownload.js" />
+    <None Include="wwwroot\lib\jquery\jquery.jcarousellite.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery.unobtrusive-ajax.js" />
+    <None Include="wwwroot\lib\jquery\jquery.unobtrusive-ajax.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery.validate-vsdoc.js" />
+    <None Include="wwwroot\lib\jquery\jquery.validate.js" />
+    <None Include="wwwroot\lib\jquery\jquery.validate.min.js" />
+    <None Include="wwwroot\lib\jquery\jquery.validate.unobtrusive.js" />
+    <None Include="wwwroot\lib\jquery\jquery.validate.unobtrusive.min.js" />
+    <None Include="wwwroot\lib\jquery\lazyloadv3.js" />
+    <None Include="wwwroot\lib\layuiAdmin\config.js" />
+    <None Include="wwwroot\lib\layuiAdmin\controller\breadcrumb.js" />
+    <None Include="wwwroot\lib\layuiAdmin\controller\common.js" />
+    <None Include="wwwroot\lib\layuiAdmin\controller\contextMenu.js" />
+    <None Include="wwwroot\lib\layuiAdmin\controller\contlist.js" />
+    <None Include="wwwroot\lib\layuiAdmin\controller\coredropdown.js" />
+    <None Include="wwwroot\lib\layuiAdmin\controller\Cropper.js" />
+    <None Include="wwwroot\lib\layuiAdmin\controller\CropperImg.js" />
+    <None Include="wwwroot\lib\layuiAdmin\controller\iconPicker.js" />
+    <None Include="wwwroot\lib\layuiAdmin\controller\tableX.js" />
+    <None Include="wwwroot\lib\layuiAdmin\controller\treeTable.js" />
+    <None Include="wwwroot\lib\layuiAdmin\controller\xmSelect.js" />
+    <None Include="wwwroot\lib\layuiAdmin\controller\zTree.js" />
+    <None Include="wwwroot\lib\layuiAdmin\index.js" />
+    <None Include="wwwroot\lib\layuiAdmin\lib\admin.js" />
+    <None Include="wwwroot\lib\layuiAdmin\lib\extend\coreHelper.js" />
+    <None Include="wwwroot\lib\layuiAdmin\lib\extend\dltable.js" />
+    <None Include="wwwroot\lib\layuiAdmin\lib\extend\dtree.js" />
+    <None Include="wwwroot\lib\layuiAdmin\lib\extend\echarts.js" />
+    <None Include="wwwroot\lib\layuiAdmin\lib\extend\echartsTheme.js" />
+    <None Include="wwwroot\lib\layuiAdmin\lib\extend\treeGrid.js" />
+    <None Include="wwwroot\lib\layuiAdmin\lib\view.js" />
+    <None Include="wwwroot\lib\layuiAdmin\style\dtree\dtree.js" />
+    <None Include="wwwroot\lib\layuiAdmin\style\dtree\font\dtreefont.svg" />
+    <None Include="wwwroot\lib\layuiAdmin\style\res\logo.psd" />
+    <None Include="wwwroot\lib\layuiAdmin\style\res\noImage.psd" />
+    <None Include="wwwroot\lib\layui\font\iconfont.svg" />
+    <None Include="wwwroot\lib\layui\font\iconfont.woff2" />
+    <None Include="wwwroot\lib\layui\layui.js" />
+    <None Include="wwwroot\lib\lodop\CLodop_Setup_for_Win32NT.exe" />
+    <None Include="wwwroot\lib\lodop\install_lodop32.exe" />
+    <None Include="wwwroot\lib\lodop\install_lodop64.exe" />
+    <None Include="wwwroot\lib\lodop\LodopFuncs.js" />
+    <None Include="wwwroot\lib\render-html-to-pdf\html2canvas.bak.js" />
+    <None Include="wwwroot\lib\render-html-to-pdf\html2canvas.js" />
+    <None Include="wwwroot\lib\render-html-to-pdf\html2canvas.min.js" />
+    <None Include="wwwroot\lib\render-html-to-pdf\html2canvas.svg.js" />
+    <None Include="wwwroot\lib\render-html-to-pdf\html2canvas.svg.min.js" />
+    <None Include="wwwroot\lib\render-html-to-pdf\jsPdf.debug.js" />
+    <None Include="wwwroot\static\css\documentEditor.less" />
+    <None Include="wwwroot\static\css\overWrite.less" />
+    <None Include="wwwroot\static\images\common\coreshop.psd" />
+    <None Include="wwwroot\static\images\common\model-title.psd" />
+    <None Include="wwwroot\static\js\common.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\views\dinnercard\dcard\index.html">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Upload\" />
+    <Folder Include="wwwroot\views\dinnercard\order\" />
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://json.schemastore.org/appveyor.json" /></VisualStudio></ProjectExtensions>
+
+</Project>

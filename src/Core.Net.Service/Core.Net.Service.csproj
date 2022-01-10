@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Net.Configuration\Core.Net.Configuration.csproj" />
+    <ProjectReference Include="..\Core.Net.Data\Core.Net.Data.csproj" />
+    <ProjectReference Include="..\Core.Net.Entity\Core.Net.Entity.csproj" />
+    <ProjectReference Include="..\Core.Net.Util\Core.Net.Util.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Flurl.Http" Version="3.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Impl\Stocks\" />
+    <Folder Include="Stocks\" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\MyPlayGround\cloud-cost-tool-admin-master(1)\cloud-cost-tool-admin-master\src\Core.Api\Core.Api.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>F:\Projec\cloud-cost-tool-admin-master\cloud-cost-tool-admin-master\src\Core.Api\Core.Api.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.22" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.22" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.15.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Net.Cache\Core.Net.Cache.csproj" />
+    <ProjectReference Include="..\Core.Net.Configuration\Core.Net.Configuration.csproj" />
+    <ProjectReference Include="..\Core.Net.Data\Core.Net.Data.csproj" />
+    <ProjectReference Include="..\Core.Net.Entity\Core.Net.Entity.csproj" />
+    <ProjectReference Include="..\Core.Net.Service\Core.Net.Service.csproj" />
+    <ProjectReference Include="..\Core.Net\Core.Net.csproj" />
+  </ItemGroup>
+
+
+</Project>

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="StackExchange.Redis" Version="2.2.62" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Net.Configuration\Core.Net.Configuration.csproj" />
+    <ProjectReference Include="..\Core.Net.RedisMq\Core.Net.RedisMq.csproj" />
+    <ProjectReference Include="..\Core.Net.Redis\Core.Net.Redis.csproj" />
+    <ProjectReference Include="..\Core.Net.Util\Core.Net.Util.csproj" />
+  </ItemGroup>
+
+</Project>

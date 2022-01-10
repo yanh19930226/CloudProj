@@ -1,0 +1,273 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Yande.CloudTool.Api</name>
+    </assembly>
+    <members>
+        <member name="T:Yande.CloudTool.Api.Controllers.CloudCostToolController">
+            <summary>
+            CloudCostToolController
+            </summary>
+        </member>
+        <member name="M:Yande.CloudTool.Api.Controllers.CloudCostToolController.#ctor(Microsoft.Extensions.Logging.ILogger{Yande.CloudTool.Api.Controllers.CloudCostToolController},Core.Net.Service.DinnerCards.ICoreOrderServices,Core.Net.Service.DinnerCards.IDinnerCardServices,Core.Net.Service.Systems.ISysUserServices)">
+            <summary>
+            CloudCostToolController
+            </summary>
+            <param name="logger"></param>
+        </member>
+        <member name="M:Yande.CloudTool.Api.Controllers.CloudCostToolController.Test">
+            <summary>
+            测试
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Yande.CloudTool.Api.Controllers.CloudCostToolController.ServerTime">
+             <summary>
+            获取服务器时间接口
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Yande.CloudTool.Api.Controllers.CloudCostToolController.ConsumTransactions(Yande.CloudTool.Api.Models.Request.ConsumTransactionDto)">
+            <summary>
+            用户刷卡综合接口
+            </summary>
+            <param name="consumTransactionDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yande.CloudTool.Api.Controllers.CloudCostToolController.Transaction(Yande.CloudTool.Api.Models.Request.TransactionDto)">
+             <summary>
+            消费记录查询
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Yande.CloudTool.Api.Controllers.CloudCostToolController.Counts">
+             <summary>
+            终端查询日统计
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Yande.CloudTool.Api.Controllers.CloudCostToolController.Menus(Yande.CloudTool.Api.Models.Request.MenusDto)">
+             <summary>
+            菜品查询
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:Yande.CloudTool.Api.Controllers.CloudCostToolController.OffLines(Yande.CloudTool.Api.Models.Request.OffLinesDto)">
+             <summary>
+            记账扣费流水上传
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Request.ConsumTransactionDto.Order">
+            <summary>
+            消费序号(年月日时分秒+2个字节序号(0~65535))，用于识别上传数据不重复
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Request.ConsumTransactionDto.CardNo">
+            <summary>
+            10进制卡序列号（实体卡号或虚拟卡号）
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Request.ConsumTransactionDto.CardMode">
+            <summary>
+            卡模式（0：实体卡 1：电子卡）
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Request.ConsumTransactionDto.Mode">
+            <summary>
+            交易模式（0:刷卡扣费 1：现金充值2：余额查询 3:钱包转账）
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Request.ConsumTransactionDto.PayType">
+            <summary>
+            扣费类型（0:手动 1：菜单 2：定值 3：取餐 4：计时 5：计次）
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Request.ConsumTransactionDto.Amount">
+            <summary>
+            消费金额(Mode为2时，此字段传入值可能为0)
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Request.ConsumTransactionDto.Menus">
+            <summary>
+            消费菜品列表
+            </summary>
+        </member>
+        <member name="T:Yande.CloudTool.Api.Models.Request.CountsDto">
+            <summary>
+            CountsDto
+            </summary>
+        </member>
+        <member name="T:Yande.CloudTool.Api.Models.Request.MenusDto">
+            <summary>
+            MenusDto
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Request.MenusDto.MenuNo">
+            <summary>
+            MenuNo
+            </summary>
+        </member>
+        <member name="T:Yande.CloudTool.Api.Models.Request.TransactionDto">
+            <summary>
+            TransactionDto
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Request.TransactionDto.Number">
+            <summary>
+            从最后一笔消费往前算的位置 1就是最后一笔 2就是倒数第二笔
+            </summary>
+        </member>
+        <member name="T:Yande.CloudTool.Api.Models.Response.BaseResponse">
+            <summary>
+            BaseResponse
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.BaseResponse.Status">
+            <summary>
+            服务器处理结果，1为成功，0为失败
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.BaseResponse.Msg">
+            <summary>
+            Msg
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.ConsumTransactionsResponse.Name">
+            <summary>
+            人员姓名
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.ConsumTransactionsResponse.CardNo">
+            <summary>
+            10进制卡序列号（实体卡号或虚拟卡号）
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.ConsumTransactionsResponse.Money">
+            <summary>
+            现金余额（允许两位小数）
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.ConsumTransactionsResponse.Subsidy">
+            <summary>
+            补贴余额（允许两位小数）
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.ConsumTransactionsResponse.Times">
+            <summary>
+            剩余次数
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.ConsumTransactionsResponse.Integral">
+            <summary>
+            赠送余额（允许两位小数）
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.ConsumTransactionsResponse.InTime">
+            <summary>
+            入场时间(固定值””
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.ConsumTransactionsResponse.OutTime">
+            <summary>
+            出场时间(固定值””
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.ConsumTransactionsResponse.CumulativeTime">
+            <summary>
+            累计使用时间：天时分秒
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.ConsumTransactionsResponse.Amount">
+            <summary>
+            实际扣费金额(信息查询模式下返回”0”
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.ConsumTransactionsResponse.VoiceID">
+             <summary>
+            语音段（用于安卓系统设备）
+             </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.ConsumTransactionsResponse.Text">
+            <summary>
+            自定义显示文本（Status为1时传入，屏幕显示此值，内容内使用\r\n换行，最多支持4行，每行不超过8个汉字）
+            </summary>
+        </member>
+        <member name="T:Yande.CloudTool.Api.Models.Response.CountsResponse">
+            <summary>
+            CountsResponse
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.CountsResponse.Text">
+            <summary>
+            自定义显示文本（Status为1时传入，屏幕显示此值，内容内使用\n换行，最多支持4行，每行不超过8个汉字）
+            </summary>
+        </member>
+        <member name="T:Yande.CloudTool.Api.Models.Response.MenusResponse">
+            <summary>
+            MenusResponse
+            </summary>
+        </member>
+        <member name="T:Yande.CloudTool.Api.Models.Response.OffLinesResponse">
+            <summary>
+            OffLinesResponse
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.ServerTimeResponse.Time">
+            <summary>
+            服务器时间，固定格式为yyyyMMddHHmmssd最后一位d代表星期,星期
+            </summary>
+        </member>
+        <member name="T:Yande.CloudTool.Api.Models.Response.TransactionResponse">
+            <summary>
+            TransactionResponse
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.TransactionResponse.Number">
+            <summary>
+            编号 从最后一笔消费往前算的位置 1就是最后一笔 2就是倒数第二笔
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.TransactionResponse.Time">
+            <summary>
+            消费时间(格式：yyyyMMddHHmmss)
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.TransactionResponse.CardNo">
+            <summary>
+            卡号10进制（实体卡号或虚拟卡号）
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.TransactionResponse.Name">
+            <summary>
+            姓名
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.TransactionResponse.Consume">
+            <summary>
+            消费额 10.00元
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.TransactionResponse.Balance">
+            <summary>
+            余额100.00元
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Models.Response.TransactionResponse.Class">
+            <summary>
+            消费类型 （消费 充值 退款,因错退还）
+            </summary>
+        </member>
+        <member name="P:Yande.CloudTool.Api.Startup.Env">
+            <summary>
+            web环境
+            </summary>
+        </member>
+        <member name="M:Yande.CloudTool.Api.Startup.ConfigureContainer(Autofac.ContainerBuilder)">
+            <summary>
+            Autofac
+            </summary>
+            <param name="builder"></param>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,547 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Core.Api</name>
+    </assembly>
+    <members>
+        <member name="T:Core.Api.Controllers.BasicController">
+            <summary>
+            基础信息
+            </summary>
+        </member>
+        <member name="M:Core.Api.Controllers.BasicController.#ctor(Core.Net.Service.Systems.ISysUserServices,Core.Net.Service.Systems.ISysRoleServices,Core.Net.Service.Systems.ISysOrganizationServices)">
+            <summary>
+            BasicController
+            </summary>
+            <param name="sysUserServices"></param>
+            <param name="sysRoleServices"></param>
+            <param name="sysOrganizationServices"></param>
+        </member>
+        <member name="M:Core.Api.Controllers.BasicController.OrderType">
+            <summary>
+            订单类型
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.BasicController.OrderStatus">
+            <summary>
+            订单状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.BasicController.GoodStatus">
+            <summary>
+            商品状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.BasicController.GetOrganizations">
+            <summary>
+            获取部门机构
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.BasicController.GetRoles">
+            <summary>
+            获取角色
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Core.Api.Controllers.GoodController">
+            <summary>
+            商品控制器
+            </summary>
+        </member>
+        <member name="M:Core.Api.Controllers.GoodController.#ctor(Core.Net.Service.DinnerCards.ICoreGoodsServices)">
+            <summary>
+            GoodController
+            </summary>
+            <param name="coreGoodsServices"></param>
+        </member>
+        <member name="M:Core.Api.Controllers.GoodController.GetGoodPageList(Core.Api.Models.Dtos.GoodSearchDto)">
+            <summary>
+            商品分页列表
+            </summary>
+            <param name="goodSearchDto">搜索参数</param>
+            <returns></returns>
+        </member>
+        <member name="T:Core.Api.Controllers.LoginController">
+            <summary>
+            登入控制器
+            </summary>
+        </member>
+        <member name="M:Core.Api.Controllers.LoginController.#ctor(Core.Net.Service.Systems.ISysUserServices,Microsoft.Extensions.Options.IOptions{Core.Api.Models.Configs.JwtConfig})">
+            <summary>
+            登入接口
+            </summary>
+            <param name="sysUserServices"></param>
+        </member>
+        <member name="M:Core.Api.Controllers.LoginController.GetJwtToken(Core.Net.Entity.Dtos.FMLogin)">
+            <summary>
+            获取JWT的授权
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.LoginController.RefreshToken">
+            <summary>
+            请求刷新Token（以旧换新）
+            </summary>
+            <param name="token"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Core.Api.Controllers.NoticeController">
+            <summary>
+            公告控制器
+            </summary>
+        </member>
+        <member name="M:Core.Api.Controllers.NoticeController.#ctor(Core.Net.Service.Shops.ICoreCmsNoticeServices,Core.Net.Service.Systems.ISysDictionaryServices,Core.Net.Service.Systems.ISysDictionaryDataServices)">
+            <summary>
+            GoodController
+            </summary>
+            <param name="coreCmsNoticeServices"></param>
+        </member>
+        <member name="M:Core.Api.Controllers.NoticeController.GetNoticePageList(Core.Api.Models.Dtos.NoticeSearchDto)">
+            <summary>
+            公告分页列表
+            </summary>
+            <param name="noticeSearchDto">搜索参数</param>
+            <returns></returns>
+        </member>
+        <member name="T:Core.Api.Controllers.OrderController">
+            <summary>
+            订单控制器
+            </summary>
+        </member>
+        <member name="M:Core.Api.Controllers.OrderController.#ctor(Core.Net.Service.DinnerCards.ICoreOrderServices)">
+            <summary>
+            OrderController
+            </summary>
+            <param name="coreOrderServices"></param>
+        </member>
+        <member name="M:Core.Api.Controllers.OrderController.CreateOrder(Core.Api.Models.Dtos.CreateOrderDto)">
+            <summary>
+            创建订单
+            </summary>
+            <param name="createOrderDto">创建订单参数</param>
+            <returns></returns>
+        </member>
+        <member name="T:Core.Api.Controllers.SysUserController">
+            <summary>
+            用户接口
+            </summary>
+        </member>
+        <member name="M:Core.Api.Controllers.SysUserController.#ctor(Core.Net.Service.Systems.ISysUserServices,Core.Net.Service.DinnerCards.ICoreOrderServices,Core.Net.Service.DinnerCards.ICoreGoodOrderDetailServices,Core.Net.Service.Systems.ISysRoleServices,Core.Net.Service.Systems.ISysOrganizationServices)">
+            <summary>
+            SysUserController
+            </summary>
+            <param name="sysUserServices"></param>
+            <param name="coreGoodsOrderServices"></param>
+            <param name="coreGoodOrderDetailServices"></param>
+            <param name="sysRoleServices"></param>
+            <param name="sysOrganizationServices"></param>
+        </member>
+        <member name="M:Core.Api.Controllers.SysUserController.GetMyInfo">
+            <summary>
+            个人信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.SysUserController.UpdateMyInfo(Core.Api.Models.Dtos.UpdateMyInfoDto)">
+            <summary>
+            修改个人信息
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.SysUserController.GetMyOrder(Core.Api.Models.Dtos.OrderSearchDto)">
+            <summary>
+            个人订单
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.SysUserController.GetMyOrderDetail(System.Int32)">
+            <summary>
+            订单详细
+            </summary>
+            <param name="orderId">订单id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.SysUserController.CompleteOrder(System.Int32)">
+            <summary>
+            完成订单
+            </summary>
+            <param name="orderId">订单Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.SysUserController.CancelOrder(System.Int32)">
+            <summary>
+            取消订单
+            </summary>
+            <param name="orderId">订单Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.SysUserController.AllOrder(Core.Api.Models.Dtos.AllOrderDto)">
+            <summary>
+            管理员订单查询
+            </summary>
+            <param name="allOrderDto">搜索参数</param>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.SysUserController.GoodStatic(Core.Api.Models.Dtos.AllGoodDto)">
+            <summary>
+            商品统计查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.SysUserController.OrderStatic(Core.Api.Models.Dtos.AllOrderDto)">
+            <summary>
+            订单统计查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Core.Api.Models.Configs.JwtConfig">
+            <summary>
+            JwtConfig
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Configs.JwtConfig.SecretKey">
+            <summary>
+            SecretKey
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Configs.JwtConfig.Issuer">
+            <summary>
+            Issuer
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Configs.JwtConfig.Audience">
+            <summary>
+            Audience
+            </summary>
+        </member>
+        <member name="T:Core.Api.Models.Dtos.AllGoodDto">
+            <summary>
+            商品统计搜索
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.AllGoodDto.goodText">
+            <summary>
+            商品名称
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.AllGoodDto.goodStatus">
+            <summary>
+            商品状态
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.AllGoodDto.orderStatus">
+            <summary>
+            订单状态
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.AllGoodDto.startTime">
+            <summary>
+            开始时间
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.AllGoodDto.endTime">
+            <summary>
+            结束时间
+            </summary>
+        </member>
+        <member name="T:Core.Api.Models.Dtos.AllOrderDto">
+            <summary>
+            订单记录查询条件
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.AllOrderDto.organizationId">
+            <summary>
+            机构部门Id
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.AllOrderDto.roleId">
+            <summary>
+            岗位角色Id
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.AllOrderDto.userText">
+            <summary>
+            员工姓名/身份证/手机
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.AllOrderDto.orderNo">
+            <summary>
+            订单编号
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.AllOrderDto.orderType">
+            <summary>
+            订单类型
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.AllOrderDto.startTime">
+            <summary>
+            开始时间
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.AllOrderDto.endTime">
+            <summary>
+            结束时间
+            </summary>
+        </member>
+        <member name="T:Core.Api.Models.Dtos.CreateOrderDto">
+            <summary>
+            创建订单
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.unitPrice">
+             <summary>
+            商品单价(冗余字段)
+             </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.totalPrice">
+            <summary>
+            订单总价
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.goodName">
+             <summary>
+            商品名称
+             </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.goodNo">
+             <summary>
+            商品编号
+             </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.goodUrl">
+             <summary>
+            商品图片
+             </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.goodNumber">
+            <summary>
+            商品数量
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.userName">
+             <summary>
+            用户名
+             </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.telePhone">
+             <summary>
+            用户手机号
+             </summary>
+        </member>
+        <member name="T:Core.Api.Models.Dtos.FMPage">
+            <summary>
+             根据where查询条件和order排序获取列表
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.FMPage.page">
+            <summary>
+                当前页码
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.FMPage.limit">
+            <summary>
+                每页数据量
+            </summary>
+        </member>
+        <member name="T:Core.Api.Models.Dtos.GoodSearchDto">
+            <summary>
+            商品搜索
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.GoodSearchDto.goodText">
+            <summary>
+            商品信息
+            </summary>
+        </member>
+        <member name="T:Core.Api.Models.Dtos.LoginDto">
+            <summary>
+            登入Dto
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.LoginDto.Phone">
+            <summary>
+            手机号码
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.LoginDto.Password">
+            <summary>
+            密码
+            </summary>
+        </member>
+        <member name="T:Core.Api.Models.Dtos.MyInfoDto">
+            <summary>
+            用户信息
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.MyInfoDto.id">
+            <summary>
+            用户id
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.MyInfoDto.userName">
+            <summary>
+            账号
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.MyInfoDto.phone">
+            <summary>
+            手机号
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.MyInfoDto.idCardNo">
+            <summary>
+            身份证号
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.MyInfoDto.createTime">
+            <summary>
+            注册时间
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.MyInfoDto.organizationName">
+            <summary>
+            组织机构名称
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.MyInfoDto.roles">
+            <summary>
+            岗位角色
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.MyInfoDto.balance">
+            <summary>
+            余额
+            </summary>
+        </member>
+        <member name="T:Core.Api.Models.Dtos.NoticeSearchDto">
+            <summary>
+            搜索参数
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.NoticeSearchDto.noticeText">
+            <summary>
+            公告
+            </summary>
+        </member>
+        <member name="T:Core.Api.Models.Dtos.OrderInfoDto">
+            <summary>
+            我的订单
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.OrderInfoDto.order">
+            <summary>
+            订单
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.OrderInfoDto.orderDeatilList">
+            <summary>
+            订单详细
+            </summary>
+        </member>
+        <member name="T:Core.Api.Models.Dtos.OrderSearchDto">
+             <summary>
+            我的订单搜索
+             </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.OrderListInfoDto.OrderCount">
+            <summary>
+            订单总笔数
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.OrderListInfoDto.OrderTotalFeet">
+            <summary>
+            订单总金额
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.OrderListInfoDto.CompanyTotalFee">
+            <summary>
+            公司充值总金额
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.OrderListInfoDto.PersonTotalFee">
+            <summary>
+            个人充值总金额
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.OrderListInfoDto.orders">
+            <summary>
+            订单列表
+            </summary>
+        </member>
+        <member name="T:Core.Api.Models.Dtos.SearchDto">
+            <summary>
+            搜索模型
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.SearchDto.Text">
+            <summary>
+            关键字搜索
+            </summary>
+        </member>
+        <member name="T:Core.Api.Models.Dtos.UpdateMyInfoDto">
+            <summary>
+            修改信息
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.UpdateMyInfoDto.UserName">
+            <summary>
+            用户名称
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.UpdateMyInfoDto.Phone">
+            <summary>
+            电话
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.UpdateMyInfoDto.IdCardNo">
+            <summary>
+            身份证
+            </summary>
+        </member>
+        <member name="P:Core.Api.Startup.Env">
+            <summary>
+            web环境
+            </summary>
+        </member>
+        <member name="M:Core.Api.Startup.ConfigureContainer(Autofac.ContainerBuilder)">
+            <summary>
+            Autofac
+            </summary>
+            <param name="builder"></param>
+        </member>
+        <member name="M:Core.Api.NullToEmptyStringResolver.CreateProperties(System.Type,Newtonsoft.Json.MemberSerialization)">
+            <summary>
+            创建属性
+            </summary>
+            <param name="type">类型</param>
+            <param name="memberSerialization">序列化成员</param>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.NullToEmptyStringValueProvider.#ctor(System.Reflection.PropertyInfo)">
+            <summary>
+            构造函数
+            </summary>
+            <param name="memberInfo"></param>
+        </member>
+        <member name="M:Core.Api.NullToEmptyStringValueProvider.GetValue(System.Object)">
+            <summary>
+            获取Value
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.NullToEmptyStringValueProvider.SetValue(System.Object,System.Object)">
+            <summary>
+            设置Value
+            </summary>
+            <param name="target"></param>
+            <param name="value"></param>
+        </member>
+    </members>
+</doc>

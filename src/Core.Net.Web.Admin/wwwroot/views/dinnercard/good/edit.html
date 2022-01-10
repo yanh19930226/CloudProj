@@ -1,0 +1,113 @@
+<script type="text/html"  template lay-done="layui.data.sendParams(d);">
+    <div class="layui-form coreshop-form layui-form-pane" lay-filter="LAY-app-Good-editForm" id="LAY-app-Good-editForm">
+        <input type="hidden" name="id" id="id" value="{{d.params.data.model.id || '' }}" />
+
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">商品类型:</label>
+            <div class="layui-input-block">
+                <select name="goodsCategoryId" lay-verType="tips" lay-verify="required" required>
+                    <option value="">请选择</option>
+                    {{# layui.each(d.params.data.dictData, function(index, item){ }}
+                    <option value="{{item.dictDataCode}}" {{item.dictDataCode==d.params.data.model.goodsCategoryId?'selected="selected"':''}}>{{item.dictDataName}}</option>
+                    {{# }); }}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="name" class="layui-form-label">商品名称</label>
+            <div class="layui-input-block">
+                <input name="goodName" id="goodName" lay-verType="tips" lay-verify="required|verifyname" class="layui-input" lay-reqText="请输入名称" placeholder="请输入名称" value="{{d.params.data.model.goodName || '' }}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label" for="avatarImage">商品图片：</label>
+                <div class="layui-input-inline layui-inline-6">
+                    <input name="url" id="url" size="15" autocomplete="off" class="layui-input" lay-reqText="请输入【缩略图】" value="{{d.params.data.model.url || '' }}" />
+                </div>
+                <div class="layui-input-inline">
+                    <div class="layui-upload">
+                        <button type="button" class="layui-btn" id="upBtn">上传图片</button>
+                        <div class="layui-upload-list">
+                            <img class="layui-upload-img" id="viewImgBox" src="{{ layui.setter.noImagePicUrl }}">
+                            <p id="viewTextBox"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="name" class="layui-form-label">价格</label>
+            <div class="layui-input-block">
+                <input name="unitPrice" id="unitPrice" lay-verType="tips" lay-verify="required|number" class="layui-input" lay-reqText="请输入价格" placeholder="请输入价格" value="{{d.params.data.model.unitPrice || '' }}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="name" class="layui-form-label">库存</label>
+            <div class="layui-input-block">
+                <input name="stock" id="stock" lay-verType="tips" lay-verify="required|number" class="layui-input" lay-reqText="请输入库存" placeholder="请输入库存" value="{{d.params.data.model.stock|| '' }}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="name" class="layui-form-label">订购数量</label>
+            <div class="layui-input-block">
+                <input name="purchaseNumber" id="purchaseNumber" lay-verType="tips" lay-verify="required|number" class="layui-input" lay-reqText="请输入订购数量" placeholder="请输入订购数量" value="{{d.params.data.model.purchaseNumber || '' }}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="name" class="layui-form-label">有效时间</label>
+            <div class="layui-input-block">
+                <input name="avilableTime" id="avilableTime" lay-verType="tips" class="layui-input" placeholder="请输入订购数量" value="{{ d.params.data.model.avilableTime ? layui.util.toDateString(d.params.data.model.avilableTime, 'yyyy-MM-dd') : '' }}" />
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">状态:</label>
+            <div class="layui-input-block">
+                <select name="status" lay-verType="tips" lay-verify="required" required>
+                    <option value="">请选择</option>
+                    {{# layui.each(d.params.data.dictData2, function(index, item){ }}
+                    <option value="{{item.dictDataCode}}" {{item.dictDataCode==d.params.data.model.status?'selected="selected"':''}}>{{item.dictDataName}}</option>
+                    {{# }); }}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item text-right core-hidden">
+            <input type="button" class="layui-btn" lay-submit lay-filter="LAY-app-Good-editForm-submit" id="LAY-app-Good-editForm-submit" value="确认编辑">
+        </div>
+    </div>
+</script>
+
+
+
+<script>
+    var debug = layui.setter.debug;
+    debugger;
+    layui.data.sendParams = function (d) {
+        //开启调试情况下获取接口赋值数据
+        debugger;
+        if (debug) { console.log(d.params.data); }
+        layui.use(['admin', 'form', 'laydate', 'upload', 'coreHelper', 'cropperImg', 'dtree'],
+            function () {
+                var $ = layui.$
+                    , form = layui.form
+                    , admin = layui.admin
+                    , laydate = layui.laydate
+                    , upload = layui.upload
+                    , cropperImg = layui.cropperImg
+                    , dtree = layui.dtree
+                    , coreHelper = layui.coreHelper;
+                form.verify({
+                    verifyname: [/^[\S]{0,32}$/, '分类名称最大只允许输入32位字符，且不能出现空格'],
+                });
+
+                laydate.render({
+                    elem: '#avilableTime',
+                });
+
+                //重载form
+                form.render(null, 'LAY-app-Good-editForm');
+            })
+    };
+</script>
