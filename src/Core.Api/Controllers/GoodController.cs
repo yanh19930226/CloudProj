@@ -20,14 +20,46 @@ namespace Core.Api.Controllers
     public class GoodController : BaseController
     {
         private readonly ICoreGoodsServices _coreGoodsServices;
+        private readonly IBusinessServices _businessServices;
         /// <summary>
         /// GoodController
         /// </summary>
         /// <param name="coreGoodsServices"></param>
-        public GoodController(ICoreGoodsServices coreGoodsServices)
+        public GoodController(ICoreGoodsServices coreGoodsServices,IBusinessServices businessServices)
         {
             _coreGoodsServices = coreGoodsServices;
+            _businessServices = businessServices;
         }
+
+        #region 商家分页列表 ============================================================
+        /// <summary>
+        /// 商家分页列表
+        /// </summary>
+        /// <param name="businessSearchDto">搜索参数</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> GetBusinessPageList([FromBody] BusinessSearchDto businessSearchDto)
+        {
+
+            var jm = new PageCallBackResult<IPageList<Business>>();
+
+            var where = PredicateBuilder.True<Business>();
+
+
+            if (!string.IsNullOrEmpty(businessSearchDto.businessText))
+            {
+                where = where.And(p => p.businessName.Contains(businessSearchDto.businessText));
+            }
+            var list = await _businessServices.QueryPageAsync(where, p => p.createTime, OrderByType.Desc, businessSearchDto.page, businessSearchDto.limit);
+
+            jm.Count = list.TotalCount;
+
+            jm.Success(list, "数据调用成功");
+
+            return Ok(jm);
+        }
+        #endregion
+
         #region 商品列表 ============================================================
         /// <summary>
         /// 商品分页列表
@@ -42,7 +74,6 @@ namespace Core.Api.Controllers
             var jm = new PageCallBackResult<IPageList<CoreGoods>>();
 
             var where = PredicateBuilder.True<CoreGoods>();
-
 
             if (!string.IsNullOrEmpty(goodSearchDto.goodText))
             {
