@@ -153,9 +153,9 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Core.Api.Controllers.SysUserController.GetMyOrder(Core.Api.Models.Dtos.OrderSearchDto)">
+        <member name="M:Core.Api.Controllers.SysUserController.GetMyPageOrder(Core.Api.Models.Dtos.OrderSearchDto)">
             <summary>
-            个人订单
+            个人订单分页列表
             </summary>
             <returns></returns>
         </member>

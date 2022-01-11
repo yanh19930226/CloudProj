@@ -13,7 +13,11 @@
                     "name": "sysuser",
                     "title": "用户管理",
                     "jump": "system/sysuser/index"
-                }, {
+                    }, {
+                        "name": "menu",
+                        "title": "菜单管理",
+                        "jump": "system/sysmenu/index"
+                    }, {
                     "name": "sysrole",
                     "title": "岗位管理",
                     "jump": "system/sysrole/index"
@@ -26,7 +30,11 @@
                 "name": "business",
                 "title": "业务管理",
                 "icon": "layui-icon-user",
-                "list": [ {
+                "list": [{
+                    "name": "business",
+                    "title": "商家管理",
+                    "jump": "dinnercard/business/index"
+                },{
                     "name": "good",
                     "title": "商品管理",
                     "jump": "dinnercard/good/index"
