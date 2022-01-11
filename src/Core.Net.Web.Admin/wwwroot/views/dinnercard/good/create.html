@@ -2,16 +2,18 @@
     <div class="layui-form coreshop-form layui-form-pane" lay-filter="LAY-app-Good-createForm" id="LAY-app-Good-createForm">
 
         <div class="layui-form-item">
-            <label class="layui-form-label layui-form-required">商品分类:</label>
-            <div class="layui-input-block">
-                <select name="goodsCategoryId" lay-verType="tips" lay-verify="required" required>
-                    <option value="">请选择</option>
-                    {{# layui.each(d.params.data.dictData, function(index, item){ }}
-                    <option value="{{item.dictDataCode}}">{{item.dictDataName}}</option>
+            <label for="brandId" class="layui-form-label">商家</label>
+            <div class="layui-input-inline layui-inline-6" id="brandIdView">
+                <select name="businessId" id="businessId">
+                    <option value="0">请选择</option>
+                    {{# layui.each(d.params.data.busi, function(index, item){ }}
+                    <option value="{{ item.id }}">{{ item.businessName }}</option>
                     {{# }); }}
                 </select>
             </div>
         </div>
+
+
 
         <div class="layui-form-item">
             <label for="name" class="layui-form-label">商品名称</label>
@@ -72,7 +74,7 @@
                 </select>
             </div>
         </div>
-        
+
         <div class="layui-form-item text-right core-hidden">
             <input type="button" class="layui-btn" lay-submit lay-filter="LAY-app-Good-createForm-submit" id="LAY-app-Good-createForm-submit" value="确认添加">
         </div>

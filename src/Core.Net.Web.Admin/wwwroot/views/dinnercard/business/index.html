@@ -11,7 +11,7 @@
     /* 重写样式 */
 </style>
 <script type="text/html" template lay-type="Post" lay-url="Api/Business/GetIndex" lay-done="layui.data.done(d);">
-    
+
 </script>
 <div class="table-body">
     <table id="LAY-app-Business-tableBox" lay-filter="LAY-app-Business-tableBox"></table>
@@ -105,8 +105,9 @@
                         [
                             { type: "checkbox", fixed: "left" },
                             { field: 'id', title: '序列', width: 60, sort: false },
-                            { field: 'businessName', title: '分类名称', sort: false, width: 200 },
-                            { field: 'status', title: '状态', sort: false, width: 105 },
+                            { field: 'businessCode', title: '商家编码', sort: false, width: 200 },
+                            { field: 'businessName', title: '商家名称', sort: false, width: 200 },
+                            { field: 'status', title: '状态', width: 105, templet: '#switch_isStatus', sort: false, unresize: true },
                             { field: 'sort', title: '排序 ', sort: false, width: 60 },
                             { width: 120, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-Business-tableBox-bar' }
                         ]
@@ -154,15 +155,16 @@
                             admin.popup({
                                 shadeClose: false,
                                 title: '创建数据',
-                                area: ['500px', '250px'],
+                                area: ['500px', '350px'],
                                 id: 'LAY-popup-Business-create',
                                 success: function (layero, index) {
-                                    view(this.id).render('content/article/articletype/create', { data: e.data }).done(function () {
+                                    view(this.id).render('dinnercard/business/create', { data: e.data }).done(function () {
                                         //监听提交
+                                        debugger;
                                         form.on('submit(LAY-app-Business-createForm-submit)',
                                             function (data) {
                                                 var field = data.field; //获取提交的字段
-
+                                                field.status = field.status == 'on';
                                                 if (debug) { console.log(field); } //开启调试返回数据
                                                 //提交 Ajax 成功后，关闭当前弹层并重载表格
                                                 coreHelper.Post("Api/Business/DoCreate", field, function (e) {
@@ -197,16 +199,15 @@
                             admin.popup({
                                 shadeClose: false,
                                 title: '编辑数据',
-                                area: ['500px', '250px'],
+                                area: ['500px', '350px'],
                                 id: 'LAY-popup-Business-edit',
                                 success: function (layero, index) {
-                                    view(this.id).render('content/article/articletype/edit', { data: e.data }).done(function () {
+                                    view(this.id).render('dinnercard/business/edit', { data: e.data }).done(function () {
                                         //监听提交
                                         form.on('submit(LAY-app-Business-editForm-submit)',
                                             function (data) {
                                                 var field = data.field; //获取提交的字段
-
-
+                                                field.status = field.status == 'on';
                                                 if (debug) { console.log(field); } //开启调试返回数据
                                                 //提交 Ajax 成功后，关闭当前弹层并重载表格
                                                 coreHelper.Post("Api/Business/DoEdit", field, function (e) {
@@ -243,7 +244,22 @@
                     });
                 }
 
+                //监听 表格复选框操作
+                layui.form.on('switch(switch_isStatus)', function (obj) {
+                    coreHelper.Post("Api/Business/DoSetisStatus", { id: this.value, data: obj.elem.checked }, function (e) {
+                        if (debug) { console.log(e); } //开启调试返回数据
+                        //table.reloadData('LAY-app-CoreCmsBrand-tableBox');
+                        layer.msg(e.msg);
+                    });
+                });
+
             });
     };
+</script>
+
+
+<!--设置是否显示-->
+<script type="text/html" id="switch_isStatus">
+    <input type="checkbox" name="switch_isStatus" value="{{d.id}}" lay-skin="switch" lay-text="开启|关闭" lay-filter="switch_isStatus" {{ d.status ? 'checked' : '' }}>
 </script>
 

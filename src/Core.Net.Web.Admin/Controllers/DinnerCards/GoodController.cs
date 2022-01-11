@@ -31,6 +31,8 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IDinnerCardServices _dinnerCardServices;
+
+        private readonly IBusinessServices _businessServices;
         private readonly ICoreGoodsServices _coreGoodsServices;
         private readonly ISysDictionaryServices _sysDictionaryServices;
         private readonly ISysDictionaryDataServices _sysDictionaryDataServices;
@@ -46,12 +48,14 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             IWebHostEnvironment webHostEnvironment,
             IDinnerCardServices dinnerCardServices,
             ISysDictionaryServices sysDictionaryServices,
+            IBusinessServices businessServices,
             ISysDictionaryDataServices sysDictionaryDataServices,
                   ICoreCmsGoodsCategoryServices coreCmsGoodsCategoryServices,
             ICoreGoodsServices coreGoodsServices
             )
         {
             _webHostEnvironment = webHostEnvironment;
+            _businessServices = businessServices;
             _sysDictionaryServices = sysDictionaryServices;
             _sysDictionaryDataServices = sysDictionaryDataServices;
             _dinnerCardServices = dinnerCardServices;
@@ -177,14 +181,7 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         {
             //返回数据
             var jm = new AdminUiCallBack { code = 0 };
-
-            var dict = await _sysDictionaryServices.QueryByClauseAsync(p => p.dictCode == "goodType");
-            var dictData = new List<SysDictionaryData>();
-            if (dict != null)
-            {
-                dictData = await _sysDictionaryDataServices.QueryListByClauseAsync(p => p.dictId == dict.id);
-            }
-
+           var busi =   _businessServices.QueryListByClause(p => p.status == true, p => p.id, OrderByType.Desc, true);
             var dict2 = await _sysDictionaryServices.QueryByClauseAsync(p => p.dictCode == "goodStatus");
             var dictData2 = new List<SysDictionaryData>();
             if (dict2 != null)
@@ -193,7 +190,7 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             }
             jm.data = new
             {
-                dictData,
+                busi,
                 dictData2
             };
 
@@ -217,6 +214,7 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             var jm = new AdminUiCallBack();
             entity.createTime = DateTime.Now;
             entity.goodNo = Guid.NewGuid().ToString("N");
+            entity.businessName = _businessServices.QueryByClause(p => p.id == entity.businessId).businessName;
             var bl = await _coreGoodsServices.InsertAsync(entity) > 0;
             jm.code = bl ? 0 : 1;
             jm.msg = bl ? GlobalConstVars.CreateSuccess : GlobalConstVars.CreateFailure;
@@ -293,7 +291,7 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             //事物处理过程开始
             oldModel.id = entity.id;
             oldModel.goodName = entity.goodName;
-            oldModel.goodsCategoryId = entity.goodsCategoryId;
+            //oldModel.goodsCategoryId = entity.goodsCategoryId;
             oldModel.status = entity.status;
             oldModel.unitPrice = entity.unitPrice;
             oldModel.url = entity.url;

@@ -20,12 +20,19 @@ namespace Core.Net.Entity.Model.DinnerCard
         {
         }
         /// <summary>
-        /// 对账ID
+        /// 商家ID
         /// </summary>
-        [Display(Name = "对账ID")]
-        [SugarColumn(ColumnDescription = "对账ID", IsPrimaryKey = true, IsIdentity = true)]
+        [Display(Name = "商家ID")]
+        [SugarColumn(ColumnDescription = "商家ID", IsPrimaryKey = true, IsIdentity = true)]
         [Required(ErrorMessage = "请输入{0}")]
         public System.Int32 id { get; set; }
+        /// <summary>
+        /// 商家编码
+        /// </summary>
+        [Display(Name = "商家编码")]
+        [SugarColumn(ColumnDescription = "商家编码")]
+        [Required(ErrorMessage = "请输入{0}")]
+        public string businessCode { get; set; }
         /// <summary>
         /// 商家名称
         /// </summary>
@@ -34,11 +41,18 @@ namespace Core.Net.Entity.Model.DinnerCard
         [Required(ErrorMessage = "请输入{0}")]
         public string businessName { get; set; }
         /// <summary>
+        /// 商家名称
+        /// </summary>
+        [Display(Name = "商家名称")]
+        [SugarColumn(ColumnDescription = "商家名称")]
+        [Required(ErrorMessage = "请输入{0}")]
+        public int sort { get; set; }
+        /// <summary>
         ///状态
         /// </summary>
         [Display(Name = "状态")]
         [SugarColumn(ColumnDescription = "状态", IsNullable = true)]
-        public System.Int32 status { get; set; }
+        public bool status { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>

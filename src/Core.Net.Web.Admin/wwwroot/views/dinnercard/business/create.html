@@ -1,11 +1,16 @@
 <script type="text/html" template lay-done="layui.data.done(d);">
-    <div class="layui-form coreshop-form layui-form-pane" lay-filter="LAY-app-CoreCmsArticleType-createForm" id="LAY-app-CoreCmsArticleType-createForm">
-        <input type="hidden" value="0" name="parentId" />
+    <div class="layui-form coreshop-form layui-form-pane" lay-filter="LAY-app-Business-createForm" id="LAY-app-Business-createForm">
+        <div class="layui-form-item">
+            <label for="name" class="layui-form-label">商家编码</label>
+            <div class="layui-input-block">
+                <input name="businessCode" id="businessCode" lay-verType="tips" lay-verify="required|verifyname" class="layui-input" lay-reqText="请输入商家编码" placeholder="请输入商家编码" />
+            </div>
+        </div>
 
         <div class="layui-form-item">
-            <label for="name" class="layui-form-label">分类名称</label>
+            <label for="name" class="layui-form-label">商家名称</label>
             <div class="layui-input-block">
-                <input name="name" id="name" lay-verType="tips" lay-verify="required|verifyname" class="layui-input" lay-reqText="请输入分类名称" placeholder="请输入分类名称" />
+                <input name="businessName" id="businessName" lay-verType="tips" lay-verify="required|verifyname" class="layui-input" lay-reqText="请输入商家名称" placeholder="请输入商家名称" />
             </div>
         </div>
 
@@ -16,8 +21,14 @@
             </div>
         </div>
 
+        <div class="layui-form-item">
+            <label for="status" class="layui-form-label">是否启用</label>
+            <div class="layui-input-block">
+                <input type="checkbox" lay-filter="switch" name="status" id="status" lay-skin="switch" lay-text="开启|关闭">
+            </div>
+        </div>
         <div class="layui-form-item text-right core-hidden">
-            <input type="button" class="layui-btn" lay-submit lay-filter="LAY-app-CoreCmsArticleType-createForm-submit" id="LAY-app-CoreCmsArticleType-createForm-submit" value="确认添加">
+            <input type="button" class="layui-btn" lay-submit lay-filter="LAY-app-Business-createForm-submit" id="LAY-app-Business-createForm-submit" value="确认添加">
         </div>
     </div>
 </script>
@@ -41,7 +52,7 @@
                     verifyname: [/^[\S]{0,32}$/, '分类名称最大只允许输入32位字符，且不能出现空格'],
                 });
                 //重载form
-                form.render(null, 'LAY-app-CoreCmsArticleType-createForm');
+                form.render(null, 'LAY-app-Business-createForm');
             })
     };
 </script>

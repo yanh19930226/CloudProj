@@ -79,6 +79,11 @@ namespace Core.Api.Controllers
             {
                 where = where.And(p => p.goodName.Contains(goodSearchDto.goodText));
             }
+            if (!string.IsNullOrEmpty(goodSearchDto.businessId))
+            {
+                var bid = Convert.ToInt32(goodSearchDto.businessId);
+                where = where.And(p => p.businessId== bid);
+            }
             var list = await _coreGoodsServices.QueryPageAsync(where, p => p.createTime, OrderByType.Desc, goodSearchDto.page, goodSearchDto.limit);
 
             jm.Count = list.TotalCount;

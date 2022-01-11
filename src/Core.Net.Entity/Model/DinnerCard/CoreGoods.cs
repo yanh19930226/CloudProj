@@ -26,11 +26,16 @@ namespace Core.Net.Entity.Model.DinnerCard
         [Required(ErrorMessage = "请输入{0}")]
         public System.Int32 id { get; set; }
         /// <summary>
-        ///     商品分类
+        /// 商家Id
         /// </summary>
-        [Display(Name = "商品分类")]
+        [Display(Name = "商家Id")]
         [Required(ErrorMessage = "请输入{0}")]
-        public int goodsCategoryId { get; set; }
+        public int businessId { get; set; }
+        /// <summary>
+        /// 商家名称
+        /// </summary>
+        [Display(Name = "商家名称")]
+        public string businessName { get; set; }
         /// <summary>
         /// 商品编码
         /// </summary>

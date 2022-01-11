@@ -167,10 +167,11 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
                 return new JsonResult(jm);
             }
             //事物处理过程开始
-            //oldModel.id = entity.id;
-            //oldModel.name = entity.name;
-            //oldModel.parentId = entity.parentId;
-            //oldModel.sort = entity.sort;
+            oldModel.id = entity.id;
+            oldModel.businessCode = entity.businessCode;
+            oldModel.businessName = entity.businessName;
+            oldModel.sort = entity.sort;
+            oldModel.status = entity.status;
 
             //事物处理过程结束
             var bl = await _businessServices.UpdateAsync(oldModel);
@@ -200,6 +201,39 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
 
             return new JsonResult(jm);
         }
+        #endregion
+
+        #region 设置是否启用============================================================
+
+        // POST: Api/CoreCmsBrand/DoSetisShow/10
+        /// <summary>
+        ///     设置是否启用
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Description("设置是否启用")]
+        public async Task<AdminUiCallBack> DoSetisStatus([FromBody] FMUpdateBoolDataByIntId entity)
+        {
+            var jm = new AdminUiCallBack();
+
+            var oldModel = await _businessServices.QueryByIdAsync(entity.id);
+            if (oldModel == null)
+            {
+                jm.msg = "不存在此信息";
+                return jm;
+            }
+
+            oldModel.status = entity.data;
+            oldModel.createTime = DateTime.Now;
+
+            var bl = await _businessServices.UpdateAsync(oldModel);
+            jm.code = bl ? 0 : 1;
+            jm.msg = bl ? GlobalConstVars.EditSuccess : GlobalConstVars.EditFailure;
+
+            return jm;
+        }
+
         #endregion
     }
 }

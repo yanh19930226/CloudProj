@@ -14,5 +14,9 @@ namespace Core.Api.Models.Dtos
         /// 商品信息
         /// </summary>
         public string goodText { get; set; }
+        /// <summary>
+        /// 商家Id
+        /// </summary>
+        public string businessId { get; set; }
     }
 }
