@@ -133,9 +133,8 @@ namespace Core.Api.Controllers
 
             var where = PredicateBuilder.True<CoreOrder>();
             where = where.And(p => p.sysUserId == sysUserId);
-
-            var type = (int)OrderTypeEnum.GoodOrder;
-            where = where.And(p => p.orderType == type);
+            //var type = (int)OrderTypeEnum.GoodOrder;
+            //where = where.And(p => p.orderType == type);
             if (!string.IsNullOrEmpty(orderSearchDto.orderText))
             {
                 where = where.And(p => p.orderNo.Contains(orderSearchDto.orderText));
