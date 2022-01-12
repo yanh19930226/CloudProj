@@ -48,6 +48,20 @@ namespace Core.Net.Entity.Model.DinnerCard
         [Required(ErrorMessage = "请输入{0}")]
         public System.Int32 sysUserId { get; set; }
         /// <summary>
+        /// 机构名称
+        /// </summary>
+        [Display(Name = "机构名称")]
+        [SugarColumn(ColumnDescription = "机构名称")]
+        [Required(ErrorMessage = "请输入{0}")]
+        public string organizationName { get; set; }
+        /// <summary>
+        /// roleName
+        /// </summary>
+        [Display(Name = "roleName")]
+        [SugarColumn(ColumnDescription = "roleName")]
+        [Required(ErrorMessage = "请输入{0}")]
+        public string roleName { get; set; }
+        /// <summary>
         /// 外部订单编号
         /// </summary>
         [Display(Name = "外部订单编号")]
@@ -111,44 +125,43 @@ namespace Core.Net.Entity.Model.DinnerCard
         public System.DateTime createTime { get; set; }
 
         #region 商品信息
+        ///// <summary>
+        /////商品名称
+        ///// </summary>
+        //[Display(Name = "商品名称")]
+        //[SugarColumn(ColumnDescription = "商品名称", IsNullable = true)]
+        //[StringLength(50, ErrorMessage = "【{0}】不能超过{1}字符长度")]
+        //public System.String goodName { get; set; }
+        ///// <summary>
+        /////商品编号
+        ///// </summary>
+        //[Display(Name = "商品编号")]
+        //[SugarColumn(ColumnDescription = "商品编号", IsNullable = true)]
+        //[StringLength(50, ErrorMessage = "【{0}】不能超过{1}字符长度")]
+        //public System.String goodNo { get; set; }
 
-        /// <summary>
-        ///商品名称
-        /// </summary>
-        [Display(Name = "商品名称")]
-        [SugarColumn(ColumnDescription = "商品名称", IsNullable = true)]
-        [StringLength(50, ErrorMessage = "【{0}】不能超过{1}字符长度")]
-        public System.String goodName { get; set; }
-        /// <summary>
-        ///商品编号
-        /// </summary>
-        [Display(Name = "商品编号")]
-        [SugarColumn(ColumnDescription = "商品编号", IsNullable = true)]
-        [StringLength(50, ErrorMessage = "【{0}】不能超过{1}字符长度")]
-        public System.String goodNo { get; set; }
+        ///// <summary>
+        /////商品图片
+        ///// </summary>
+        //[Display(Name = "商品图片")]
+        //[SugarColumn(ColumnDescription = "商品图片", IsNullable = true)]
+        //[StringLength(50, ErrorMessage = "【{0}】不能超过{1}字符长度")]
+        //public System.String goodUrl { get; set; }
 
-        /// <summary>
-        ///商品图片
-        /// </summary>
-        [Display(Name = "商品图片")]
-        [SugarColumn(ColumnDescription = "商品图片", IsNullable = true)]
-        [StringLength(50, ErrorMessage = "【{0}】不能超过{1}字符长度")]
-        public System.String goodUrl { get; set; }
-
-        /// <summary>
-        /// 商品数量
-        /// </summary>
-        [Display(Name = "商品数量")]
-        [SugarColumn(ColumnDescription = "商品数量")]
-        [Required(ErrorMessage = "请输入{0}")]
-        public int? goodNumber { get; set; }
-        /// <summary>
-        ///商品单价(冗余字段)
-        /// </summary>
-        [Display(Name = "商品单价")]
-        [SugarColumn(ColumnDescription = "商品单价")]
-        [Required(ErrorMessage = "请输入{0}")]
-        public decimal? unitPrice { get; set; }
+        ///// <summary>
+        ///// 商品数量
+        ///// </summary>
+        //[Display(Name = "商品数量")]
+        //[SugarColumn(ColumnDescription = "商品数量")]
+        //[Required(ErrorMessage = "请输入{0}")]
+        //public int? goodNumber { get; set; }
+        ///// <summary>
+        /////商品单价(冗余字段)
+        ///// </summary>
+        //[Display(Name = "商品单价")]
+        //[SugarColumn(ColumnDescription = "商品单价")]
+        //[Required(ErrorMessage = "请输入{0}")]
+        //public decimal? unitPrice { get; set; }
 
         #endregion
 
@@ -163,7 +176,6 @@ namespace Core.Net.Entity.Model.DinnerCard
         #endregion
 
         #region 用户信息
-
         /// <summary>
         ///用户名
         /// </summary>
@@ -185,21 +197,6 @@ namespace Core.Net.Entity.Model.DinnerCard
         [SugarColumn(ColumnDescription = "餐卡号")]
         [Required(ErrorMessage = "请输入{0}")]
         public string cardNo { get; set; }
-        /// <summary>
-        ///部门角色
-        /// </summary>
-        [Display(Name = "部门角色")]
-        [SugarColumn(ColumnDescription = "部门角色")]
-        [Required(ErrorMessage = "请输入{0}")]
-        public string organizationAndRole { get; set; }
-        /// <summary>
-        ///用户状态
-        /// </summary>
-        [Display(Name = "用户状态")]
-        [SugarColumn(ColumnDescription = "用户状态")]
-        [Required(ErrorMessage = "请输入{0}")]
-        public int userStatus { get; set; }
-
         #endregion
     
     }

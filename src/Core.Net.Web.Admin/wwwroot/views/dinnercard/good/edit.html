@@ -3,16 +3,17 @@
         <input type="hidden" name="id" id="id" value="{{d.params.data.model.id || '' }}" />
 
         <div class="layui-form-item">
-            <label class="layui-form-label layui-form-required">商品类型:</label>
+            <label class="layui-form-label layui-form-required">商家:</label>
             <div class="layui-input-block">
-                <select name="goodsCategoryId" lay-verType="tips" lay-verify="required" required>
+                <select name="businessId" lay-verType="tips" lay-verify="required" required>
                     <option value="">请选择</option>
-                    {{# layui.each(d.params.data.dictData, function(index, item){ }}
-                    <option value="{{item.dictDataCode}}" {{item.dictDataCode==d.params.data.model.goodsCategoryId?'selected="selected"':''}}>{{item.dictDataName}}</option>
+                    {{# layui.each(d.params.data.busi, function(index, item){ }}
+                    <option value="{{item.id}}" {{item.id==d.params.data.model.businessId?'selected="selected"':''}}>{{item.businessName}}</option>
                     {{# }); }}
                 </select>
             </div>
         </div>
+
         <div class="layui-form-item">
             <label for="name" class="layui-form-label">商品名称</label>
             <div class="layui-input-block">

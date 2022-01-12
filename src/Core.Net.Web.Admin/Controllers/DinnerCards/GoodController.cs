@@ -236,18 +236,15 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         public async  Task<AdminUiCallBack> GetEdit([FromBody] FMIntId entity)
         {
             var jm = new AdminUiCallBack();
+
+            var busi = _businessServices.QueryListByClause(p => p.status == true, p => p.id, OrderByType.Desc, true);
+
             //获取商品分类
             var model = await _coreGoodsServices.QueryByIdAsync(entity.id);
             if (model == null)
             {
                 jm.msg = "不存在此信息";
                 return jm;
-            }
-            var dict = await _sysDictionaryServices.QueryByClauseAsync(p => p.dictCode == "goodType");
-            var dictData = new List<SysDictionaryData>();
-            if (dict != null)
-            {
-                dictData = await _sysDictionaryDataServices.QueryListByClauseAsync(p => p.dictId == dict.id);
             }
 
             var dict2 = await _sysDictionaryServices.QueryByClauseAsync(p => p.dictCode == "goodStatus");
@@ -262,7 +259,7 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             {
                 model,
                 dictData2,
-                dictData
+                busi
             };
 
             return jm;
@@ -282,6 +279,8 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         {
             var jm = new AdminUiCallBack();
 
+            
+
             var oldModel = await _coreGoodsServices.QueryByIdAsync(entity.id);
             if (oldModel == null)
             {
@@ -291,7 +290,8 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             //事物处理过程开始
             oldModel.id = entity.id;
             oldModel.goodName = entity.goodName;
-            //oldModel.goodsCategoryId = entity.goodsCategoryId;
+            oldModel.businessId = entity.businessId;
+            oldModel.businessName = _businessServices.QueryByClause(p=>p.id== entity.businessId).businessName;
             oldModel.status = entity.status;
             oldModel.unitPrice = entity.unitPrice;
             oldModel.url = entity.url;

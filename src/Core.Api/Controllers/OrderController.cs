@@ -4,6 +4,7 @@ using Core.Net.Entity.Model.DinnerCard;
 using Core.Net.Entity.Model.Expression;
 using Core.Net.Entity.ViewModels;
 using Core.Net.Service.DinnerCards;
+using Core.Net.Service.Systems;
 using Microsoft.AspNetCore.Mvc;
 using SqlSugar;
 using System;
@@ -19,14 +20,16 @@ namespace Core.Api.Controllers
     public class OrderController : BaseController
     {
         private readonly ICoreOrderServices _coreOrderServices;
+        private readonly ISysUserServices _sysUserServices;
         private readonly ICoreGoodOrderDetailServices _coreGoodOrderDetailServices;
         /// <summary>
         /// OrderController
         /// </summary>
         /// <param name="coreOrderServices"></param>
-        public OrderController(ICoreOrderServices coreOrderServices, ICoreGoodOrderDetailServices coreGoodOrderDetailServices)
+        public OrderController(ICoreOrderServices coreOrderServices, ICoreGoodOrderDetailServices coreGoodOrderDetailServices, ISysUserServices sysUserServices)
         {
             _coreOrderServices = coreOrderServices;
+            _sysUserServices = sysUserServices;
             _coreGoodOrderDetailServices = coreGoodOrderDetailServices;
         }
 
@@ -40,24 +43,38 @@ namespace Core.Api.Controllers
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto createOrderDto )
         {
             var jm = new CallBackResult<bool>();
-            CoreOrder coreOrder = new CoreOrder();
-            coreOrder.oraganizationId = Convert.ToInt32(OrganizationId);
-            coreOrder.roleId = Convert.ToInt32(SysUserId);
-            coreOrder.sysUserId = Convert.ToInt32(SysUserId);
-            coreOrder.orderNo = Guid.NewGuid().ToString("N");
-            coreOrder.orderType = 1000;
-            coreOrder.status = 1000;
-            coreOrder.unitPrice = createOrderDto.unitPrice;
-            coreOrder.totalPrice = createOrderDto.totalPrice;
-            coreOrder.goodName = createOrderDto.goodName;
-            coreOrder.goodNo = createOrderDto.goodNo;
-            coreOrder.goodUrl = createOrderDto.goodUrl;
-            coreOrder.goodNumber = createOrderDto.goodNumber;
-            coreOrder.payType = 2;
-            coreOrder.userName = createOrderDto.userName;
-            coreOrder.telePhone = createOrderDto.telePhone;
-            coreOrder.createTime = DateTime.Now;
-            await _coreOrderServices.InsertAsync(coreOrder);
+            try
+            {
+                var user = _sysUserServices.QueryByClause(p => p.id == Convert.ToInt32(SysUserId));
+
+                CoreOrder coreOrder = new CoreOrder();
+                coreOrder.oraganizationId = Convert.ToInt32(user.organizationId);
+                coreOrder.roleId = Convert.ToInt32(user.id);
+                coreOrder.sysUserId = Convert.ToInt32(user.id);
+                coreOrder.userName = user.userName;
+
+                coreOrder.orderNo = Guid.NewGuid().ToString("N");
+                //订单类型
+                coreOrder.orderType = 1000;
+                //订单状态
+                coreOrder.status = 1000;
+                coreOrder.payType = 2;
+                coreOrder.telePhone = user.phone;
+                coreOrder.createTime = DateTime.Now;
+                await _coreOrderServices.InsertAsync(coreOrder);
+
+                //创建订单详细
+                CoreGoodOrderDetail coreGoodOrderDetail = new CoreGoodOrderDetail();
+                await _coreGoodOrderDetailServices.InsertAsync(coreGoodOrderDetail);
+
+
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+           
             jm.Success("创建成功");
             return Ok(jm);
         }

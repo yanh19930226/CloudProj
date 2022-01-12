@@ -56,6 +56,12 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         public async Task<JsonResult> GetPageList()
         {
             var jm = new AdminUiCallBack();
+
+            var where = PredicateBuilder.True<Business>();
+
+            //标题 nvarchar
+            var name = Request.Form["name"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(name)) @where = @where.And(p => p.businessName.Contains(name));
             //获取数据
             var list = await _businessServices.QueryAsync();
             //返回数据

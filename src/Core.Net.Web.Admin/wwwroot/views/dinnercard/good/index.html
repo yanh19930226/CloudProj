@@ -106,18 +106,7 @@
                         [
                             { type: "checkbox", fixed: "left" },
                             { field: 'id', title: '序列', width: 60, sort: false },
-                            {
-                                field: 'goodsCategoryId', title: '商品类型', sort: false, width: 80, templet: function (data) {
-                                    debugger;
-                                    console.log(d);
-                                    for (var i = 0; i < d.otherData.length; i++) {
-                                        if (d.otherData[i].dictDataCode == data.goodsCategoryId) {
-                                            return d.otherData[i].dictDataName;
-                                        }
-                                    }
-                                    return "";
-                                }
-                            },
+                            { field: 'businessName', title: '商家', width: 60, sort: false },
                             { field: 'goodNo', title: '商品编号', sort: false, width: 200 },
                             { field: 'goodName', title: '商品标题', sort: false, width: 200 },
                             { field: 'url', title: '商品图片', sort: false, width: 105 },
