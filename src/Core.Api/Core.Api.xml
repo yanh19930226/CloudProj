@@ -52,11 +52,18 @@
             商品控制器
             </summary>
         </member>
-        <member name="M:Core.Api.Controllers.GoodController.#ctor(Core.Net.Service.DinnerCards.ICoreGoodsServices)">
+        <member name="M:Core.Api.Controllers.GoodController.#ctor(Core.Net.Service.DinnerCards.ICoreGoodsServices,Core.Net.Service.DinnerCards.IBusinessServices)">
             <summary>
             GoodController
             </summary>
             <param name="coreGoodsServices"></param>
+        </member>
+        <member name="M:Core.Api.Controllers.GoodController.GetBusinessPageList(Core.Api.Models.Dtos.BusinessSearchDto)">
+            <summary>
+            商家分页列表
+            </summary>
+            <param name="businessSearchDto">搜索参数</param>
+            <returns></returns>
         </member>
         <member name="M:Core.Api.Controllers.GoodController.GetGoodPageList(Core.Api.Models.Dtos.GoodSearchDto)">
             <summary>
@@ -113,7 +120,7 @@
             订单控制器
             </summary>
         </member>
-        <member name="M:Core.Api.Controllers.OrderController.#ctor(Core.Net.Service.DinnerCards.ICoreOrderServices)">
+        <member name="M:Core.Api.Controllers.OrderController.#ctor(Core.Net.Service.DinnerCards.ICoreOrderServices,Core.Net.Service.DinnerCards.ICoreGoodOrderDetailServices,Core.Net.Service.Systems.ISysUserServices,Core.Net.Service.Systems.ISysOrganizationServices,Core.Net.Service.DinnerCards.ICoreGoodsServices,Core.Net.Data.IUnitOfWork)">
             <summary>
             OrderController
             </summary>
@@ -124,6 +131,52 @@
             创建订单
             </summary>
             <param name="createOrderDto">创建订单参数</param>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.OrderController.GetMyPageOrder(Core.Api.Models.Dtos.OrderSearchDto)">
+            <summary>
+            个人订单分页列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.OrderController.GetMyOrderDetail(System.Int32)">
+            <summary>
+            订单详细
+            </summary>
+            <param name="orderId">订单id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.OrderController.CompleteOrder(System.Int32)">
+            <summary>
+            完成订单
+            </summary>
+            <param name="orderId">订单Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.OrderController.CancelOrder(System.Int32)">
+            <summary>
+            取消订单
+            </summary>
+            <param name="orderId">订单Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.OrderController.AllOrder(Core.Api.Models.Dtos.AllOrderDto)">
+            <summary>
+            管理员订单查询
+            </summary>
+            <param name="allOrderDto">搜索参数</param>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.OrderController.GoodStatic(Core.Api.Models.Dtos.AllGoodDto)">
+            <summary>
+            商品统计查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.OrderController.OrderStatic(Core.Api.Models.Dtos.AllOrderDto)">
+            <summary>
+            订单统计查询
+            </summary>
             <returns></returns>
         </member>
         <member name="T:Core.Api.Controllers.SysUserController">
@@ -150,52 +203,6 @@
         <member name="M:Core.Api.Controllers.SysUserController.UpdateMyInfo(Core.Api.Models.Dtos.UpdateMyInfoDto)">
             <summary>
             修改个人信息
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Core.Api.Controllers.SysUserController.GetMyPageOrder(Core.Api.Models.Dtos.OrderSearchDto)">
-            <summary>
-            个人订单分页列表
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Core.Api.Controllers.SysUserController.GetMyOrderDetail(System.Int32)">
-            <summary>
-            订单详细
-            </summary>
-            <param name="orderId">订单id</param>
-            <returns></returns>
-        </member>
-        <member name="M:Core.Api.Controllers.SysUserController.CompleteOrder(System.Int32)">
-            <summary>
-            完成订单
-            </summary>
-            <param name="orderId">订单Id</param>
-            <returns></returns>
-        </member>
-        <member name="M:Core.Api.Controllers.SysUserController.CancelOrder(System.Int32)">
-            <summary>
-            取消订单
-            </summary>
-            <param name="orderId">订单Id</param>
-            <returns></returns>
-        </member>
-        <member name="M:Core.Api.Controllers.SysUserController.AllOrder(Core.Api.Models.Dtos.AllOrderDto)">
-            <summary>
-            管理员订单查询
-            </summary>
-            <param name="allOrderDto">搜索参数</param>
-            <returns></returns>
-        </member>
-        <member name="M:Core.Api.Controllers.SysUserController.GoodStatic(Core.Api.Models.Dtos.AllGoodDto)">
-            <summary>
-            商品统计查询
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Core.Api.Controllers.SysUserController.OrderStatic(Core.Api.Models.Dtos.AllOrderDto)">
-            <summary>
-            订单统计查询
             </summary>
             <returns></returns>
         </member>
@@ -289,50 +296,35 @@
             结束时间
             </summary>
         </member>
+        <member name="P:Core.Api.Models.Dtos.BusinessSearchDto.businessText">
+            <summary>
+            公告
+            </summary>
+        </member>
         <member name="T:Core.Api.Models.Dtos.CreateOrderDto">
             <summary>
-            创建订单
+            创建订单参数
             </summary>
         </member>
-        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.unitPrice">
-             <summary>
-            商品单价(冗余字段)
-             </summary>
-        </member>
-        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.totalPrice">
+        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.GoodInfos">
             <summary>
-            订单总价
+            创建订单商品信息集合
             </summary>
         </member>
-        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.goodName">
-             <summary>
-            商品名称
-             </summary>
+        <member name="T:Core.Api.Models.Dtos.GoodInfo">
+            <summary>
+            创建订单商品信息
+            </summary>
         </member>
-        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.goodNo">
-             <summary>
-            商品编号
-             </summary>
+        <member name="P:Core.Api.Models.Dtos.GoodInfo.GoodId">
+            <summary>
+            商品Id
+            </summary>
         </member>
-        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.goodUrl">
-             <summary>
-            商品图片
-             </summary>
-        </member>
-        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.goodNumber">
+        <member name="P:Core.Api.Models.Dtos.GoodInfo.Number">
             <summary>
             商品数量
             </summary>
-        </member>
-        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.userName">
-             <summary>
-            用户名
-             </summary>
-        </member>
-        <member name="P:Core.Api.Models.Dtos.CreateOrderDto.telePhone">
-             <summary>
-            用户手机号
-             </summary>
         </member>
         <member name="T:Core.Api.Models.Dtos.FMPage">
             <summary>
@@ -357,6 +349,11 @@
         <member name="P:Core.Api.Models.Dtos.GoodSearchDto.goodText">
             <summary>
             商品信息
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.GoodSearchDto.businessId">
+            <summary>
+            商家Id
             </summary>
         </member>
         <member name="T:Core.Api.Models.Dtos.LoginDto">
@@ -429,6 +426,141 @@
             公告
             </summary>
         </member>
+        <member name="T:Core.Api.Models.Dtos.OrderDetailDto">
+            <summary>
+            订单详细
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.OrderDetailDto.coreOrder">
+            <summary>
+            主订单
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.OrderDetailDto.coreOrderDetail">
+            <summary>
+            订单详细
+            </summary>
+        </member>
+        <member name="T:Core.Api.Models.Dtos.CoreOrderDto">
+            <summary>
+            订单信息
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.id">
+             <summary>
+            订单ID
+             </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.oraganizationId">
+            <summary>
+            机构Id
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.roleId">
+            <summary>
+            角色Id
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.sysUserId">
+            <summary>
+            用户Id
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.organizationName">
+            <summary>
+            机构名称
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.roleName">
+            <summary>
+            roleName
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.orderNo">
+            <summary>
+            订单编号
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.orderType">
+            <summary>
+            订单类型:刷卡扣费0,现金充值1,余额查询2,钱包转账,3商品订单4,公司福利5
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.status">
+            <summary>
+            订单状态： 未付款0，已取消1，已付款2，已退款3，已发货4, 已完成5
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.totalPrice">
+            <summary>
+            订单总价
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.createTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.payType">
+            <summary>
+            订单付款方式:刷卡扣费6,现金充值7
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.userName">
+             <summary>
+            用户名
+             </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.telePhone">
+             <summary>
+            用户手机号
+             </summary>
+        </member>
+        <member name="T:Core.Api.Models.Dtos.CoreOrderDetailDto">
+            <summary>
+            订单详细
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDetailDto.id">
+            <summary>
+            商品订单详细Id
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDetailDto.orderNo">
+            <summary>
+            订单编号
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDetailDto.goodId">
+            <summary>
+            商品Id
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDetailDto.url">
+             <summary>
+            商品图片
+             </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDetailDto.goodName">
+             <summary>
+            商品名称
+             </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDetailDto.goodNo">
+             <summary>
+            商品编号
+             </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDetailDto.goodNum">
+             <summary>
+            商品数量
+             </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDetailDto.unitPrice">
+             <summary>
+            商品单价
+             </summary>
+        </member>
         <member name="T:Core.Api.Models.Dtos.OrderInfoDto">
             <summary>
             我的订单
@@ -448,6 +580,11 @@
              <summary>
             我的订单搜索
              </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.OrderSearchDto.orderText">
+            <summary>
+            订单搜索关键字(订单编号等)
+            </summary>
         </member>
         <member name="P:Core.Api.Models.Dtos.OrderListInfoDto.OrderCount">
             <summary>

@@ -83,7 +83,7 @@ namespace Core.Net.Entity.Model.DinnerCard
         [Required(ErrorMessage = "请输入{0}")]
         public int orderType { get; set; }
         /// <summary>
-        /// 订单状态：已付款1000，备货中2000，已收货3000，已退款4000，已取消5000
+        /// 订单状态
         /// </summary>
         [Display(Name = "订单状态")]
         [SugarColumn(ColumnDescription = "订单状态")]

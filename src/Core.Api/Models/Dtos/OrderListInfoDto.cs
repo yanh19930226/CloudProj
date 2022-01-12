@@ -10,8 +10,12 @@ namespace Core.Api.Models.Dtos
     /// <summary>
     ///我的订单搜索
     /// </summary>
-    public class OrderSearchDto:SearchDto
+    public class OrderSearchDto: FMPage
     {
+        /// <summary>
+        /// 订单搜索关键字(订单编号等)
+        /// </summary>
+        public string orderText { get; set; }
     }
 
     public class OrderListInfoDto

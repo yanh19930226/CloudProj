@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>F:\Projec\cloud-cost-tool-admin-master\cloud-cost-tool-admin-master\src\Core.Api\Core.Api.xml</DocumentationFile>
+    <DocumentationFile>D:\MyPlayGround\cloud-cost-tool-admin-master(1)\cloud-cost-tool-admin-master\src\Core.Api\Core.Api.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

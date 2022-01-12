@@ -31,7 +31,7 @@ namespace Core.Net.Entity.Model.DinnerCard
         [Display(Name = "订单Id")]
         [SugarColumn(ColumnDescription = "订单Id")]
         [Required(ErrorMessage = "请输入{0}")]
-        public int orderId { get; set; }
+        public string orderNo { get; set; }
         /// <summary>
         /// 商品订单Id
         /// </summary>
@@ -53,6 +53,14 @@ namespace Core.Net.Entity.Model.DinnerCard
         [SugarColumn(ColumnDescription = "商品编号", IsNullable = true)]
         [StringLength(50, ErrorMessage = "【{0}】不能超过{1}字符长度")]
         public System.String goodNo { get; set; }
+
+        /// <summary>
+        ///图片
+        /// </summary>
+        [Display(Name = "图片")]
+        [SugarColumn(ColumnDescription = "图片", IsNullable = true)]
+        public System.String url { get; set; }
+        /// <summary>
         /// <summary>
         ///商品数量
         /// </summary>
