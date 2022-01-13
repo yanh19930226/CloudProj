@@ -57,6 +57,8 @@ namespace Core.Api.Controllers
 
                 var user = _sysUserServices.QueryByClause(p => p.id == Convert.ToInt32(SysUserId));
 
+
+
                 List<CoreGoods> goodlist = new List<CoreGoods>();
 
                 var totalPrice = 0M;
@@ -77,7 +79,7 @@ namespace Core.Api.Controllers
                 coreOrder.userName = user.userName;
                 coreOrder.roleId = Convert.ToInt32(user.id);
                 coreOrder.roleName = "";
-                var orderNo= Guid.NewGuid().ToString("N");
+                var orderNo = Guid.NewGuid().ToString("N");
                 coreOrder.orderNo = orderNo;
                 //订单类型
                 coreOrder.orderType = (int)OrderTypeEnum.GoodOrder;
@@ -99,12 +101,15 @@ namespace Core.Api.Controllers
                     coreGoodOrderDetail.goodId = item.id;
                     coreGoodOrderDetail.goodNo = item.goodNo;
                     coreGoodOrderDetail.goodName = item.goodName;
-                    coreGoodOrderDetail.goodNum = createOrderDto.GoodInfos.Where(p=>p.GoodId== item.id).FirstOrDefault().Number;
+                    coreGoodOrderDetail.goodNum = createOrderDto.GoodInfos.Where(p => p.GoodId == item.id).FirstOrDefault().Number;
                     coreGoodOrderDetail.unitPrice = item.unitPrice;
-                    coreGoodOrderDetail.createTime =DateTime.Now;
+                    coreGoodOrderDetail.createTime = DateTime.Now;
                     coreGoodOrderDetail.goodNo = orderNo;
                     await _coreGoodOrderDetailServices.InsertAsync(coreGoodOrderDetail);
                 }
+
+                user.balance = (Convert.ToDecimal(user.balance) - totalPrice).ToString();
+                 _sysUserServices.Update(user);
 
                 _unitOfWork.CommitTran();
 
@@ -233,6 +238,8 @@ namespace Core.Api.Controllers
             {
                 order.status = (int)OrderStatusEnum.Complete;
                 order.completeTime = DateTime.Now;
+                await _coreOrderServices.UpdateAsync(order);
+
                 jm.Success(true, "订单完成");
             }
             return Ok(jm);
@@ -260,6 +267,7 @@ namespace Core.Api.Controllers
             else
             {
                 order.status = (int)OrderStatusEnum.Canceled;
+                await _coreOrderServices.UpdateAsync(order);
                 jm.Success(true, "订单取消");
             }
             return Ok(jm);

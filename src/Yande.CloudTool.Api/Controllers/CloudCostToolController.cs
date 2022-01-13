@@ -123,8 +123,6 @@ namespace Yande.CloudTool.Api.Controllers
                     #region 用户信息
                     coreOrder.userName = user.userName;
                     coreOrder.telePhone = user.phone;
-                    coreOrder.organizationAndRole = "测试还未修改";
-                    coreOrder.userStatus = 1;
                     #endregion
 
                     dinnerCard.Balance = dinnerCard.Balance - Convert.ToDecimal(consumTransactionDto.Amount);
