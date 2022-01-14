@@ -1,0 +1,202 @@
+<title>库存操作表</title>
+<!--当前位置开始-->
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <script type="text/html" template lay-done="layui.data.updateMainBreadcrumb();">
+        </script>
+    </div>
+</div>
+<!--当前位置结束-->
+<style>
+    /* 重写样式 */
+</style>
+<script type="text/html" template lay-type="Post" lay-url="Api/CardOrder/GetIndex" lay-done="layui.data.done(d);">
+    <div class="layui-form coreshop-search-form">
+        <div class="layui-form-item">
+
+            <div class="layui-inline">
+                <label class="layui-form-label" for="id">序列</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="id" placeholder="请输入序列" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select name="type">
+                        <option value="">请选择类型</option>
+                        {{# layui.each(d.data.stockType, function(index, item){ }}
+                        <option value="{{ item.value }}">{{ item.description }}</option>
+                        {{# }); }}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label" for="memo">备注</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="memo" placeholder="请输入备注" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label" for="createTime">创建时间</label>
+                <div class="layui-input-inline" style="width: 260px;">
+                    <input type="text" name="createTime" id="searchTime-CardOrder-createTime" placeholder="请输入创建时间" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="LAY-app-CardOrder-search"><i class="layui-icon layui-icon-search"></i>筛选</button>
+            </div>
+        </div>
+    </div>
+</script>
+<div class="table-body">
+    <table id="LAY-app-CardOrder-tableBox" lay-filter="LAY-app-CardOrder-tableBox"></table>
+</div>
+
+<script type="text/html" id="LAY-app-CardOrder-toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="addData"><i class="layui-icon layui-icon-add-1"></i>添加单据</button>
+    </div>
+</script>
+<script type="text/html" id="LAY-app-CardOrder-tableBox-bar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+</script>
+
+<script>
+    var indexData;
+    var debug = layui.setter.debug;
+    layui.data.done = function (d) {
+        //开启调试情况下获取接口赋值数据
+        if (debug) { console.log(d); }
+
+        indexData = d.data;
+        layui.use(['index', 'table', 'laydate', 'util', 'coredropdown', 'coreHelper'],
+            function () {
+                var $ = layui.$
+                    , admin = layui.admin
+                    , table = layui.table
+                    , form = layui.form
+                    , laydate = layui.laydate
+                    , setter = layui.setter
+                    , coreHelper = layui.coreHelper
+                    , util = layui.util
+                    , view = layui.view;
+
+                laydate.render({
+                    elem: '#searchTime-CardOrder-createTime',
+                    type: 'datetime',
+                    range: '到',
+                });
+                //重载form
+                form.render();
+                var searchwhere;
+                //监听搜索
+                form.on('submit(LAY-app-CardOrder-search)',
+                    function (data) {
+                        var field = data.field;
+                        searchwhere = field;
+                        //执行重载
+                        table.reload('LAY-app-CardOrder-tableBox', { where: field });
+                    });
+
+                //数据绑定
+                table.render({
+                    elem: '#LAY-app-CardOrder-tableBox',
+                    url: layui.setter.apiUrl + 'Api/CardOrder/GetPageList',
+                    method: 'POST',
+                    toolbar: '#LAY-app-CardOrder-toolbar',
+                    pagebar: '#LAY-app-CardOrder-pagebar',
+                    className: 'pagebarbox',
+                    defaultToolbar: ['filter', 'print', 'exports'],
+                    height: 'full-127',//面包屑142px,搜索框4行172,3行137,2行102,1行67
+                    page: true,
+                    limit: 30,
+                    limits: [10, 15, 20, 25, 30, 50, 100, 200],
+                    text: { none: '暂无相关数据' },
+                    cols: [
+                        [
+                            { type: "checkbox", fixed: "left" },
+                            { field: 'id', title: '序列', width: 60, sort: false },
+                            { field: 'organizationName', title: '部门', width: 150, sort: false },
+                            { field: 'roleName', title: '岗位', sort: false, width: 150 },
+                            { field: 'userName', title: '用户', sort: false, width: 150 },
+                            { field: 'orderNo', title: '系统订单号', sort: false, width: 200 },
+                            { field: 'costOrderNo', title: '餐卡订单号', sort: false, width: 150 },
+                            {
+                                field: 'orderType', title: '订单类型', sort: false, width: 80, templet: function (data) {
+                                    for (var i = 0; i < d.data.length; i++) {
+                                        if (d.data[i].dictDataCode == data.orderType) {
+                                            return d.data[i].dictDataName;
+                                        }
+                                    }
+                                    return "";
+                                }
+                            },
+                            { field: 'amount', title: '消费金额', sort: false, width: 105 },
+                            { field: 'telePhone', title: '手机号', sort: false, width: 105 },
+                            { field: 'createTime', title: '创建时间', sort: false, width: 150 },
+                            { width: 120, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-CardOrder-tableBox-bar' }
+                        ]
+                    ]
+                });
+
+
+                //监听排序事件
+                table.on('sort(LAY-app-CardOrder-tableBox)', function (obj) {
+                    table.reload('LAY-app-CardOrder-tableBox', {
+                        initSort: obj, //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                        where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                            orderField: obj.field, //排序字段
+                            orderDirection: obj.type //排序方式
+                        }
+                    });
+                });
+                //监听行双击事件
+                table.on('rowDouble(LAY-app-CardOrder-tableBox)', function (obj) {
+                    //查看详情
+                    doDetails(obj);
+                });
+                //头工具栏事件
+                table.on('toolbar(LAY-app-CardOrder-tableBox)', function (obj) {
+                    var checkStatus = table.checkStatus(obj.config.id);
+                    switch (obj.event) {
+                        case 'addData':
+                            doCreate();
+                            break;
+                    };
+                });
+                //监听工具条
+                table.on('tool(LAY-app-CardOrder-tableBox)',
+                    function (obj) {
+                        if (obj.event === 'detail') {
+                            doDetails(obj);
+                        }
+                    });
+
+                //执行预览操作
+                function doDetails(obj) {
+                    coreHelper.Post("Api/CardOrder/GetDetails", { id: obj.data.id }, function (e) {
+                        if (e.code === 0) {
+                            admin.popup({
+                                shadeClose: false,
+                                title: '查看详情',
+                                area: ['1000px', '500px'],
+                                id: 'LAY-popup-CardOrder-details',
+                                success: function (layero, index) {
+                                    view(this.id).render('dinnercard/cardorder/details', { data: e.data }).done(function () {
+                                        form.render();
+                                    });
+                                    // 禁止弹窗出现滚动条
+                                    //$(layero).children('.layui-layer-content').css('overflow', 'visible');
+                                }
+                            });
+                        } else {
+                            layer.msg(e.msg);
+                        }
+                    });
+                }
+
+
+            });
+    };
+</script>
+

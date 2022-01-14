@@ -40,8 +40,12 @@
                     "jump": "dinnercard/good/index"
                 }, {
                         "name": "order",
-                        "title": "订单管理",
+                        "title": "商品订单管理",
                     "jump": "dinnercard/order/index"
+                    }, {
+                        "name": "cardorder",
+                        "title": "消费订单管理",
+                        "jump": "dinnercard/cardorder/index"
                     }, {
                     "name": "notice",
                     "title": "公告管理",
