@@ -33,7 +33,7 @@ namespace Core.Api.Models.Dtos
         /// <summary>
         /// 机构Id
         /// </summary>
-        public System.Int32 oraganizationId { get; set; }
+        public System.Int32 organizationId { get; set; }
         /// <summary>
         /// 角色Id
         /// </summary>
@@ -55,6 +55,10 @@ namespace Core.Api.Models.Dtos
         /// </summary>
         public string orderNo { get; set; }
         /// <summary>
+        /// 身份证号
+        /// </summary>
+        public string idCardNo { get; set; }
+        /// <summary>
         /// 订单类型:刷卡扣费0,现金充值1,余额查询2,钱包转账,3商品订单4,公司福利5
         /// </summary>
         public int orderType { get; set; }
@@ -63,9 +67,17 @@ namespace Core.Api.Models.Dtos
         /// </summary>
         public int status { get; set; }
         /// <summary>
-        /// 订单总价
+        /// 变动前
         /// </summary>
         public decimal totalPrice { get; set; }
+        /// <summary>
+        /// 消费金额
+        /// </summary>
+        public decimal amount { get; set; }
+        /// <summary>
+        /// 余额
+        /// </summary>
+        public decimal balance { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>

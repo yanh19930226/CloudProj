@@ -8,6 +8,7 @@ using Core.Net.Configuration;
 using Core.Net.Entity.Enums;
 using Core.Net.Entity.Model.DinnerCard;
 using Core.Net.Entity.Model.Expression;
+using Core.Net.Entity.Model.Systems;
 using Core.Net.Entity.ViewModels;
 using Core.Net.Filter;
 using Core.Net.Service.DinnerCards;
@@ -78,7 +79,18 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         [Description("首页数据")]
         public JsonResult GetIndex()
         {
+            //返回数据
             var jm = new AdminUiCallBack { code = 0 };
+            var dict = _sysDictionaryServices.QueryByClause(p => p.dictCode == "orderStatus");
+            var dictData = new List<SysDictionaryData>();
+            if (dict != null)
+            {
+                dictData = _sysDictionaryDataServices.QueryListByClause(p => p.dictId == dict.id);
+            }
+            jm.data = new
+            {
+                dictData,
+            };
             return Json(jm);
         }
         #endregion

@@ -15,31 +15,45 @@
         <div class="layui-form-item">
 
             <div class="layui-inline">
-                <label class="layui-form-label" for="id">序列</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="id" placeholder="请输入序列" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <div class="layui-input-inline">
-                    <select name="type">
-                        <option value="">请选择类型</option>
-                        {{# layui.each(d.data.stockType, function(index, item){ }}
-                        <option value="{{ item.value }}">{{ item.description }}</option>
+                    <select name="orderType">
+                        <option value="">订单类型</option>
+                        {{# layui.each(d.data.dictData, function(index, item){ }}
+                    <option value="{{ item.dictDataCode }}">{{ item.dictDataName }}</option>
                         {{# }); }}
                     </select>
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-label" for="memo">备注</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="memo" placeholder="请输入备注" class="layui-input">
+                    <select name="organizationId">
+                        <option value="">部门</option>
+                        {{# layui.each(d.data.orgkVs, function(index, item){ }}
+                    <option value="{{ item.key }}">{{ item.value }}</option>
+                        {{# }); }}
+                    </select>
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-label" for="createTime">创建时间</label>
+                <div class="layui-input-inline">
+                    <select name="roleId">
+                        <option value="">岗位</option>
+                        {{# layui.each(d.data.rolekVs, function(index, item){ }}
+                    <option value="{{ item.key }}">{{ item.value }}</option>
+                        {{# }); }}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label" for="id">关键字</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="text" placeholder="请输入员工/手机/身份证号/订单号" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label" for="createTime">选择时间</label>
                 <div class="layui-input-inline" style="width: 260px;">
-                    <input type="text" name="createTime" id="searchTime-CardOrder-createTime" placeholder="请输入创建时间" class="layui-input">
+                    <input type="text" name="createTime" id="searchTime-CardOrder-createTime" placeholder="请输入时间" class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
@@ -57,6 +71,7 @@
         <button class="layui-btn layui-btn-sm" lay-event="addData"><i class="layui-icon layui-icon-add-1"></i>添加单据</button>
     </div>
 </script>
+
 <script type="text/html" id="LAY-app-CardOrder-tableBox-bar">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
 </script>
@@ -67,7 +82,6 @@
     layui.data.done = function (d) {
         //开启调试情况下获取接口赋值数据
         if (debug) { console.log(d); }
-
         indexData = d.data;
         layui.use(['index', 'table', 'laydate', 'util', 'coredropdown', 'coreHelper'],
             function () {
@@ -97,7 +111,6 @@
                         //执行重载
                         table.reload('LAY-app-CardOrder-tableBox', { where: field });
                     });
-
                 //数据绑定
                 table.render({
                     elem: '#LAY-app-CardOrder-tableBox',
@@ -138,8 +151,6 @@
                         ]
                     ]
                 });
-
-
                 //监听排序事件
                 table.on('sort(LAY-app-CardOrder-tableBox)', function (obj) {
                     table.reload('LAY-app-CardOrder-tableBox', {
@@ -171,7 +182,6 @@
                             doDetails(obj);
                         }
                     });
-
                 //执行预览操作
                 function doDetails(obj) {
                     coreHelper.Post("Api/CardOrder/GetDetails", { id: obj.data.id }, function (e) {
@@ -194,8 +204,6 @@
                         }
                     });
                 }
-
-
             });
     };
 </script>

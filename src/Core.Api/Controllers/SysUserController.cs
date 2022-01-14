@@ -22,6 +22,7 @@ namespace Core.Api.Controllers
     {
         private readonly ISysUserServices _sysUserServices;
         private readonly ISysRoleServices _sysRoleServices;
+        private readonly ISysUserRoleServices _sysUserRoleServices;
         private readonly ISysOrganizationServices _sysOrganizationServices;
         private readonly ICoreOrderServices _coreGoodsOrderServices;
         private readonly ICoreGoodOrderDetailServices _coreGoodOrderDetailServices;
@@ -34,12 +35,13 @@ namespace Core.Api.Controllers
         /// <param name="coreGoodOrderDetailServices"></param>
         /// <param name="sysRoleServices"></param>
         /// <param name="sysOrganizationServices"></param>
-        public SysUserController(ISysUserServices sysUserServices, ICoreOrderServices coreGoodsOrderServices, ICoreGoodOrderDetailServices coreGoodOrderDetailServices, ISysRoleServices sysRoleServices, ISysOrganizationServices sysOrganizationServices)
+        public SysUserController(ISysUserServices sysUserServices, ICoreOrderServices coreGoodsOrderServices, ICoreGoodOrderDetailServices coreGoodOrderDetailServices, ISysRoleServices sysRoleServices, ISysOrganizationServices sysOrganizationServices, ISysUserRoleServices sysUserRoleServices)
         {
             _sysUserServices = sysUserServices;
             _coreGoodsOrderServices = coreGoodsOrderServices;
             _sysOrganizationServices = sysOrganizationServices;
             _sysRoleServices = sysRoleServices;
+            _sysUserRoleServices = sysUserRoleServices;
             _coreGoodOrderDetailServices = coreGoodOrderDetailServices;
         }
 
@@ -62,7 +64,8 @@ namespace Core.Api.Controllers
             }
             else
             {
-                var roleName="测试";
+                var roleId = _sysUserRoleServices.QueryByClause(p => p.userId == sysUserId).roleId;
+                var roleName = _sysRoleServices.QueryByClause(p => p.id == roleId).roleName;
                 myInfoDto.id = model.id;
                 myInfoDto.userName = model.userName;
                 myInfoDto.organizationName = _sysOrganizationServices.QueryByClause(p=>p.id== model.organizationId).organizationName;

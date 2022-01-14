@@ -94,7 +94,7 @@ namespace Yande.CloudTool.Api.Controllers
                 {
                     //根据订单类型创建订单
                     CoreOrder coreOrder = new CoreOrder();
-                    coreOrder.oraganizationId = Convert.ToInt32(user.organizationId);
+                    coreOrder.organizationId = Convert.ToInt32(user.organizationId);
                     coreOrder.roleId = 1;
                     coreOrder.sysUserId = Convert.ToInt32(user.id);
                     //卡号

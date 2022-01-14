@@ -6,6 +6,7 @@ using Core.Net.Entity.Model.Expression;
 using Core.Net.Entity.ViewModels;
 using Core.Net.Service.DinnerCards;
 using Core.Net.Service.Systems;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SqlSugar;
 using System;
@@ -18,6 +19,7 @@ namespace Core.Api.Controllers
     /// <summary>
     /// 订单控制器
     /// </summary>
+    [AllowAnonymous]
     public class OrderController : BaseController
     {
         private readonly ICoreOrderServices _coreOrderServices;
@@ -73,7 +75,7 @@ namespace Core.Api.Controllers
                 var org = _sysOrganizationServices.QueryByClause(p => p.id == user.organizationId);
 
                 CoreOrder coreOrder = new CoreOrder();
-                coreOrder.oraganizationId = Convert.ToInt32(user.organizationId);
+                coreOrder.organizationId = Convert.ToInt32(user.organizationId);
                 coreOrder.organizationName = org?.organizationName;
                 coreOrder.sysUserId = Convert.ToInt32(user.id);
                 coreOrder.userName = user.userName;
@@ -86,8 +88,13 @@ namespace Core.Api.Controllers
                 //订单状态
                 coreOrder.status = (int)OrderStatusEnum.UnPayed;
                 coreOrder.payType = (int)PayTypeEnum.Other;
-                //订单总价
-                coreOrder.totalPrice = totalPrice;
+
+                //订单变动前金额
+                coreOrder.totalPrice = Convert.ToDecimal(user.balance);
+                //订单消费金额
+                coreOrder.amount = totalPrice;
+                //余额
+                coreOrder.balance = (Convert.ToDecimal(user.balance) - totalPrice);
                 coreOrder.telePhone = user.phone;
                 coreOrder.createTime = DateTime.Now;
                 await _coreOrderServices.InsertAsync(coreOrder);
@@ -108,8 +115,8 @@ namespace Core.Api.Controllers
                     await _coreGoodOrderDetailServices.InsertAsync(coreGoodOrderDetail);
                 }
 
-                user.balance = (Convert.ToDecimal(user.balance) - totalPrice).ToString();
-                 _sysUserServices.Update(user);
+                user.balance= (Convert.ToDecimal(user.balance) - totalPrice).ToString();
+                _sysUserServices.Update(user);
 
                 _unitOfWork.CommitTran();
 
@@ -142,7 +149,7 @@ namespace Core.Api.Controllers
             //where = where.And(p => p.orderType == type);
             if (!string.IsNullOrEmpty(orderSearchDto.orderText))
             {
-                where = where.And(p => p.orderNo.Contains(orderSearchDto.orderText));
+                where = where.And(p => p.orderNo.Contains(orderSearchDto.orderText)|| p.businessName.Contains(orderSearchDto.orderText));
             }
 
             var list = await _coreOrderServices.QueryPageAsync(where, p => p.createTime, OrderByType.Desc, orderSearchDto.page, orderSearchDto.limit);
@@ -176,8 +183,11 @@ namespace Core.Api.Controllers
                 coreOrderDto.orderType = order.orderType;
                 coreOrderDto.status = order.status;
                 coreOrderDto.totalPrice = order.totalPrice;
+                coreOrderDto.amount = order.amount;
+                coreOrderDto.balance = order.balance;
+                coreOrderDto.idCardNo = order.idCardNo;
                 coreOrderDto.payType = order.payType;
-                coreOrderDto.oraganizationId = order.oraganizationId;
+                coreOrderDto.organizationId = order.organizationId;
                 coreOrderDto.roleId = order.roleId;
                 coreOrderDto.roleName = order.roleName;
                 coreOrderDto.organizationName = order.organizationName;
@@ -290,7 +300,7 @@ namespace Core.Api.Controllers
             if (!string.IsNullOrEmpty(allOrderDto.organizationId))
             {
                 var orgId = Convert.ToInt32(allOrderDto.organizationId);
-                where = where.And(p => p.oraganizationId == orgId);
+                where = where.And(p => p.organizationId == orgId);
             }
             //岗位角色
             if (!string.IsNullOrEmpty(allOrderDto.roleId))
@@ -327,7 +337,9 @@ namespace Core.Api.Controllers
                 where = where.And(p => p.createTime <= endTime);
             }
 
-            var orderlist = await _coreOrderServices.QueryListByClauseAsync(where);
+            //var orderlist = await _coreOrderServices.QueryPageAsync(where, p => p.createTime, OrderByType.Desc, allOrderDto.page, allOrderDto.limit);
+
+            var orderlist =  _coreOrderServices.QueryListByClause(where).OrderByDescending(p=>p.createTime).ToList();
 
             OrderListInfoDto orderListInfoDto = new OrderListInfoDto();
 
@@ -427,7 +439,7 @@ namespace Core.Api.Controllers
             if (!string.IsNullOrEmpty(allOrderDto.organizationId))
             {
                 var orgId = Convert.ToInt32(allOrderDto.organizationId);
-                where = where.And(p => p.oraganizationId == orgId);
+                where = where.And(p => p.organizationId == orgId);
             }
             //岗位角色
             if (!string.IsNullOrEmpty(allOrderDto.roleId))

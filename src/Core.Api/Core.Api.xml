@@ -184,7 +184,7 @@
             用户接口
             </summary>
         </member>
-        <member name="M:Core.Api.Controllers.SysUserController.#ctor(Core.Net.Service.Systems.ISysUserServices,Core.Net.Service.DinnerCards.ICoreOrderServices,Core.Net.Service.DinnerCards.ICoreGoodOrderDetailServices,Core.Net.Service.Systems.ISysRoleServices,Core.Net.Service.Systems.ISysOrganizationServices)">
+        <member name="M:Core.Api.Controllers.SysUserController.#ctor(Core.Net.Service.Systems.ISysUserServices,Core.Net.Service.DinnerCards.ICoreOrderServices,Core.Net.Service.DinnerCards.ICoreGoodOrderDetailServices,Core.Net.Service.Systems.ISysRoleServices,Core.Net.Service.Systems.ISysOrganizationServices,Core.Net.Service.Systems.ISysUserRoleServices)">
             <summary>
             SysUserController
             </summary>
@@ -481,6 +481,11 @@
             订单编号
             </summary>
         </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.idCardNo">
+            <summary>
+            身份证号
+            </summary>
+        </member>
         <member name="P:Core.Api.Models.Dtos.CoreOrderDto.orderType">
             <summary>
             订单类型:刷卡扣费0,现金充值1,余额查询2,钱包转账,3商品订单4,公司福利5
@@ -493,7 +498,17 @@
         </member>
         <member name="P:Core.Api.Models.Dtos.CoreOrderDto.totalPrice">
             <summary>
-            订单总价
+            变动前
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.amount">
+            <summary>
+            消费金额
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.balance">
+            <summary>
+            余额
             </summary>
         </member>
         <member name="P:Core.Api.Models.Dtos.CoreOrderDto.createTime">

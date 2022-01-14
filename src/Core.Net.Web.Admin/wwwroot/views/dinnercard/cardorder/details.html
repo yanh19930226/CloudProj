@@ -8,7 +8,7 @@
             </div>
             <label class="layui-form-label">订单金额</label>
             <div class="layui-inline-4 layui-form-mid">
-                {{ d.params.data.model.createTime }}
+                {{ d.params.data.model.amount }}
             </div>
 
             <label class="layui-form-label">创建时间</label>
@@ -26,45 +26,28 @@
 
     <div class="layui-form coreshop-form">
         <div class="layui-form-item">
-            <label class="layui-form-label">订单类型</label>
+            <label class="layui-form-label">员工姓名</label>
             <div class="layui-inline-4 layui-form-mid">
-                {{ d.params.data.model.orderType }}
+                {{ d.params.data.model.userName }}
             </div>
-            <label class="layui-form-label">订单金额</label>
+            <label class="layui-form-label">联系电话</label>
             <div class="layui-inline-4 layui-form-mid">
-                {{ d.params.data.model.createTime }}
+                {{ d.params.data.model.telePhone }}
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">身份证号</label>
+            <div class="layui-inline-4 layui-form-mid">
+                {{ d.params.data.model.idCardNo }}
+            </div>
+            <label class="layui-form-label">余额</label>
+            <div class="layui-inline-4 layui-form-mid">
+                {{ d.params.data.model.balance }}
             </div>
 
-            <label class="layui-form-label">创建时间</label>
+            <label class="layui-form-label">部门岗位</label>
             <div class="layui-inline-4 layui-form-mid">
-                {{ d.params.data.model.createTime || '' }}
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">订单编号</label>
-            <div class="layui-inline-12 layui-form-mid">
-                {{ d.params.data.model.orderNo || '' }}
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">订单类型</label>
-            <div class="layui-inline-4 layui-form-mid">
-                {{ d.params.data.model.orderType }}
-            </div>
-            <label class="layui-form-label">订单金额</label>
-            <div class="layui-inline-4 layui-form-mid">
-                {{ d.params.data.model.createTime }}
-            </div>
-
-            <label class="layui-form-label">创建时间</label>
-            <div class="layui-inline-4 layui-form-mid">
-                {{ d.params.data.model.createTime || '' }}
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">订单编号</label>
-            <div class="layui-inline-12 layui-form-mid">
-                {{ d.params.data.model.orderNo || '' }}
+                {{ d.params.data.model.organizationName || '' }}/{{ d.params.data.model.roleName || '' }}
             </div>
         </div>
     </div>

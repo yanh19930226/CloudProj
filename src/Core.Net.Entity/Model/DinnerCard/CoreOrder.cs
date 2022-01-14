@@ -32,7 +32,14 @@ namespace Core.Net.Entity.Model.DinnerCard
         [Display(Name = "机构Id")]
         [SugarColumn(ColumnDescription = "机构Id")]
         [Required(ErrorMessage = "请输入{0}")]
-        public System.Int32 oraganizationId { get; set; }
+        public System.Int32 organizationId { get; set; }
+        /// <summary>
+        ///商家名称
+        /// </summary>
+        [Display(Name = "商家名称")]
+        [SugarColumn(ColumnDescription = "商家名称")]
+        [Required(ErrorMessage = "请输入{0}")]
+        public System.String businessName { get; set; }
         /// <summary>
         /// 角色Id
         /// </summary>
@@ -197,7 +204,14 @@ namespace Core.Net.Entity.Model.DinnerCard
         [SugarColumn(ColumnDescription = "餐卡号")]
         [Required(ErrorMessage = "请输入{0}")]
         public string cardNo { get; set; }
+        /// <summary>
+        ///身份证号
+        /// </summary>
+        [Display(Name = "身份证号")]
+        [SugarColumn(ColumnDescription = "身份证号")]
+        [Required(ErrorMessage = "请输入{0}")]
+        public string idCardNo { get; set; }
         #endregion
-    
+
     }
 }

@@ -105,19 +105,23 @@
                             { field: 'roleName', title: '岗位', sort: false, width: 200 },
                             { field: 'userName', title: '用户', sort: false, width: 200 },
                             { field: 'orderNo', title: '订单编号', sort: false, width: 105 },
-                            { field: 'orderType', title: '订单类型', sort: false, width: 105 },
+                            {
+                                field: 'orderType', title: '订单类型', sort: false, width: 100, templet: function (data) {
+                                    return "商品订单";
+                                }
+                            },
                             { field: 'totalPrice', title: '总金额', sort: false, width: 105 },
                             { field: 'telePhone', title: '手机号', sort: false, width: 105 },
-                            //{
-                            //    field: 'status', title: '订单状态', sort: false, width: 80, templet: function (data) {
-                            //        for (var i = 0; i < d.data.length; i++) {
-                            //            if (d.data[i].dictDataCode == data.status) {
-                            //                return d.data[i].dictDataName;
-                            //            }
-                            //        }
-                            //        return "";
-                            //    }
-                            //},
+                            {
+                                field: 'status', title: '订单状态', sort: false, width: 80, templet: function (data) {
+                                    for (var i = 0; i < d.data.length; i++) {
+                                        if (d.data[i].dictDataCode == data.status) {
+                                            return d.data[i].dictDataName;
+                                        }
+                                    }
+                                    return "";
+                                }
+                            },
 
                             { field: 'createTime', title: '创建时间', sort: false, width: 105 },
                             { width: 120, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-Order-tableBox-bar' }

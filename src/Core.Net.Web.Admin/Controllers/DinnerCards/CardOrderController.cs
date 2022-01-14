@@ -37,7 +37,8 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IDinnerCardServices _dinnerCardServices;
         private readonly ICoreOrderServices _coreOrderServices;
-
+        private readonly ISysRoleServices _sysRoleServices;
+        private readonly ISysOrganizationServices _sysOrganizationServices;
         private readonly IBusinessServices _businessServices;
         private readonly ICoreGoodsServices _coreGoodsServices;
         private readonly ISysDictionaryServices _sysDictionaryServices;
@@ -51,18 +52,23 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         /// <param name="coreCmsArticleTypeServices"></param>
         ///  <param name="coreCmsArticleServices"></param>
         public CardOrderController(
+            ISysRoleServices sysRoleServices,
             IWebHostEnvironment webHostEnvironment,
             IDinnerCardServices dinnerCardServices,
             ISysDictionaryServices sysDictionaryServices,
             IBusinessServices businessServices,
              ICoreOrderServices coreOrderServices,
             ISysDictionaryDataServices sysDictionaryDataServices,
+            ISysOrganizationServices sysOrganizationServices,
                   ICoreCmsGoodsCategoryServices coreCmsGoodsCategoryServices,
             ICoreGoodsServices coreGoodsServices
             )
         {
+            _sysRoleServices = sysRoleServices;
+
             _webHostEnvironment = webHostEnvironment;
             _businessServices = businessServices;
+            _sysOrganizationServices = sysOrganizationServices;
             _sysDictionaryServices = sysDictionaryServices;
             _sysDictionaryDataServices = sysDictionaryDataServices;
             _dinnerCardServices = dinnerCardServices;
@@ -80,8 +86,9 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         [Description("首页数据")]
         public JsonResult GetIndex()
         {
-
             //返回数据
+            var jm = new AdminUiCallBack { code = 0 };
+            //订单类型
             var dict = _sysDictionaryServices.QueryByClause(p => p.dictCode == "orderType");
             var dictData = new List<SysDictionaryData>();
             if (dict != null)
@@ -89,7 +96,33 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
                 dictData = _sysDictionaryDataServices.QueryListByClause(p => p.dictId == dict.id);
             }
 
-            var jm = new AdminUiCallBack { code = 0, data = dictData };
+            //机构
+            List<KV> orgkVs = new List<KV>();
+            var organizations =  _sysOrganizationServices.Query();
+            foreach (var item in organizations)
+            {
+                KV kV = new KV();
+                kV.Key = item.id.ToString();
+                kV.Value = item.organizationName.ToString();
+                orgkVs.Add(kV);
+            }
+
+            //角色
+            List<KV> rolekVs = new List<KV>();
+            var roleList =  _sysRoleServices.Query();
+            foreach (var item in roleList)
+            {
+                KV kV = new KV();
+                kV.Key = item.id.ToString();
+                kV.Value = item.roleName.ToString();
+                rolekVs.Add(kV);
+            }
+            jm.data = new
+            {
+                dictData,
+                orgkVs,
+                rolekVs
+            };
             return Json(jm);
         }
         #endregion
@@ -135,8 +168,38 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
                 "desc" => OrderByType.Desc,
                 _ => OrderByType.Desc
             };
-            //查询筛选
+         
+            var orderType = Request.Form["orderType"].FirstOrDefault().ObjectToInt(0);
+            if (orderType > 0) @where = @where.And(p => p.orderType == orderType);
 
+            var organizationId = Request.Form["organizationId"].FirstOrDefault().ObjectToInt(0);
+            if (organizationId > 0) @where = @where.And(p => p.organizationId == organizationId);
+
+            var roleId = Request.Form["roleId"].FirstOrDefault().ObjectToInt(0);
+            if (orderType > 0) @where = @where.And(p => p.roleId == roleId);
+
+
+            var text = Request.Form["text"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(text)) @where = @where.And(p => p.telePhone.Contains(text));
+
+            //更新时间 datetime
+            var createTime = Request.Form["createTime"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(createTime))
+            {
+                if (createTime.Contains("到"))
+                {
+                    var dts = createTime.Split("到");
+                    var dtStart = dts[0].Trim().ObjectToDate();
+                    where = where.And(p => p.createTime > dtStart);
+                    var dtEnd = dts[1].Trim().ObjectToDate();
+                    where = where.And(p => p.createTime < dtEnd);
+                }
+                else
+                {
+                    var dt = createTime.ObjectToDate();
+                    where = where.And(p => p.createTime > dt);
+                }
+            }
             //获取数据
             var list = await _coreOrderServices.QueryPageAsync(where, orderEx, orderBy, pageCurrent, pageSize);
 
@@ -149,7 +212,6 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             return Json(jm);
         }
         #endregion
-
 
         #region 预览数据============================================================
         // POST: Api/CoreCmsAgentGoods/GetDetails/10
@@ -180,5 +242,13 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             return new JsonResult(jm);
         }
         #endregion
+    }
+
+    public class KV
+    {
+
+        public string Key { get; set; }
+
+        public string Value { get; set; }
     }
 }
