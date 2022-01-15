@@ -13,7 +13,6 @@
 <script type="text/html" template lay-type="Post" lay-url="Api/CardOrder/GetIndex" lay-done="layui.data.done(d);">
     <div class="layui-form coreshop-search-form">
         <div class="layui-form-item">
-
             <div class="layui-inline">
                 <div class="layui-input-inline">
                     <select name="orderType">
@@ -66,20 +65,15 @@
     <table id="LAY-app-CardOrder-tableBox" lay-filter="LAY-app-CardOrder-tableBox"></table>
 </div>
 
-<script type="text/html" id="LAY-app-CardOrder-toolbar">
-    <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="addData"><i class="layui-icon layui-icon-add-1"></i>添加单据</button>
-    </div>
-</script>
-
 <script type="text/html" id="LAY-app-CardOrder-tableBox-bar">
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看详情</a>
 </script>
 
 <script>
     var indexData;
     var debug = layui.setter.debug;
     layui.data.done = function (d) {
+        debugger;
         //开启调试情况下获取接口赋值数据
         if (debug) { console.log(d); }
         indexData = d.data;
@@ -136,9 +130,9 @@
                             { field: 'costOrderNo', title: '餐卡订单号', sort: false, width: 150 },
                             {
                                 field: 'orderType', title: '订单类型', sort: false, width: 80, templet: function (data) {
-                                    for (var i = 0; i < d.data.length; i++) {
-                                        if (d.data[i].dictDataCode == data.orderType) {
-                                            return d.data[i].dictDataName;
+                                    for (var i = 0; i < d.data.dictData.length; i++) {
+                                        if (d.data.dictData[i].dictDataCode == data.orderType) {
+                                            return d.data.dictData[i].dictDataName;
                                         }
                                     }
                                     return "";

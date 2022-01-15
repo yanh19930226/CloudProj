@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Core.Net.Configuration;
+using Core.Net.Entity.Dtos;
 using Core.Net.Entity.Enums;
 using Core.Net.Entity.Model.DinnerCard;
 using Core.Net.Entity.Model.Expression;
@@ -36,7 +37,9 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IDinnerCardServices _dinnerCardServices;
         private readonly ICoreOrderServices _coreOrderServices;
-
+        private readonly ICoreGoodOrderDetailServices _coreGoodOrderDetailServices;
+        private readonly ISysRoleServices _sysRoleServices;
+        private readonly ISysOrganizationServices _sysOrganizationServices;
         private readonly IBusinessServices _businessServices;
         private readonly ICoreGoodsServices _coreGoodsServices;
         private readonly ISysDictionaryServices _sysDictionaryServices;
@@ -52,14 +55,19 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         public OrderController(
             IWebHostEnvironment webHostEnvironment,
             IDinnerCardServices dinnerCardServices,
-            ISysDictionaryServices sysDictionaryServices,
+        ISysDictionaryServices sysDictionaryServices,
             IBusinessServices businessServices,
-             ICoreOrderServices coreOrderServices,
+             ISysRoleServices sysRoleServices,
+              ISysOrganizationServices sysOrganizationServices,
             ISysDictionaryDataServices sysDictionaryDataServices,
-                  ICoreCmsGoodsCategoryServices coreCmsGoodsCategoryServices,
+             ICoreOrderServices coreOrderServices,
+            ICoreCmsGoodsCategoryServices coreCmsGoodsCategoryServices,
+            ICoreGoodOrderDetailServices coreGoodOrderDetailServices,
             ICoreGoodsServices coreGoodsServices
             )
         {
+            _sysRoleServices = sysRoleServices;
+            _sysOrganizationServices = sysOrganizationServices;
             _webHostEnvironment = webHostEnvironment;
             _businessServices = businessServices;
             _sysDictionaryServices = sysDictionaryServices;
@@ -67,6 +75,7 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             _dinnerCardServices = dinnerCardServices;
             _coreGoodsServices = coreGoodsServices;
             _coreOrderServices = coreOrderServices;
+            _coreGoodOrderDetailServices = coreGoodOrderDetailServices;
             _coreCmsGoodsCategoryServices = coreCmsGoodsCategoryServices;
         }
         #region 首页数据============================================================
@@ -87,9 +96,32 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             {
                 dictData = _sysDictionaryDataServices.QueryListByClause(p => p.dictId == dict.id);
             }
+            //机构
+            List<KV> orgkVs = new List<KV>();
+            var organizations = _sysOrganizationServices.Query();
+            foreach (var item in organizations)
+            {
+                KV kV = new KV();
+                kV.Key = item.id.ToString();
+                kV.Value = item.organizationName.ToString();
+                orgkVs.Add(kV);
+            }
+
+            //角色
+            List<KV> rolekVs = new List<KV>();
+            var roleList = _sysRoleServices.Query();
+            foreach (var item in roleList)
+            {
+                KV kV = new KV();
+                kV.Key = item.id.ToString();
+                kV.Value = item.roleName.ToString();
+                rolekVs.Add(kV);
+            }
             jm.data = new
             {
                 dictData,
+                orgkVs,
+                rolekVs
             };
             return Json(jm);
         }
@@ -149,6 +181,137 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             jm.msg = "数据调用成功!";
             return Json(jm);
         }
+        #endregion
+
+        #region 预览数据============================================================
+        // POST: Api/CoreCmsAgentGoods/GetDetails/10
+        /// <summary>
+        /// 预览数据
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Description("预览数据")]
+        public async Task<JsonResult> GetDetails([FromBody] FMIntId entity)
+        {
+            var jm = new AdminUiCallBack();
+
+            var order = await _coreOrderServices.QueryByClauseAsync(p => p.id == entity.id);
+           
+            if (order == null)
+            {
+                jm.msg = "不存在此信息";
+                return new JsonResult(jm);
+            }
+            var detail = await _coreGoodOrderDetailServices.QueryListByClauseAsync(p => p.orderNo == order.orderNo);
+
+            jm.code = 0;
+
+            jm.data = new
+            {
+                order,
+                detail
+            };
+            return new JsonResult(jm);
+        }
+        #endregion
+
+        #region 取消订单============================================================
+        // POST: Api/CoreCmsArticleType/DoDelete/10
+        /// <summary>
+        /// 取消订单
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Description("取消订单")]
+        public async Task<JsonResult> DoCancel([FromBody] FMIntId entity)
+        {
+            var jm = new AdminUiCallBack();
+            var model = await _coreOrderServices.QueryByClauseAsync(p => p.id == entity.id);
+            model.status = (int)OrderStatusEnum.Canceled;
+            //事物处理过程结束
+            var bl = await _coreOrderServices.UpdateAsync(model);
+            jm.code = bl ? 0 : 1;
+            jm.msg = bl ? GlobalConstVars.EditSuccess : GlobalConstVars.EditFailure;
+            return new JsonResult(jm);
+        }
+        #endregion
+
+        #region 确认收货============================================================
+        // POST: Api/CoreCmsArticleType/DoDelete/10
+        /// <summary>
+        /// 确认收货
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Description("确认收货")]
+        public async Task<JsonResult> DoConfirm([FromBody] FMIntId entity)
+        {
+            var jm = new AdminUiCallBack();
+            var model = await _coreOrderServices.QueryByClauseAsync(p=>p.id==entity.id);
+            model.status = (int)OrderStatusEnum.Complete;
+            //事物处理过程结束
+            var bl = await _coreOrderServices.UpdateAsync(model);
+            jm.code = bl ? 0 : 1;
+            jm.msg = bl ? GlobalConstVars.EditSuccess : GlobalConstVars.EditFailure;
+            return new JsonResult(jm);
+        }
+        #endregion
+
+        #region 批量确认============================================================
+
+        // POST: Api/CoreCmsGoods/DoBatchDelete/10,11,20
+        /// <summary>
+        ///     批量确认
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Description("批量确认")]
+        public async Task<JsonResult> DoBatchConfirm([FromBody] FMArrayIntIds entity)
+        {
+            var jm = new AdminUiCallBack();
+
+            var list = await _coreOrderServices.QueryListByClauseAsync(p => entity.id.Contains(p.id));
+            foreach (var item in list)
+            {
+                item.status = (int)OrderStatusEnum.Complete;
+            }
+            var bl = await _coreOrderServices.UpdateAsync(list);
+            jm.code = bl ? 0 : 1;
+            jm.msg = bl ? "确认成功" : "确认失败";
+            return new JsonResult(jm);
+        }
+
+        #endregion
+
+        #region 批量取消============================================================
+
+        // POST: Api/CoreCmsGoods/DoBatchMarketableUp/10,11,20
+        /// <summary>
+        ///     批量取消
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Description("批量取消")]
+        public async Task<JsonResult> DoBatchCancel([FromBody] FMArrayIntIds entity)
+        {
+            var jm = new AdminUiCallBack();
+
+            var list =await  _coreOrderServices.QueryListByClauseAsync(p => entity.id.Contains(p.id));
+            foreach (var item in list)
+            {
+                item.status =(int)OrderStatusEnum.Canceled;
+            }
+            var bl = await _coreOrderServices.UpdateAsync(list);
+            jm.code = bl ? 0 : 1;
+            jm.msg = bl ? "取消成功" : "取消失败";
+            return new JsonResult(jm);
+        }
+
         #endregion
 
     }

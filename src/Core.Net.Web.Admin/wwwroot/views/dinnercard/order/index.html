@@ -21,9 +21,40 @@
     <div class="layui-form coreshop-toolbar-search-form">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label" for="OrderName">商品名称</label>
+        <div class="layui-input-inline">
+            <select name="status">
+                <option value="">订单状态</option>
+                <option value="">   {{ d.data || '' }}</option>
+            
+            </select>
+        </div>
+    </div>
+            <div class="layui-inline">
                 <div class="layui-input-inline">
-                    <input type="text" name="OrderName" placeholder="请输入商品名称" class="layui-input">
+                    <select name="organizationId">
+                        <option value="">部门</option>
+                     
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <select name="roleId">
+                        <option value="">岗位</option>
+                      
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label" for="id">关键字</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="text" placeholder="请输入员工/手机/订单号" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label" for="createTime">选择时间</label>
+                <div class="layui-input-inline" style="width: 260px;">
+                    <input type="text" name="createTime" id="searchTime-Order-createTime" placeholder="请输入时间" class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
@@ -32,19 +63,42 @@
         </div>
     </div>
 </script>
+
+<script type="text/html" id="LAY-app-Order-pagebar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm  layui-btn-warm" lay-event="doBatchConfirm"><i class="layui-icon layui-icon-console"></i>批量确认</button>
+        <button class="layui-btn layui-btn-sm  layui-btn-warm" lay-event="doBatchCancel"><i class="layui-icon layui-icon-about"></i>批量取消</button>
+    </div>
+</script>
+
 <script type="text/html" id="LAY-app-Order-tableBox-bar">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-dropdown="#OrderTbDelDrop{{d.LAY_INDEX}}" no-shade="true">删除</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看详情</a>
+
+    <a class="layui-btn layui-btn-xs"  data-dropdown="#OrderTbConDrop{{d.LAY_INDEX}}" no-shade="true">确认收货</a>
+    <div class="dropdown-menu-nav dropdown-popconfirm dropdown-top-right layui-hide" id="OrderTbConDrop{{d.LAY_INDEX}}"
+         style="max-width: 200px;white-space: normal;min-width: auto;margin-left: 10px;">
+        <div class="dropdown-anchor"></div>
+        <div class="dropdown-popconfirm-title">
+            <i class="layui-icon layui-icon-help"></i>
+            确定要确认收货吗？
+        </div>
+        <div class="dropdown-popconfirm-btn">
+            <a class="layui-btn layui-btn-primary cursor" btn-cancel>取消</a>
+            <a class="layui-btn layui-btn-normal cursor" lay-event="confirm">确定</a>
+        </div>
+    </div>
+
+    <a class="layui-btn layui-btn-danger layui-btn-xs" data-dropdown="#OrderTbDelDrop{{d.LAY_INDEX}}" no-shade="true">取消订单</a>
     <div class="dropdown-menu-nav dropdown-popconfirm dropdown-top-right layui-hide" id="OrderTbDelDrop{{d.LAY_INDEX}}"
          style="max-width: 200px;white-space: normal;min-width: auto;margin-left: 10px;">
         <div class="dropdown-anchor"></div>
         <div class="dropdown-popconfirm-title">
             <i class="layui-icon layui-icon-help"></i>
-            确定要删除吗？
+            确定要取消吗？
         </div>
         <div class="dropdown-popconfirm-btn">
             <a class="layui-btn layui-btn-primary cursor" btn-cancel>取消</a>
-            <a class="layui-btn layui-btn-normal cursor" lay-event="del">确定</a>
+            <a class="layui-btn layui-btn-normal cursor" lay-event="cancel">确定</a>
         </div>
     </div>
 
@@ -71,7 +125,11 @@
                     , coreHelper = layui.coreHelper
                     , util = layui.util
                     , view = layui.view;
-
+                laydate.render({
+                    elem: '#searchTime-Order-createTime',
+                    type: 'datetime',
+                    range: '到',
+                });
                 //重载form
                 form.render();
                 var searchwhere;
@@ -112,19 +170,19 @@
                             },
                             { field: 'totalPrice', title: '总金额', sort: false, width: 105 },
                             { field: 'telePhone', title: '手机号', sort: false, width: 105 },
-                            {
-                                field: 'status', title: '订单状态', sort: false, width: 80, templet: function (data) {
-                                    for (var i = 0; i < d.data.length; i++) {
-                                        if (d.data[i].dictDataCode == data.status) {
-                                            return d.data[i].dictDataName;
-                                        }
-                                    }
-                                    return "";
-                                }
-                            },
+                            //{
+                            //    field: 'status', title: '订单状态', sort: false, width: 80, templet: function (data) {
+                            //        for (var i = 0; i < d.data.dictData.length; i++) {
+                            //            if (d.data.dictData[i].dictDataCode == data.status) {
+                            //                return d.data.dictData[i].dictDataName;
+                            //            }
+                            //        }
+                            //        return "";
+                            //    }
+                            //},
 
-                            { field: 'createTime', title: '创建时间', sort: false, width: 105 },
-                            { width: 120, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-Order-tableBox-bar' }
+                            { field: 'createTime', title: '创建时间', sort: false, width: 150 },
+                            { width: 220, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-Order-tableBox-bar' }
                         ]
                     ]
                 });
@@ -147,6 +205,12 @@
                 table.on('pagebar(LAY-app-Order-tableBox)', function (obj) {
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch (obj.event) {
+                        case 'doBatchConfirm':
+                            doBatchConfirm(checkStatus);
+                            break;
+                        case 'doBatchCancel':
+                            doBatchCancel(checkStatus);
+                            break;
                         case 'addData':
                             doCreate();
                             break;
@@ -155,51 +219,28 @@
                 //监听工具条
                 table.on('tool(LAY-app-Order-tableBox)',
                     function (obj) {
-                        if (obj.event === 'detail') {
+                        if (obj.event === 'confirm') {
+                            doConfirm(obj);
+                        } else if (obj.event === 'detail') {
                             doDetails(obj);
-                        } else if (obj.event === 'del') {
-                            doDelete(obj);
-                        } else if (obj.event === 'edit') {
+                        } else if (obj.event === 'cancel') {
                             debugger;
-                            doEdit(obj)
+                            doCancel(obj)
                         }
                     });
-                //执行创建操作
-                function doCreate() {
-                    coreHelper.Post("Api/Order/GetCreate", null, function (e) {
+                //执行预览操作
+                function doDetails(obj) {
+                    coreHelper.Post("Api/Order/GetDetails", { id: obj.data.id }, function (e) {
                         if (e.code === 0) {
                             admin.popup({
                                 shadeClose: false,
-                                title: '创建数据',
-                                area: ['670px', '600px'],
-                                id: 'LAY-popup-Order-create',
+                                title: '查看详情',
+                                area: ['1000px', '600px'],
+                                id: 'LAY-popup-Order-details',
                                 success: function (layero, index) {
-                                    view(this.id).render('dinnercard/Order/create', { data: e.data }).done(function () {
-                                        //监听提交
-                                        form.on('submit(LAY-app-Order-createForm-submit)',
-                                            function (data) {
-                                                var field = data.field; //获取提交的字段
-
-                                                if (debug) { console.log(field); } //开启调试返回数据
-                                                //提交 Ajax 成功后，关闭当前弹层并重载表格
-                                                coreHelper.Post("Api/Order/DoCreate", field, function (e) {
-                                                    console.log(e)
-                                                    if (e.code === 0) {
-                                                        layui.table.reload('LAY-app-Order-tableBox'); //重载表格
-                                                        layer.close(index); //再执行关闭
-                                                        layer.msg(e.msg);
-                                                    } else {
-                                                        layer.msg(e.msg);
-                                                    }
-                                                });
-                                            });
+                                    view(this.id).render('dinnercard/order/details', { data: e.data }).done(function () {
+                                        form.render();
                                     });
-                                    // 禁止弹窗出现滚动条
-                                    $(layero).children('.layui-layer-content').css('overflow', 'visible');
-                                }
-                                , btn: ['确定', '取消']
-                                , yes: function (index, layero) {
-                                    layero.contents().find("#LAY-app-Order-createForm-submit").click();
                                 }
                             });
                         } else {
@@ -207,56 +248,63 @@
                         }
                     });
                 }
-                //执行编辑操作
-                function doEdit(obj) {
-                    debugger;
-                    coreHelper.Post("Api/Order/GetEdit", { id: obj.data.id }, function (e) {
-                        if (e.code === 0) {
-                            admin.popup({
-                                shadeClose: false,
-                                title: '编辑数据',
-                                area: ['670px', '600px'],
-                                id: 'LAY-popup-Order-edit',
-                                success: function (layero, index) {
-                                    view(this.id).render('dinnercard/Order/edit', { data: e.data }).done(function () {
-                                        //监听提交
-                                        form.on('submit(LAY-app-Order-editForm-submit)',
-                                            function (data) {
-                                                var field = data.field; //获取提交的字段
-                                                if (debug) { console.log(field); } //开启调试返回数据
-                                                //提交 Ajax 成功后，关闭当前弹层并重载表格
-                                                coreHelper.Post("Api/Order/DoEdit", field, function (e) {
-                                                    console.log(e)
-                                                    if (e.code === 0) {
-                                                        layui.table.reload('LAY-app-Order-tableBox'); //重载表格
-                                                        layer.close(index); //再执行关闭
-                                                        layer.msg(e.msg);
-                                                    } else {
-                                                        layer.msg(e.msg);
-                                                    }
-                                                });
-                                            });
-                                    })
-                                    // 禁止弹窗出现滚动条
-                                    $(layero).children('.layui-layer-content').css('overflow', 'visible');
-                                }
-                                , btn: ['确定', '取消']
-                                , yes: function (index, layero) {
-                                    layero.contents().find("#LAY-app-Order-editForm-submit").click();
-                                }
-                            });
-                        } else {
-                            layer.msg(e.msg);
-                        }
-                    });
-                }
-                //执行单个删除
-                function doDelete(obj) {
-                    coreHelper.Post("Api/Order/DoDelete", { id: obj.data.id }, function (e) {
+                //执行单个确认收货
+                function doConfirm(obj) {
+                    coreHelper.Post("Api/Order/doConfirm", { id: obj.data.id }, function (e) {
                         if (debug) { console.log(e); } //开启调试返回数据
                         table.reload('LAY-app-Order-tableBox');
                         layer.msg(e.msg);
                     });
+                }
+                //执行单个取消
+                function doCancel(obj) {
+                    coreHelper.Post("Api/Order/DoCancel", { id: obj.data.id }, function (e) {
+                        if (debug) { console.log(e); } //开启调试返回数据
+                        table.reload('LAY-app-Order-tableBox');
+                        layer.msg(e.msg);
+                    });
+                }
+
+                //执行批量确认
+                function doBatchConfirm(checkStatus) {
+                    var checkData = checkStatus.data;
+                    if (checkData.length === 0) {
+                        return layer.msg('请选择要确认的数据');
+                    }
+                    layer.confirm('确定确认吗？确认后将无法恢复。',
+                        function (index) {
+                            var delidsStr = [];
+                            layui.each(checkData,
+                                function (index, item) {
+                                    delidsStr.push(item.id);
+                                });
+                            coreHelper.Post("Api/Order/DoBatchConfirm", { id: delidsStr }, function (e) {
+                                if (debug) { console.log(e); } //开启调试返回数据
+                                table.reloadData('LAY-app-Order-tableBox');
+                                layer.msg(e.msg);
+                            });
+                        });
+                }
+
+                //执行批量取消
+                function doBatchCancel(checkStatus) {
+                    var checkData = checkStatus.data;
+                    if (checkData.length === 0) {
+                        return layer.msg('请选择要取消的数据');
+                    }
+                    layer.confirm('确定取消吗？取消后将无法恢复。',
+                        function (index) {
+                            var delidsStr = [];
+                            layui.each(checkData,
+                                function (index, item) {
+                                    delidsStr.push(item.id);
+                                });
+                            coreHelper.Post("Api/Order/DoBatchCancel", { id: delidsStr }, function (e) {
+                                if (debug) { console.log(e); } //开启调试返回数据
+                                table.reloadData('LAY-app-Order-tableBox');
+                                layer.msg(e.msg);
+                            });
+                        });
                 }
             });
     };

@@ -1,9 +1,8 @@
 <script type="text/html" template lay-done="layui.data.done(d);">
     <div class="layui-form coreshop-form layui-form-pane" lay-filter="LAY-app-Good-createForm" id="LAY-app-Good-createForm">
-
         <div class="layui-form-item">
             <label for="brandId" class="layui-form-label">商家</label>
-            <div class="layui-input-inline layui-inline-6" id="brandIdView">
+            <div class="layui-input-block" id="brandIdView">
                 <select name="businessId" id="businessId">
                     <option value="0">请选择</option>
                     {{# layui.each(d.params.data.busi, function(index, item){ }}
@@ -12,8 +11,6 @@
                 </select>
             </div>
         </div>
-
-
 
         <div class="layui-form-item">
             <label for="name" class="layui-form-label">商品名称</label>

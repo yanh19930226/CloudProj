@@ -60,9 +60,13 @@ namespace Core.Net.Entity.Enums
         /// </summary>
         Deliver=4,
         /// <summary>
-        /// 已完成
+        /// 完成
         /// </summary>
-        Complete=5
+        Complete = 5
+        ///// <summary>
+        ///// 完成
+        ///// </summary>
+        //Complete = 6
     }
 
     /// <summary>

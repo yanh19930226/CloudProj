@@ -1,0 +1,83 @@
+<script type="text/html" template lay-done="layui.data.done(d);">
+
+    <div class="layui-form coreshop-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">订单编号:</label>
+            <div class="layui-inline-4 layui-form-mid">
+                {{ d.params.data.order.orderNo || '' }}
+            </div>
+            <label class="layui-form-label">订单总金额:</label>
+            <div class="layui-inline-4 layui-form-mid">
+                {{ d.params.data.order.amount || '' }}
+            </div>
+            <label class="layui-form-label">订单状态:</label>
+            <div class="layui-inline-4 layui-form-mid">
+                {{ d.params.data.order.status ||'' }}
+            </div>
+            <label class="layui-form-label">用户:</label>
+            <div class="layui-inline-4 layui-form-mid">
+                {{ d.params.data.order.userName ||'' }}
+            </div>
+            <label class="layui-form-label">所属部门:</label>
+            <div class="layui-inline-4 layui-form-mid">
+                {{ d.params.data.order.organizationName ||'' }}
+            </div>
+            <label class="layui-form-label">电话:</label>
+            <div class="layui-inline-4 layui-form-mid">
+                {{ d.params.data.order.telePhone ||'' }}
+            </div>
+            <label class="layui-form-label">身份证号:</label>
+            <div class="layui-inline-4 layui-form-mid">
+                {{ d.params.data.order.idCardNo ||'' }}
+            </div>
+            <label class="layui-form-label">餐卡号:</label>
+            <div class="layui-inline-4 layui-form-mid">
+                {{ d.params.data.order.cardNo ||'' }}
+            </div>
+            <label class="layui-form-label">创建时间:</label>
+            <div class="layui-inline-4 layui-form-mid">
+                {{ d.params.data.order.createTime || '' }}
+            </div>
+        </div>
+
+    </div>
+    <table class="layui-table layui-form" id="LAY-app-Detail-tableBox"></table>
+</script>
+<script>
+    var debug = layui.setter.debug;
+    layui.data.done = function (d) {
+        //开启调试情况下获取接口赋值数据
+        if (debug) { console.log(d.params.data); }
+
+        layui.use(['admin', 'form', 'coreHelper', 'table'], function () {
+            var $ = layui.$
+                , setter = layui.setter
+                , admin = layui.admin
+                , table = layui.table
+                , coreHelper = layui.coreHelper
+                , form = layui.form;
+
+            //数据绑定
+            table.render({
+                elem: '#LAY-app-Detail-tableBox',
+                data: d.params.data.detail,
+                method: 'POST',
+                defaultToolbar: ['filter', 'print', 'exports'],
+                height: '300px',
+                page: false,
+                limit: 30,
+                limits: [10, 15, 20, 25, 30, 50, 100, 200],
+                text: { none: '暂无相关数据' },
+                cols: [
+                    [
+                        { field: 'goodName', title: '商品名称', sort: false },
+                        { field: 'goodNo', title: '商品编码', sort: false },
+                        { field: 'unitPrice', title: '商品价格', sort: false, width: 130 },
+                        { field: 'goodNum', title: '数量', sort: false, width: 60 },
+                    ]
+                ]
+            });
+            form.render(null, 'LAY-app-DT-detailsForm');
+        });
+    };
+</script>

@@ -52,22 +52,22 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         /// <param name="coreCmsArticleTypeServices"></param>
         ///  <param name="coreCmsArticleServices"></param>
         public CardOrderController(
-            ISysRoleServices sysRoleServices,
             IWebHostEnvironment webHostEnvironment,
             IDinnerCardServices dinnerCardServices,
             ISysDictionaryServices sysDictionaryServices,
             IBusinessServices businessServices,
              ICoreOrderServices coreOrderServices,
+            ISysRoleServices sysRoleServices,
             ISysDictionaryDataServices sysDictionaryDataServices,
             ISysOrganizationServices sysOrganizationServices,
                   ICoreCmsGoodsCategoryServices coreCmsGoodsCategoryServices,
             ICoreGoodsServices coreGoodsServices
             )
         {
-            _sysRoleServices = sysRoleServices;
 
             _webHostEnvironment = webHostEnvironment;
             _businessServices = businessServices;
+            _sysRoleServices = sysRoleServices;
             _sysOrganizationServices = sysOrganizationServices;
             _sysDictionaryServices = sysDictionaryServices;
             _sysDictionaryDataServices = sysDictionaryDataServices;
