@@ -81,7 +81,6 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
                 case "contentBody":
                     orderEx = p => p.contentBody;
                     break;
-                    break;
                 case "sort":
                     orderEx = p => p.sort;
                     break;
@@ -105,25 +104,11 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
                 _ => OrderByType.Desc
             };
             //查询筛选
-
-            //序列 int
-            var id = Request.Form["id"].FirstOrDefault().ObjectToInt(0);
-            if (id > 0) @where = @where.And(p => p.id == id);
+            var noticeType = Request.Form["noticeType"].FirstOrDefault().ObjectToInt(0);
+            if (noticeType > 0) @where = @where.And(p => p.noticeType == noticeType);
             //公告标题 nvarchar
             var title = Request.Form["title"].FirstOrDefault();
             if (!string.IsNullOrEmpty(title)) @where = @where.And(p => p.title.Contains(title));
-            //公告内容 nvarchar
-            var contentBody = Request.Form["contentBody"].FirstOrDefault();
-            if (!string.IsNullOrEmpty(contentBody)) @where = @where.And(p => p.contentBody.Contains(contentBody));
-            //排序 int
-            var sort = Request.Form["sort"].FirstOrDefault().ObjectToInt(0);
-            if (sort > 0) @where = @where.And(p => p.sort == sort);
-            //软删除位  有时间代表已删除 bit
-            var isDel = Request.Form["isDel"].FirstOrDefault();
-            if (!string.IsNullOrEmpty(isDel) && isDel.ToLowerInvariant() == "true")
-                @where = @where.And(p => p.isDel == true);
-            else if (!string.IsNullOrEmpty(isDel) && isDel.ToLowerInvariant() == "false")
-                @where = @where.And(p => p.isDel == false);
             //创建时间 datetime
             var createTime = Request.Form["createTime"].FirstOrDefault();
             if (!string.IsNullOrEmpty(createTime))
@@ -166,6 +151,9 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         [Description("首页数据")]
         public AdminUiCallBack GetIndex()
         {
+
+            var jm = new AdminUiCallBack { code = 0 };
+
             //返回数据
             var dict = _sysDictionaryServices.QueryByClause(p => p.dictCode == "noticeType");
             var dictData = new List<SysDictionaryData>();
@@ -174,7 +162,10 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
                 dictData = _sysDictionaryDataServices.QueryListByClause(p => p.dictId == dict.id);
             }
 
-            var jm = new AdminUiCallBack { code = 0,data = dictData };
+            jm.data = new
+            {
+                dictData,
+            };
 
             return jm;
         }

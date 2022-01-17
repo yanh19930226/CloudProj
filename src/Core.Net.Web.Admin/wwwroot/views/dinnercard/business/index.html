@@ -11,19 +11,26 @@
     /* 重写样式 */
 </style>
 <script type="text/html" template lay-type="Post" lay-url="Api/Business/GetIndex" lay-done="layui.data.done(d);">
+    <div class="layui-form coreshop-search-form">
 
-</script>
-<div class="table-body">
-    <table id="LAY-app-Business-tableBox" lay-filter="LAY-app-Business-tableBox"></table>
-</div>
 
-<script type="text/html" id="LAY-app-Business-toolbar">
-    <div class="layui-form coreshop-toolbar-search-form">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label" for="name">商家名称</label>
+                <label class="layui-form-label" for="payMode">付款类型</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="name" placeholder="请输入商家名称" class="layui-input">
+                    <select name="payMode">
+                        <option value="">付款类型</option>
+                        {{# layui.each(d.data.dictData, function(index, item){ }}
+                        <option value="{{ item.dictDataCode }}">{{ item.dictDataName }}</option>
+                        {{# }); }}
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label" for="name">关键字</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="name" id="name" placeholder="请输入商家编码/商家名称" class="layui-input">
                 </div>
             </div>
 
@@ -33,10 +40,16 @@
         </div>
     </div>
 </script>
-<script type="text/html" id="LAY-app-Business-pagebar">
+<div class="table-body">
+    <table id="LAY-app-Business-tableBox" lay-filter="LAY-app-Business-tableBox"></table>
+</div>
+
+<script type="text/html" id="LAY-app-Business-toolbar">
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="addData"><i class="layui-icon layui-icon-add-1"></i>添加数据</button>
     </div>
+</script>
+<script type="text/html" id="LAY-app-Business-pagebar">
 </script>
 <script type="text/html" id="LAY-app-Business-tableBox-bar">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
@@ -53,8 +66,6 @@
             <a class="layui-btn layui-btn-normal cursor" lay-event="del">确定</a>
         </div>
     </div>
-
-
 </script>
 
 <script>
@@ -104,12 +115,22 @@
                     text: { none: '暂无相关数据' },
                     cols: [
                         [
-                            { type: "checkbox", fixed: "left" },
+                           /* { type: "checkbox", fixed: "left" },*/
                             { field: 'id', title: '序列', width: 60, sort: false },
                             { field: 'businessCode', title: '商家编码', sort: false, width: 200 },
                             { field: 'businessName', title: '商家名称', sort: false, width: 200 },
+                            {
+                                field: 'noticeType', title: '付款类型', sort: false, width: 80, templet: function (data) {
+                                    for (var i = 0; i < d.data.dictData.length; i++) {
+                                        if (d.data.dictData[i].dictDataCode == data.payMode) {
+                                            return d.data.dictData[i].dictDataName;
+                                        }
+                                    }
+                                    return "";
+                                }
+                            },
                             { field: 'status', title: '状态', width: 105, templet: '#switch_isStatus', sort: false, unresize: true },
-                            { field: 'sort', title: '排序 ', sort: false, width: 60 },
+                            //{ field: 'sort', title: '排序 ', sort: false, width: 60 },
                             { width: 120, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-Business-tableBox-bar' }
                         ]
                     ]
@@ -130,7 +151,7 @@
                     doDetails(obj);
                 });
                 //头工具栏事件
-                table.on('pagebar(LAY-app-Business-tableBox)', function (obj) {
+                table.on('toolbar(LAY-app-Business-tableBox)', function (obj) {
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch (obj.event) {
                         case 'addData':

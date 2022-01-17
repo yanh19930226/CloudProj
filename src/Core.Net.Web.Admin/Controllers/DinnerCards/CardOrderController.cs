@@ -107,21 +107,21 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
                 orgkVs.Add(kV);
             }
 
-            //角色
-            List<KV> rolekVs = new List<KV>();
-            var roleList =  _sysRoleServices.Query();
-            foreach (var item in roleList)
-            {
-                KV kV = new KV();
-                kV.Key = item.id.ToString();
-                kV.Value = item.roleName.ToString();
-                rolekVs.Add(kV);
-            }
+            ////角色
+            //List<KV> rolekVs = new List<KV>();
+            //var roleList =  _sysRoleServices.Query();
+            //foreach (var item in roleList)
+            //{
+            //    KV kV = new KV();
+            //    kV.Key = item.id.ToString();
+            //    kV.Value = item.roleName.ToString();
+            //    rolekVs.Add(kV);
+            //}
             jm.data = new
             {
                 dictData,
                 orgkVs,
-                rolekVs
+                //rolekVs
             };
             return Json(jm);
         }
@@ -175,14 +175,13 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             var organizationId = Request.Form["organizationId"].FirstOrDefault().ObjectToInt(0);
             if (organizationId > 0) @where = @where.And(p => p.organizationId == organizationId);
 
-            var roleId = Request.Form["roleId"].FirstOrDefault().ObjectToInt(0);
-            if (orderType > 0) @where = @where.And(p => p.roleId == roleId);
+            //var roleId = Request.Form["roleId"].FirstOrDefault().ObjectToInt(0);
+            //if (orderType > 0) @where = @where.And(p => p.roleId == roleId);
 
 
             var text = Request.Form["text"].FirstOrDefault();
-            if (!string.IsNullOrEmpty(text)) @where = @where.And(p => p.telePhone.Contains(text));
+            if (!string.IsNullOrEmpty(text)) @where = @where.And(p => p.telePhone.Contains(text)|| p.orderNo.Contains(text)|| p.costOrderNo.Contains(text)|| p.userName.Contains(text));
 
-            //更新时间 datetime
             var createTime = Request.Form["createTime"].FirstOrDefault();
             if (!string.IsNullOrEmpty(createTime))
             {

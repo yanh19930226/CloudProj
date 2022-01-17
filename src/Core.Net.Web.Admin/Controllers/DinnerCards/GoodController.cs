@@ -9,6 +9,7 @@ using Core.Net.Service.Goods;
 using Core.Net.Service.Impl.DinnerCards;
 using Core.Net.Service.Systems;
 using Core.Net.Util.Extensions;
+using Core.Net.Util.Helper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using SqlSugar;
@@ -72,12 +73,10 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         [Description("首页数据")]
         public JsonResult GetIndex()
         {
-            var dict =  _sysDictionaryServices.QueryByClause(p => p.dictCode == "goodType");
-            var dictData = new List<SysDictionaryData>();
-            if (dict != null)
-            {
-                dictData =  _sysDictionaryDataServices.QueryListByClause(p => p.dictId == dict.id);
-            }
+            //返回数据
+            var jm = new AdminUiCallBack { code = 0 };
+
+            var business = _businessServices.Query();
 
             var dict2 = _sysDictionaryServices.QueryByClause(p => p.dictCode == "goodStatus");
             var dictData2 = new List<SysDictionaryData>();
@@ -86,8 +85,11 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
                 dictData2 = _sysDictionaryDataServices.QueryListByClause(p => p.dictId == dict2.id);
             }
 
-            var jm = new AdminUiCallBack { code = 0,data= dictData2,otherData= dictData };
-
+            jm.data = new
+            {
+                business,
+                dictData2
+            };
             return Json(jm);
         }
         #endregion
@@ -131,12 +133,13 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
                 _ => OrderByType.Desc
             };
             //查询筛选
-            //标题 nvarchar
-            var goodName = Request.Form["goodName"].FirstOrDefault();
-            if (!string.IsNullOrEmpty(goodName)) @where = @where.And(p => p.goodName.Contains(goodName));
-            //角色id int
-            var id = Request.Form["id"].FirstOrDefault().ObjectToInt(0);
-            if (id > 0) @where = @where.And(p => p.id == id);
+            var text = Request.Form["text"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(text)) @where = @where.And(p => p.goodName.Contains(text));
+            var goodstatus = Request.Form["goodstatus"].FirstOrDefault().ObjectToInt(0);
+            if (goodstatus > 0) @where = @where.And(p => p.status == goodstatus);
+            //商家
+            var businessid = Request.Form["businessid"].FirstOrDefault().ObjectToInt(0);
+            if (businessid > 0) @where = @where.And(p => p.businessId == businessid);
             //创建时间 datetime
             var createTime = Request.Form["createTime"].FirstOrDefault();
             if (!string.IsNullOrEmpty(createTime))
@@ -157,9 +160,7 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             }
             //获取数据
             var list = await _coreGoodsServices.QueryPageAsync(where, orderEx, orderBy, pageCurrent, pageSize);
-           
             //返回数据
-
             jm.data = list;
             jm.code = 0;
             jm.count = list.TotalCount;
@@ -213,7 +214,7 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         {
             var jm = new AdminUiCallBack();
             entity.createTime = DateTime.Now;
-            entity.goodNo = Guid.NewGuid().ToString("N");
+            entity.goodNo = RandomNumber.GetRandomProduct();
             entity.businessName = _businessServices.QueryByClause(p => p.id == entity.businessId).businessName;
             var bl = await _coreGoodsServices.InsertAsync(entity) > 0;
             jm.code = bl ? 0 : 1;
@@ -297,7 +298,6 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             oldModel.url = entity.url;
             oldModel.stock = entity.stock;
             oldModel.avilableTime = entity.avilableTime;
-            oldModel.purchaseNumber = entity.purchaseNumber;
             //事物处理过程结束
             var bl = await _coreGoodsServices.UpdateAsync(oldModel);
             jm.code = bl ? 0 : 1;

@@ -163,4 +163,54 @@ namespace Core.Net.Util.Helper
 
         #endregion
     }
+
+
+    public static class RandomNumber
+    {
+        public static object _lock = new object();
+        public static int count = 1;
+
+        public static string GetRandomProduct()
+        {
+            lock (_lock)
+            {
+                if (count >= 10000)
+                {
+                    count = 1;
+                }
+                var number = "P" + DateTime.Now.ToString("yyMMddHHmmss") + count.ToString("0000");
+                count++;
+                return number;
+            }
+        }
+
+
+        public static string GetRandomOrder()
+        {
+            lock (_lock)
+            {
+                return "O" + DateTime.Now.Ticks;
+
+            }
+        }
+
+        public static string GetRandomBusiness()
+        {
+            lock (_lock)
+            {
+                Random ran = new Random();
+                return "B" + DateTime.Now.ToString("yyyyMMddHHmmss") + ran.Next(1000, 9999).ToString();
+            }
+        }
+
+
+        public static string GetRandomSort()
+        {
+            lock (_lock)
+            {
+                Random ran = new Random();
+                return "S" + DateTime.Now.ToString("yyyyMMddHHmmss") + ran.Next(1000, 9999).ToString();
+            }
+        }
+    }
 }

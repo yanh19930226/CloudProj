@@ -11,44 +11,34 @@
     /* 重写样式 */
 </style>
 <script type="text/html" template lay-type="Post" lay-url="Api/Order/GetIndex" lay-done="layui.data.done(d);">
-    
-</script>
-<div class="table-body">
-    <table id="LAY-app-Order-tableBox" lay-filter="LAY-app-Order-tableBox"></table>
-</div>
-
-<script type="text/html" id="LAY-app-Order-toolbar">
-    <div class="layui-form coreshop-toolbar-search-form">
+    <div class="layui-form coreshop-search-form">
         <div class="layui-form-item">
             <div class="layui-inline">
-        <div class="layui-input-inline">
-            <select name="status">
-                <option value="">订单状态</option>
-                <option value="">   {{ d.data || '' }}</option>
-            
-            </select>
-        </div>
-    </div>
-            <div class="layui-inline">
+                <label class="layui-form-label" for="status">订单状态</label>
                 <div class="layui-input-inline">
-                    <select name="organizationId">
-                        <option value="">部门</option>
-                     
+                    <select name="status">
+                        <option value="">订单状态</option>
+                        {{# layui.each(d.data.dictData, function(index, item){ }}
+                        <option value="{{ item.dictDataCode }}">{{ item.dictDataName }}</option>
+                        {{# }); }}
                     </select>
                 </div>
             </div>
             <div class="layui-inline">
+                <label class="layui-form-label" for="organizationId">部门</label>
                 <div class="layui-input-inline">
-                    <select name="roleId">
-                        <option value="">岗位</option>
-                      
+                    <select name="organizationId">
+                        <option value="">部门</option>
+                        {{# layui.each(d.data.orgkVs, function(index, item){ }}
+                        <option value="{{ item.key }}">{{ item.value }}</option>
+                        {{# }); }}
                     </select>
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label" for="id">关键字</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="text" placeholder="请输入员工/手机/订单号" class="layui-input">
+                    <input type="text" name="text" placeholder="请输入订单编号/员工/手机" class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
@@ -63,17 +53,23 @@
         </div>
     </div>
 </script>
+<div class="table-body">
+    <table id="LAY-app-Order-tableBox" lay-filter="LAY-app-Order-tableBox"></table>
+</div>
+
+<script type="text/html" id="LAY-app-Order-toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="doBatchConfirm"><i class="layui-icon layui-icon-console"></i>批量确认</button>
+        <button class="layui-btn layui-btn-sm" lay-event="doBatchCancel"><i class="layui-icon layui-icon-about"></i>批量取消</button>
+    </div>
+</script>
 
 <script type="text/html" id="LAY-app-Order-pagebar">
-    <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm  layui-btn-warm" lay-event="doBatchConfirm"><i class="layui-icon layui-icon-console"></i>批量确认</button>
-        <button class="layui-btn layui-btn-sm  layui-btn-warm" lay-event="doBatchCancel"><i class="layui-icon layui-icon-about"></i>批量取消</button>
-    </div>
+    
 </script>
 
 <script type="text/html" id="LAY-app-Order-tableBox-bar">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看详情</a>
-
     <a class="layui-btn layui-btn-xs"  data-dropdown="#OrderTbConDrop{{d.LAY_INDEX}}" no-shade="true">确认收货</a>
     <div class="dropdown-menu-nav dropdown-popconfirm dropdown-top-right layui-hide" id="OrderTbConDrop{{d.LAY_INDEX}}"
          style="max-width: 200px;white-space: normal;min-width: auto;margin-left: 10px;">
@@ -101,8 +97,6 @@
             <a class="layui-btn layui-btn-normal cursor" lay-event="cancel">确定</a>
         </div>
     </div>
-
-
 </script>
 
 <script>
@@ -112,7 +106,6 @@
         debugger;
         //开启调试情况下获取接口赋值数据
         if (debug) { console.log(d); }
-
         indexData = d.data;
         layui.use(['index', 'table', 'laydate', 'util', 'coredropdown', 'coreHelper'],
             function () {
@@ -160,27 +153,26 @@
                             { type: "checkbox", fixed: "left" },
                             { field: 'id', title: '序列', width: 60, sort: false },
                             { field: 'organizationName', title: '机构部门', width: 60, sort: false },
-                            { field: 'roleName', title: '岗位', sort: false, width: 200 },
+                         /*   { field: 'roleName', title: '岗位', sort: false, width: 200 },*/
                             { field: 'userName', title: '用户', sort: false, width: 200 },
                             { field: 'orderNo', title: '订单编号', sort: false, width: 105 },
                             {
                                 field: 'orderType', title: '订单类型', sort: false, width: 100, templet: function (data) {
-                                    return "商品订单";
+                                    return "商品消费";
                                 }
                             },
                             { field: 'totalPrice', title: '总金额', sort: false, width: 105 },
                             { field: 'telePhone', title: '手机号', sort: false, width: 105 },
-                            //{
-                            //    field: 'status', title: '订单状态', sort: false, width: 80, templet: function (data) {
-                            //        for (var i = 0; i < d.data.dictData.length; i++) {
-                            //            if (d.data.dictData[i].dictDataCode == data.status) {
-                            //                return d.data.dictData[i].dictDataName;
-                            //            }
-                            //        }
-                            //        return "";
-                            //    }
-                            //},
-
+                            {
+                                field: 'status', title: '订单状态', sort: false, width: 80, templet: function (data) {
+                                    for (var i = 0; i < d.data.dictData.length; i++) {
+                                        if (d.data.dictData[i].dictDataCode == data.status) {
+                                            return d.data.dictData[i].dictDataName;
+                                        }
+                                    }
+                                    return "";
+                                }
+                            },
                             { field: 'createTime', title: '创建时间', sort: false, width: 150 },
                             { width: 220, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-Order-tableBox-bar' }
                         ]
@@ -202,7 +194,7 @@
                     doDetails(obj);
                 });
                 //头工具栏事件
-                table.on('pagebar(LAY-app-Order-tableBox)', function (obj) {
+                table.on('toolbar(LAY-app-Order-tableBox)', function (obj) {
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch (obj.event) {
                         case 'doBatchConfirm':
@@ -264,7 +256,6 @@
                         layer.msg(e.msg);
                     });
                 }
-
                 //执行批量确认
                 function doBatchConfirm(checkStatus) {
                     var checkData = checkStatus.data;
@@ -285,7 +276,6 @@
                             });
                         });
                 }
-
                 //执行批量取消
                 function doBatchCancel(checkStatus) {
                     var checkData = checkStatus.data;

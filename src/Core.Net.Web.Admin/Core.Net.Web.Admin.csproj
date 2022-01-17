@@ -54,41 +54,7 @@
   <ItemGroup>
     <None Include="wwwroot\files\2021-05-01\20210501075941520-CoreCmsBillDelivery导出%28查询结果%29.xls" />
     <None Include="wwwroot\files\2021-05-02\20210502104200309-数据库表导出.xls" />
-    <None Include="wwwroot\json\console\prograss.js" />
-    <None Include="wwwroot\json\console\top-card.js" />
-    <None Include="wwwroot\json\console\top-search.js" />
-    <None Include="wwwroot\json\content\comment.js" />
-    <None Include="wwwroot\json\content\list.js" />
-    <None Include="wwwroot\json\content\tags.js" />
-    <None Include="wwwroot\json\forum\list.js" />
-    <None Include="wwwroot\json\forum\replys.js" />
-    <None Include="wwwroot\json\layer\photos.js" />
-    <None Include="wwwroot\json\layim\getList.js" />
-    <None Include="wwwroot\json\layim\getMembers.js" />
-    <None Include="wwwroot\json\mall\order.js" />
     <None Include="wwwroot\json\menu.js" />
-    <None Include="wwwroot\json\message\all.js" />
-    <None Include="wwwroot\json\message\detail.js" />
-    <None Include="wwwroot\json\message\direct.js" />
-    <None Include="wwwroot\json\message\new.js" />
-    <None Include="wwwroot\json\message\notice.js" />
-    <None Include="wwwroot\json\table\demo.js" />
-    <None Include="wwwroot\json\table\demo2.js" />
-    <None Include="wwwroot\json\table\demo3.js" />
-    <None Include="wwwroot\json\table\user.js" />
-    <None Include="wwwroot\json\table\user30.js" />
-    <None Include="wwwroot\json\upload\demo.js" />
-    <None Include="wwwroot\json\useradmin\mangadmin.js" />
-    <None Include="wwwroot\json\useradmin\role.js" />
-    <None Include="wwwroot\json\useradmin\webuser.js" />
-    <None Include="wwwroot\json\user\forget.js" />
-    <None Include="wwwroot\json\user\login.js" />
-    <None Include="wwwroot\json\user\logout.js" />
-    <None Include="wwwroot\json\user\reg.js" />
-    <None Include="wwwroot\json\user\resetpass.js" />
-    <None Include="wwwroot\json\user\session.js" />
-    <None Include="wwwroot\json\user\sms.js" />
-    <None Include="wwwroot\json\workorder\demo.js" />
     <None Include="wwwroot\lib\bootstrap\css\bootstrap-grid.css.map" />
     <None Include="wwwroot\lib\bootstrap\css\bootstrap-grid.min.css.map" />
     <None Include="wwwroot\lib\bootstrap\css\bootstrap-reboot.css.map" />
@@ -253,6 +219,6 @@
     <Folder Include="wwwroot\Upload\" />
   </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://json.schemastore.org/appveyor.json" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

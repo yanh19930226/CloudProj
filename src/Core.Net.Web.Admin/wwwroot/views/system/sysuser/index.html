@@ -13,16 +13,19 @@
 <script type="text/html" template lay-type="Post" lay-url="{{ layui.setter.apiUrl }}Api/SysUser/GetIndex" lay-done="layui.data.done(d);">
     
 </script>
+
+<script type="text/html" id="LAY-app-SysUser-toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="addData"><i class="layui-icon layui-icon-add-1"></i>添加数据</button>
+    </div>
+</script>
+
 <div class="table-body">
     <table id="LAY-app-SysUser-tableBox" lay-filter="LAY-app-SysUser-tableBox"></table>
 </div>
 
-
-
 <script type="text/html" id="LAY-app-SysUser-pagebar">
-    <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="addData"><i class="layui-icon layui-icon-add-1"></i>添加数据</button>
-    </div>
+    
 </script>
 
 
@@ -131,7 +134,7 @@
                     });
                 });
                 //头工具栏事件
-                table.on('pagebar(LAY-app-SysUser-tableBox)', function (obj) {
+                table.on('toolbar(LAY-app-SysUser-tableBox)', function (obj) {
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch (obj.event) {
                         case 'addData':

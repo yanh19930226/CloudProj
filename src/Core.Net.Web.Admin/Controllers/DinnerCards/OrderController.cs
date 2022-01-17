@@ -107,21 +107,21 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
                 orgkVs.Add(kV);
             }
 
-            //角色
-            List<KV> rolekVs = new List<KV>();
-            var roleList = _sysRoleServices.Query();
-            foreach (var item in roleList)
-            {
-                KV kV = new KV();
-                kV.Key = item.id.ToString();
-                kV.Value = item.roleName.ToString();
-                rolekVs.Add(kV);
-            }
+            ////角色
+            //List<KV> rolekVs = new List<KV>();
+            //var roleList = _sysRoleServices.Query();
+            //foreach (var item in roleList)
+            //{
+            //    KV kV = new KV();
+            //    kV.Key = item.id.ToString();
+            //    kV.Value = item.roleName.ToString();
+            //    rolekVs.Add(kV);
+            //}
             jm.data = new
             {
                 dictData,
                 orgkVs,
-                rolekVs
+                //rolekVs
             };
             return Json(jm);
         }
@@ -141,9 +141,7 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             var pageCurrent = Request.Form["page"].FirstOrDefault().ObjectToInt(1);
             var pageSize = Request.Form["limit"].FirstOrDefault().ObjectToInt(30);
             var where = PredicateBuilder.True<CoreOrder>();
-
             where = where.And(p => p.orderType == (int)OrderTypeEnum.GoodOrder);
-
             //获取排序字段
             var orderField = Request.Form["orderField"].FirstOrDefault();
             Expression<Func<CoreOrder, object>> orderEx;
@@ -168,13 +166,37 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
                 "desc" => OrderByType.Desc,
                 _ => OrderByType.Desc
             };
-            //查询筛选
-   
-            //获取数据
+
+            var status = Request.Form["status"].FirstOrDefault().ObjectToInt(0);
+            if (status > 0) @where = @where.And(p => p.status == status);
+
+            var organizationId = Request.Form["organizationId"].FirstOrDefault().ObjectToInt(0);
+            if (organizationId > 0) @where = @where.And(p => p.organizationId == organizationId);
+
+            var text = Request.Form["text"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(text)) @where = @where.And(p => p.orderNo.Contains(text) || p.userName.Contains(text)|| p.telePhone.Contains(text));
+
+            var createTime = Request.Form["createTime"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(createTime))
+            {
+                if (createTime.Contains("到"))
+                {
+                    var dts = createTime.Split("到");
+                    var dtStart = dts[0].Trim().ObjectToDate();
+                    where = where.And(p => p.createTime > dtStart);
+                    var dtEnd = dts[1].Trim().ObjectToDate();
+                    where = where.And(p => p.createTime < dtEnd);
+                }
+                else
+                {
+                    var dt = createTime.ObjectToDate();
+                    where = where.And(p => p.createTime > dt);
+                }
+            }
+
             var list = await _coreOrderServices.QueryPageAsync(where, orderEx, orderBy, pageCurrent, pageSize);
 
             //返回数据
-
             jm.data = list;
             jm.code = 0;
             jm.count = list.TotalCount;

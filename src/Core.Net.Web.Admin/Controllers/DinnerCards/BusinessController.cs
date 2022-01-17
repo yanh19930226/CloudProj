@@ -2,10 +2,13 @@
 using Core.Net.Entity.Dtos;
 using Core.Net.Entity.Model.DinnerCard;
 using Core.Net.Entity.Model.Expression;
+using Core.Net.Entity.Model.Systems;
 using Core.Net.Entity.ViewModels;
 using Core.Net.Filter;
 using Core.Net.Service.DinnerCards;
+using Core.Net.Service.Systems;
 using Core.Net.Util.Extensions;
+using Core.Net.Util.Helper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +35,8 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
 
         private readonly IBusinessServices _businessServices;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ISysDictionaryServices _sysDictionaryServices;
+        private readonly ISysDictionaryDataServices _sysDictionaryDataServices;
 
         /// <summary>
         ///     构造函数
@@ -39,8 +44,12 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         /// <param name="webHostEnvironment"></param>
         /// <param name="coreCmsNoticeServices"></param>
         public BusinessController(IWebHostEnvironment webHostEnvironment,
-            IBusinessServices businessServices)
+             ISysDictionaryServices sysDictionaryServices,
+      ISysDictionaryDataServices sysDictionaryDataServices,
+        IBusinessServices businessServices)
         {
+            _sysDictionaryServices = sysDictionaryServices;
+            _sysDictionaryDataServices = sysDictionaryDataServices;
             _webHostEnvironment = webHostEnvironment;
             _businessServices = businessServices;
         }
@@ -53,17 +62,19 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         /// <returns></returns>
         [HttpPost]
         [Description("获取列表")]
-        public async Task<JsonResult> GetPageList()
+        public JsonResult GetPageList()
         {
             var jm = new AdminUiCallBack();
 
             var where = PredicateBuilder.True<Business>();
-
             //标题 nvarchar
             var name = Request.Form["name"].FirstOrDefault();
-            if (!string.IsNullOrEmpty(name)) @where = @where.And(p => p.businessName.Contains(name));
+            if (!string.IsNullOrEmpty(name)) @where = @where.And(p => p.businessName.Contains(name)||p.businessCode.Contains(name));
+
+            var payMode = Request.Form["payMode"].FirstOrDefault().ObjectToInt(0);
+            if (payMode > 0) @where = @where.And(p => p.payMode == payMode);
             //获取数据
-            var list = await _businessServices.QueryAsync();
+            var list = _businessServices.QueryListByClause(where).OrderByDescending(p => p.createTime).ToList();
             //返回数据
             jm.data = list;
             jm.code = 0;
@@ -84,6 +95,18 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         {
             //返回数据
             var jm = new AdminUiCallBack { code = 0 };
+
+            //返回数据
+            var dict = _sysDictionaryServices.QueryByClause(p => p.dictCode == "payMode");
+            var dictData = new List<SysDictionaryData>();
+            if (dict != null)
+            {
+                dictData = _sysDictionaryDataServices.QueryListByClause(p => p.dictId == dict.id);
+            }
+            jm.data = new
+            {
+                dictData,
+            };
             return new JsonResult(jm);
         }
         #endregion
@@ -96,11 +119,18 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         /// <returns></returns>
         [HttpPost]
         [Description("创建数据")]
-        public async Task<JsonResult> GetCreate()
+        public AdminUiCallBack GetCreate()
         {
             //返回数据
-            var jm = new AdminUiCallBack { code = 0 };
-            return new JsonResult(jm);
+            var dict = _sysDictionaryServices.QueryByClause(p => p.dictCode == "payMode");
+            var dictData = new List<SysDictionaryData>();
+            if (dict != null)
+            {
+                dictData = _sysDictionaryDataServices.QueryListByClause(p => p.dictId == dict.id);
+            }
+            //返回数据
+            var jm = new AdminUiCallBack { code = 0, data = new { dictData } };
+            return jm;
         }
         #endregion
 
@@ -116,6 +146,8 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         public async Task<JsonResult> DoCreate([FromBody] Business entity)
         {
             var jm = new AdminUiCallBack();
+            entity.businessCode = RandomNumber.GetRandomBusiness();
+            entity.createTime = DateTime.Now;
             var bl = await _businessServices.InsertAsync(entity) > 0;
             jm.code = bl ? 0 : 1;
             jm.msg = (bl ? GlobalConstVars.CreateSuccess : GlobalConstVars.CreateFailure);
@@ -137,6 +169,13 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         {
             var jm = new AdminUiCallBack();
 
+            //返回数据
+            var dict = _sysDictionaryServices.QueryByClause(p => p.dictCode == "payMode");
+            var dictData = new List<SysDictionaryData>();
+            if (dict != null)
+            {
+                dictData = _sysDictionaryDataServices.QueryListByClause(p => p.dictId == dict.id);
+            }
             var model = await _businessServices.QueryByIdAsync(entity.id);
             if (model == null)
             {
@@ -146,7 +185,8 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             jm.code = 0;
             jm.data = new
             {
-                model
+                model,
+                dictData
             };
 
             return new JsonResult(jm);

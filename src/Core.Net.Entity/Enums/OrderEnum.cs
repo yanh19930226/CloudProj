@@ -10,29 +10,29 @@ namespace Core.Net.Entity.Enums
     public enum OrderTypeEnum
     {
         /// <summary>
-        /// 刷卡扣费
+        /// 餐卡消费
         /// </summary>
         CardCost = 0,
-         /// <summary>
-         /// 现金充值
-         /// </summary>
-         MoneyRecharge=1,
         /// <summary>
-        /// 余额查询
+        /// 个人信息修改现金充值
         /// </summary>
-        BalanceSearch = 2,
+        MoneyRecharge = 1,
         /// <summary>
-        /// 钱包转账
+        /// 订单退款
         /// </summary>
-         Wallet=3,
-         /// <summary>
-         /// 商品订单
-         /// </summary>
-         GoodOrder=4,
-         /// <summary>
-         /// 公司福利
-         /// </summary>
-         Company = 5,
+        Return = 2,
+        /// <summary>
+        /// 餐卡提现
+        /// </summary>
+        Cash = 3,
+        /// <summary>
+        /// 商品消费
+        /// </summary>
+        GoodOrder = 4,
+        /// <summary>
+        /// 公司充值
+        /// </summary>
+        Company = 5,
     }
     /// <summary>
     /// 订单状态

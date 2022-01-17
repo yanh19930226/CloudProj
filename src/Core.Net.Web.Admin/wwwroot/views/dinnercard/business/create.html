@@ -1,11 +1,11 @@
 <script type="text/html" template lay-done="layui.data.done(d);">
     <div class="layui-form coreshop-form layui-form-pane" lay-filter="LAY-app-Business-createForm" id="LAY-app-Business-createForm">
-        <div class="layui-form-item">
+        <!--<div class="layui-form-item">
             <label for="name" class="layui-form-label">商家编码</label>
             <div class="layui-input-block">
                 <input name="businessCode" id="businessCode" lay-verType="tips" lay-verify="required|verifyname" class="layui-input" lay-reqText="请输入商家编码" placeholder="请输入商家编码" />
             </div>
-        </div>
+        </div>-->
 
         <div class="layui-form-item">
             <label for="name" class="layui-form-label">商家名称</label>
@@ -13,18 +13,28 @@
                 <input name="businessName" id="businessName" lay-verType="tips" lay-verify="required|verifyname" class="layui-input" lay-reqText="请输入商家名称" placeholder="请输入商家名称" />
             </div>
         </div>
-
         <div class="layui-form-item">
+            <label class="layui-form-label layui-form-required">付款类型:</label>
+            <div class="layui-input-block">
+                <select name="payMode" lay-verType="tips" lay-verify="required" required>
+                    <option value="">请选择</option>
+                    {{# layui.each(d.params.data.dictData, function(index, item){ }}
+                    <option value="{{item.dictDataCode}}">{{item.dictDataName}}</option>
+                    {{# }); }}
+                </select>
+            </div>
+        </div>
+        <!--<div class="layui-form-item">
             <label for="sort" class="layui-form-label">排序 </label>
             <div class="layui-input-block">
                 <input type="number" min="0" max="999999" name="sort" id="sort" lay-verType="tips" lay-verify="required|number" class="layui-input" value="1" placeholder="请输入排序 " lay-reqText="请输入排序 并为数字" />
             </div>
-        </div>
+        </div>-->
 
         <div class="layui-form-item">
             <label for="status" class="layui-form-label">是否启用</label>
             <div class="layui-input-block">
-                <input type="checkbox" lay-filter="switch" name="status" id="status" lay-skin="switch" lay-text="启用|禁用">
+                <input type="checkbox"  checked="checked" lay-filter="switch" name="status" id="status" lay-skin="switch" lay-text="启用|禁用">
             </div>
         </div>
         <div class="layui-form-item text-right core-hidden">

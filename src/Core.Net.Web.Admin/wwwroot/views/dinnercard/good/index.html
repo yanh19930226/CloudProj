@@ -11,19 +11,43 @@
     /* 重写样式 */
 </style>
 <script type="text/html" template lay-type="Post" lay-url="Api/Good/GetIndex" lay-done="layui.data.done(d);">
-    
-</script>
-<div class="table-body">
-    <table id="LAY-app-Good-tableBox" lay-filter="LAY-app-Good-tableBox"></table>
-</div>
-
-<script type="text/html" id="LAY-app-Good-toolbar">
-    <div class="layui-form coreshop-toolbar-search-form">
+    <div class="layui-form coreshop-search-form">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label" for="goodName">商品名称</label>
+                <label class="layui-form-label" for="businessid">商家</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="goodName" placeholder="请输入商品名称" class="layui-input">
+                    <select name="businessid">
+                        <option value="">商家</option>
+                        {{# layui.each(d.data.business, function(index, item){ }}
+                        <option value="{{ item.id }}">{{ item.businessName }}</option>
+                        {{# }); }}
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label" for="goodstatus">商品状态</label>
+                <div class="layui-input-inline">
+                    <select name="goodstatus">
+                        <option value="">商品状态</option>
+                        {{# layui.each(d.data.dictData2, function(index, item){ }}
+                        <option value="{{ item.dictDataCode }}">{{ item.dictDataName }}</option>
+                        {{# }); }}
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label" for="text">商品名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="text" placeholder="请输入商品名称" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label" for="createTime">选择时间</label>
+                <div class="layui-input-inline" style="width: 260px;">
+                    <input type="text" name="createTime" id="searchTime-business-createTime" placeholder="请输入时间" class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
@@ -32,11 +56,20 @@
         </div>
     </div>
 </script>
-<script type="text/html" id="LAY-app-Good-pagebar">
+<div class="table-body">
+    <table id="LAY-app-Good-tableBox" lay-filter="LAY-app-Good-tableBox"></table>
+</div>
+
+<script type="text/html" id="LAY-app-Good-toolbar">
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="addData"><i class="layui-icon layui-icon-add-1"></i>添加数据</button>
     </div>
 </script>
+<script type="text/html" id="LAY-app-Good-pagebar">
+  
+</script>
+
+
 <script type="text/html" id="LAY-app-Good-tableBox-bar">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-dropdown="#GoodTbDelDrop{{d.LAY_INDEX}}" no-shade="true">删除</a>
@@ -76,7 +109,11 @@
                     , coreHelper = layui.coreHelper
                     , util = layui.util
                     , view = layui.view;
-
+                laydate.render({
+                    elem: '#searchTime-business-createTime',
+                    type: 'datetime',
+                    range: '到',
+                });
                 //重载form
                 form.render();
                 var searchwhere;
@@ -104,29 +141,36 @@
                     text: { none: '暂无相关数据' },
                     cols: [
                         [
-                            { type: "checkbox", fixed: "left" },
+                          /*  { type: "checkbox", fixed: "left" },*/
                             { field: 'id', title: '序列', width: 60, sort: false },
-                            { field: 'businessName', title: '商家', width: 60, sort: false },
+                            { field: 'businessName', title: '商家', width: 100, sort: false },
                             { field: 'goodNo', title: '商品编号', sort: false, width: 200 },
                             { field: 'goodName', title: '商品标题', sort: false, width: 200 },
-                            { field: 'url', title: '商品图片', sort: false, width: 105 },
-                            { field: 'unitPrice', title: '价格', sort: false, width: 105 },
-                            { field: 'stock', title: '库存', sort: false, width: 105 },
-                            { field: 'purchaseNumber', title: '订购数量', sort: false, width: 105 },
-                            { field: 'avilableTime', title: '有效时间', sort: false, width: 105 },
+                            {
+                                field: 'url', title: '商品图片', width: 150, sort: false,
+                                templet: function (d) {
+                                    if (d.url) {
+                                        return '<a href="javascript:void(0);" onclick=layui.coreHelper.viewImage("' + d.url + '")><image style="max-width:28px;max-height:28px;" src="' + d.url + '" /></a>';
+                                    } else {
+                                        return '<a href="javascript:void(0);" onclick=layui.coreHelper.viewImage("' + setter.noImagePicUrl + '")><image style="max-width:30px;max-height:30px;" src="' + setter.noImagePicUrl + '" /></a>';
+                                    }
+                                }
+                            },
+                            { field: 'unitPrice', title: '价格', sort: false, width: 80 },
+                            { field: 'stock', title: '库存', sort: false, width: 80 },
+                         /*   { field: 'purchaseNumber', title: '订购数量', sort: false, width: 80 },*/
+                            { field: 'avilableTime', title: '有效时间', sort: false, width: 150 },
                             {
                                 field: 'status', title: '状态', sort: false, width: 80, templet: function (data) {
-                                    for (var i = 0; i < d.data.length; i++) {
-                                        if (d.data[i].dictDataCode == data.status) {
-                                            return d.data[i].dictDataName;
+                                    for (var i = 0; i < d.data.dictData2.length; i++) {
+                                        if (d.data.dictData2[i].dictDataCode == data.status) {
+                                            return d.data.dictData2[i].dictDataName;
                                         }
                                     }
                                     return "";
                                 }
                             },
-
-
-                            { field: 'createTime', title: '创建时间时间', sort: false, width: 105 },
+                            { field: 'createTime', title: '创建时间时间', sort: false, width: 150 },
                             { width: 120, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-Good-tableBox-bar' }
                         ]
                     ]
@@ -147,7 +191,7 @@
                     doDetails(obj);
                 });
                 //头工具栏事件
-                table.on('pagebar(LAY-app-Good-tableBox)', function (obj) {
+                table.on('toolbar(LAY-app-Good-tableBox)', function (obj) {
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch (obj.event) {
                         case 'addData':

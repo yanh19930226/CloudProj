@@ -5,7 +5,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label layui-form-required">公告类型:</label>
             <div class="layui-input-block">
-                <select name="goodsCategoryId" lay-verType="tips" lay-verify="required" required>
+                <select name="noticeType" lay-verType="tips" lay-verify="required" required>
                     <option value="">请选择</option>
                     {{# layui.each(d.params.data.dictData, function(index, item){ }}
                     <option value="{{item.dictDataCode}}" {{item.dictDataCode==d.params.data.model.noticeType?'selected="selected"':''}}>{{item.dictDataName}}</option>
@@ -32,13 +32,13 @@
             </div>
         </div>
 
-        <div class="layui-form-item">
+        <!--<div class="layui-form-item">
             <label for="sort" class="layui-form-label">排序</label>
             <div class="layui-input-inline">
                 <input type="number" min="0" max="999999" name="sort" id="sort" lay-verType="tips" lay-verify="required|number" class="layui-input" value="{{d.params.data.model.sort}}" placeholder="请输入排序" lay-reqText="请输入排序并为数字" />
             </div>
             <div class="layui-form-mid layui-word-aux">请输入数字</div>
-        </div>
+        </div>-->
         <div class="layui-form-item core-hidden">
             <input type="button" class="layui-btn" lay-submit lay-filter="LAY-app-CoreCmsNotice-editForm-submit" id="LAY-app-CoreCmsNotice-editForm-submit" value="确认编辑">
         </div>
@@ -84,6 +84,7 @@
                                     processData: false,
                                     contentType: false,
                                     success: function (data) {
+                                        debugger;
                                         if (data) {
                                             console.log(data)
                                             resolve({
@@ -118,7 +119,6 @@
                     .catch(error => {
                         console.error(error);
                     });
-
 
                 laydate.render({
                     elem: '#editTime-CoreCmsNotice-createTime',

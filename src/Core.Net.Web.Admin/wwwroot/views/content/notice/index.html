@@ -11,16 +11,29 @@
     /* 重写样式 */
 </style>
 <script type="text/html" template lay-type="Post" lay-url="{{ layui.setter.apiUrl }}Api/CoreCmsNotice/GetIndex" lay-done="layui.data.done(d);">
-
-</script>
-<div class="table-body">
-    <table id="LAY-app-CoreCmsNotice-tableBox" lay-filter="LAY-app-CoreCmsNotice-tableBox"></table>
-</div>
-
-<script type="text/html" id="LAY-app-CoreCmsNotice-toolbar">
-    <div class="layui-form coreshop-toolbar-search-form">
+    <div class="layui-form coreshop-search-form">
         <div class="layui-form-item">
             <div class="layui-inline">
+                <label class="layui-form-label" for="noticeType">公告类型</label>
+                <div class="layui-input-inline">
+                    <select name="noticeType">
+                        <option value="">公告类型</option>
+                        {{# layui.each(d.data.dictData, function(index, item){ }}
+                        <option value="{{ item.dictDataCode }}">{{ item.dictDataName }}</option>
+                        {{# }); }}
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label" for="createTime">选择时间</label>
+                <div class="layui-input-inline" style="width: 260px;">
+                    <input type="text" name="createTime" id="searchTime-notice-createTime" placeholder="请输入时间" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label" for="title">公告标题</label>
                 <div class="layui-input-inline">
                     <input type="text" name="title" id="title" placeholder="请输入公告标题" class="layui-input">
                 </div>
@@ -31,10 +44,19 @@
         </div>
     </div>
 </script>
-<script type="text/html" id="LAY-app-CoreCmsNotice-pagebar">
+<div class="table-body">
+    <table id="LAY-app-CoreCmsNotice-tableBox" lay-filter="LAY-app-CoreCmsNotice-tableBox"></table>
+</div>
+
+<script type="text/html" id="LAY-app-CoreCmsNotice-toolbar">
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="addData"><i class="layui-icon layui-icon-add-1"></i>添加数据</button>
     </div>
+
+    
+</script>
+<script type="text/html" id="LAY-app-CoreCmsNotice-pagebar">
+   
 </script>
 <script type="text/html" id="LAY-app-CoreCmsNotice-tableBox-bar">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
@@ -62,6 +84,13 @@
                     , view = layui.view;
                
                 var searchwhere;
+
+                laydate.render({
+                    elem: '#searchTime-notice-createTime',
+                    type: 'datetime',
+                    range: '到',
+                });
+
                 //监听搜索
                 form.on('submit(LAY-app-CoreCmsNotice-search)',
                     function (data) {
@@ -89,17 +118,16 @@
                             { field: 'id', title: '序列', width: 60, sort: false },
                             {
                                 field: 'noticeType', title: '公告类型', sort: false, width: 80, templet: function (data) {
-                                    for (var i = 0; i < d.data.length; i++) {
-                                        if (d.data[i].dictDataCode == data.noticeType) {
-                                            return d.data[i].dictDataName;
+                                    for (var i = 0; i < d.data.dictData.length; i++) {
+                                        if (d.data.dictData[i].dictDataCode == data.noticeType) {
+                                            return d.data.dictData[i].dictDataName;
                                         }
                                     }
                                     return "";
                                 }
                             },
                             { field: 'title', title: '公告标题', sort: false },
-                            { field: 'contentBody', title: '公告内容', sort: false },
-                            { field: 'sort', title: '排序', sort: false, width: 105 },
+                          /*  { field: 'sort', title: '排序', sort: false, width: 105 },*/
                             { field: 'createTime', title: '创建时间', width: 130, sort: false },
                             { width: 122, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-CoreCmsNotice-tableBox-bar' }
                         ]
@@ -116,7 +144,7 @@
                     });
                 });
                 //头工具栏事件
-                table.on('pagebar(LAY-app-CoreCmsNotice-tableBox)', function (obj) {
+                table.on('toolbar(LAY-app-CoreCmsNotice-tableBox)', function (obj) {
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch (obj.event) {
                         case 'addData':

@@ -13,11 +13,7 @@
 
 <!--请求页面加载-->
 <script type="text/html" template lay-type="Post" lay-url="{{ layui.setter.apiUrl }}Api/SysRole/GetIndex" lay-done="layui.data.done(d);">
-</script>
-
-<!--搜索栏-->
-<script type="text/html" id="LAY-app-SysRole-toolbar">
-    <div class="layui-form coreshop-toolbar-search-form">
+    <div class="layui-form coreshop-search-form">
         <div class="layui-form-item">
 
             <div class="layui-inline">
@@ -40,6 +36,14 @@
             </div>
 
         </div>
+    </div>
+</script>
+
+<!--搜索栏-->
+<script type="text/html" id="LAY-app-SysRole-toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="addData"><i class="layui-icon layui-icon-add-1"></i>添加数据</button>
+        <button class="layui-btn layui-btn-sm layui-btn-danger icon-btn" lay-event="batchDelete"><i class="layui-icon layui-icon-delete"></i>删除</button>
     </div>
 </script>
 
@@ -69,10 +73,7 @@
 
 <!--底部分页栏-->
 <script type="text/html" id="LAY-app-SysRole-pagebar">
-    <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="addData"><i class="layui-icon layui-icon-add-1"></i>添加数据</button>
-        <button class="layui-btn layui-btn-sm layui-btn-danger icon-btn" lay-event="batchDelete"><i class="layui-icon layui-icon-delete"></i>删除</button>
-    </div>
+    
 </script>
 
 
@@ -144,7 +145,7 @@
                     });
                 });
                 //头工具栏事件
-                table.on('pagebar(LAY-app-SysRole-tableBox)', function (obj) {
+                table.on('toolbar(LAY-app-SysRole-tableBox)', function (obj) {
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch (obj.event) {
                         case 'addData':

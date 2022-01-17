@@ -175,94 +175,94 @@ namespace Core.Net.Web.Admin.Controllers
 
             //if (_filesStorageOptions.StorageType == GlobalEnumVars.FilesStorageOptionsType.LocalStorage.ToString())
             //{
-                var saveUrl = "/Upload/" + today + "/";
-                var dirPath = _webHostEnvironment.WebRootPath + saveUrl;
-                string bucketBindDomain = AppSettingsConstVars.AppConfigAppUrl;
+            var saveUrl = "/Upload/" + today + "/";
+            var dirPath = _webHostEnvironment.WebRootPath + saveUrl;
+            string bucketBindDomain = AppSettingsConstVars.AppConfigAppUrl;
 
-                if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
-                var filePath = dirPath + newFileName;
-                var fileUrl = saveUrl + newFileName;
+            if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+            var filePath = dirPath + newFileName;
+            var fileUrl = saveUrl + newFileName;
 
-                bp.Save(filePath, System.Drawing.Imaging.ImageFormat.Jpeg);//注意保存路径
+            bp.Save(filePath, System.Drawing.Imaging.ImageFormat.Jpeg);//注意保存路径
 
-                jm.code = 0;
-                jm.msg = "上传成功!";
-                jm.data = new
-                {
-                    fileUrl,
-                    src = bucketBindDomain + fileUrl
-                };
-                jm.otherData = GlobalEnumVars.FilesStorageOptionsType.LocalStorage.ToString();
+            jm.code = 0;
+            jm.msg = "上传成功!";
+            jm.data = new
+            {
+                fileUrl,
+                src = bucketBindDomain + fileUrl
+            };
+            jm.otherData = GlobalEnumVars.FilesStorageOptionsType.LocalStorage.ToString();
 
             //}
             //else if (_filesStorageOptions.StorageType == GlobalEnumVars.FilesStorageOptionsType.AliYunOSS.ToString())
             //{
-                ////上传到阿里云
-                #region MyRegion
-                //// 设置当前流的位置为流的开始
-                //memStream.Seek(0, SeekOrigin.Begin);
+            ////上传到阿里云
+            #region MyRegion
+            //// 设置当前流的位置为流的开始
+            //memStream.Seek(0, SeekOrigin.Begin);
 
-                //await using (var fileStream = memStream) //转成Stream流
-                //{
-                //    var md5 = OssUtils.ComputeContentMd5(fileStream, memStream.Length);
+            //await using (var fileStream = memStream) //转成Stream流
+            //{
+            //    var md5 = OssUtils.ComputeContentMd5(fileStream, memStream.Length);
 
-                //    var filePath = "Upload/" + today + "/" + newFileName; //云文件保存路径
-                //                                                          //初始化阿里云配置--外网Endpoint、访问ID、访问password
-                //    var aliyun = new OssClient(_filesStorageOptions.Endpoint, _filesStorageOptions.AccessKeyId, _filesStorageOptions.AccessKeySecret);
-                //    //将文件md5值赋值给meat头信息，服务器验证文件MD5
-                //    var objectMeta = new ObjectMetadata
-                //    {
-                //        ContentMd5 = md5
-                //    };
-                //    //文件上传--空间名、文件保存路径、文件流、meta头信息(文件md5) //返回meta头信息(文件md5)
-                //    aliyun.PutObject(_filesStorageOptions.BucketName, filePath, fileStream, objectMeta);
-                //    //返回给UEditor的插入编辑器的图片的src
-                //    jm.code = 0;
-                //    jm.msg = "上传成功";
-                //    jm.data = new
-                //    {
-                //        fileUrl = _filesStorageOptions.BucketBindUrl + filePath,
-                //        src = _filesStorageOptions.BucketBindUrl + filePath
-                //    };
-                //}
-                //jm.otherData = GlobalEnumVars.FilesStorageOptionsType.AliYunOSS.ToString(); 
-                #endregion
+            //    var filePath = "Upload/" + today + "/" + newFileName; //云文件保存路径
+            //                                                          //初始化阿里云配置--外网Endpoint、访问ID、访问password
+            //    var aliyun = new OssClient(_filesStorageOptions.Endpoint, _filesStorageOptions.AccessKeyId, _filesStorageOptions.AccessKeySecret);
+            //    //将文件md5值赋值给meat头信息，服务器验证文件MD5
+            //    var objectMeta = new ObjectMetadata
+            //    {
+            //        ContentMd5 = md5
+            //    };
+            //    //文件上传--空间名、文件保存路径、文件流、meta头信息(文件md5) //返回meta头信息(文件md5)
+            //    aliyun.PutObject(_filesStorageOptions.BucketName, filePath, fileStream, objectMeta);
+            //    //返回给UEditor的插入编辑器的图片的src
+            //    jm.code = 0;
+            //    jm.msg = "上传成功";
+            //    jm.data = new
+            //    {
+            //        fileUrl = _filesStorageOptions.BucketBindUrl + filePath,
+            //        src = _filesStorageOptions.BucketBindUrl + filePath
+            //    };
+            //}
+            //jm.otherData = GlobalEnumVars.FilesStorageOptionsType.AliYunOSS.ToString(); 
+            #endregion
 
             //}
             //else if (_filesStorageOptions.StorageType == GlobalEnumVars.FilesStorageOptionsType.QCloudOSS.ToString())
             //{
-                #region MyRegion
-                //上传到腾讯云OSS
-                //初始化 CosXmlConfig
-                //string appid = _filesStorageOptions.AccountId;//设置腾讯云账户的账户标识 APPID
-                //string region = _filesStorageOptions.CosRegion; //设置一个默认的存储桶地域
-                //CosXmlConfig config = new CosXmlConfig.Builder()
-                //    .SetAppid(appid)
-                //    .IsHttps(true)  //设置默认 HTTPS 请求
-                //    .SetRegion(region)  //设置一个默认的存储桶地域
-                //    .SetDebugLog(true)  //显示日志
-                //    .Build();  //创建 CosXmlConfig 对象
+            #region MyRegion
+            //上传到腾讯云OSS
+            //初始化 CosXmlConfig
+            //string appid = _filesStorageOptions.AccountId;//设置腾讯云账户的账户标识 APPID
+            //string region = _filesStorageOptions.CosRegion; //设置一个默认的存储桶地域
+            //CosXmlConfig config = new CosXmlConfig.Builder()
+            //    .SetAppid(appid)
+            //    .IsHttps(true)  //设置默认 HTTPS 请求
+            //    .SetRegion(region)  //设置一个默认的存储桶地域
+            //    .SetDebugLog(true)  //显示日志
+            //    .Build();  //创建 CosXmlConfig 对象
 
-                //long durationSecond = 600;  //每次请求签名有效时长，单位为秒
-                //QCloudCredentialProvider qCloudCredentialProvider = new DefaultQCloudCredentialProvider(
-                //    _filesStorageOptions.AccessKeyId, _filesStorageOptions.AccessKeySecret, durationSecond);
+            //long durationSecond = 600;  //每次请求签名有效时长，单位为秒
+            //QCloudCredentialProvider qCloudCredentialProvider = new DefaultQCloudCredentialProvider(
+            //    _filesStorageOptions.AccessKeyId, _filesStorageOptions.AccessKeySecret, durationSecond);
 
 
-                //var cosXml = new CosXmlServer(config, qCloudCredentialProvider);
+            //var cosXml = new CosXmlServer(config, qCloudCredentialProvider);
 
-                //var filePath = "Upload/" + today + "/" + newFileName; //云文件保存路径
-                //COSXML.Model.Object.PutObjectRequest putObjectRequest = new COSXML.Model.Object.PutObjectRequest(_filesStorageOptions.BucketName, filePath, bytes);
+            //var filePath = "Upload/" + today + "/" + newFileName; //云文件保存路径
+            //COSXML.Model.Object.PutObjectRequest putObjectRequest = new COSXML.Model.Object.PutObjectRequest(_filesStorageOptions.BucketName, filePath, bytes);
 
-                //cosXml.PutObject(putObjectRequest);
+            //cosXml.PutObject(putObjectRequest);
 
-                //jm.code = 0;
-                //jm.msg = "上传成功";
-                //jm.data = new
-                //{
-                //    fileUrl = _filesStorageOptions.BucketBindUrl + filePath,
-                //    src = _filesStorageOptions.BucketBindUrl + filePath
-                //}; 
-                #endregion
+            //jm.code = 0;
+            //jm.msg = "上传成功";
+            //jm.data = new
+            //{
+            //    fileUrl = _filesStorageOptions.BucketBindUrl + filePath,
+            //    src = _filesStorageOptions.BucketBindUrl + filePath
+            //}; 
+            #endregion
             //}
             return new JsonResult(jm);
         }
@@ -331,6 +331,70 @@ namespace Core.Net.Web.Admin.Controllers
 
         #endregion
 
+        #region CKEditor编辑上传接口====================================================
+        /// <summary>
+        ///     CKEditor编辑上传接口
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> CkEditorUploadFiles()
+        {
+            var jm = new CKEditorUploadedResult();
+
+            //var _filesStorageOptions = await _coreCmsSettingServices.GetFilesStorageOptions();
+
+            //初始化上传参数
+            //var maxSize = 1024 * 1024 * _filesStorageOptions.MaxSize; //上传大小5M
+
+            var file = Request.Form.Files["upload"];
+            if (file == null)
+            {
+                jm.error.message = "请选择文件";
+                return new JsonResult(jm);
+            }
+
+            var fileName = file.FileName;
+            var fileExt = Path.GetExtension(fileName).ToLowerInvariant();
+
+            //检查大小
+            //if (file.Length > maxSize)
+            //{
+            //    jm.error.message = "上传文件大小超过限制，最大允许上传" + _filesStorageOptions.MaxSize + "M";
+            //    return new JsonResult(jm);
+            //}
+
+            //检查文件扩展名
+            //if (string.IsNullOrEmpty(fileExt) ||
+            //    Array.IndexOf(_filesStorageOptions.FileTypes.Split(','), fileExt.Substring(1).ToLower()) == -1)
+            //{
+            //    jm.error.message = "上传文件扩展名是不允许的扩展名,请上传后缀名为：" + _filesStorageOptions.FileTypes;
+            //    return new JsonResult(jm);
+            //}
+
+            var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss_ffff", DateTimeFormatInfo.InvariantInfo) + fileExt;
+            var today = DateTime.Now.ToString("yyyyMMdd");
+
+            var saveUrl = "/Upload/" + today + "/";
+            var dirPath = _webHostEnvironment.WebRootPath + saveUrl;
+            if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+            var filePath = dirPath + newFileName;
+            var fileUrl = saveUrl + newFileName;
+
+            string bucketBindDomain = AppSettingsConstVars.AppConfigAppUrl;
+
+            await using (var fs = System.IO.File.Create(filePath))
+            {
+                await file.CopyToAsync(fs);
+                fs.Flush();
+            }
+
+            jm.uploaded = 1;
+            jm.fileName = fileName;
+            jm.url = bucketBindDomain + fileUrl;
+            return new JsonResult(jm);
+        }
+
+        #endregion
 
     }
 

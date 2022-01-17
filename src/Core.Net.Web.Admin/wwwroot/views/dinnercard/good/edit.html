@@ -2,6 +2,8 @@
     <div class="layui-form coreshop-form layui-form-pane" lay-filter="LAY-app-Good-editForm" id="LAY-app-Good-editForm">
         <input type="hidden" name="id" id="id" value="{{d.params.data.model.id || '' }}" />
 
+        <input type="hidden" name="businessCode" id="businessCode" value="{{d.params.data.model.businessCode || '' }}" />
+
         <div class="layui-form-item">
             <label class="layui-form-label layui-form-required">商家:</label>
             <div class="layui-input-block">
@@ -30,7 +32,7 @@
                     <div class="layui-upload">
                         <button type="button" class="layui-btn" id="upBtn">上传图片</button>
                         <div class="layui-upload-list">
-                            <img class="layui-upload-img" id="viewImgBox" src="{{ layui.setter.noImagePicUrl }}">
+                            <img class="layui-upload-img" id="viewImgBox" src="{{d.params.data.model.url || layui.setter.noImagePicUrl }}">
                             <p id="viewTextBox"></p>
                         </div>
                     </div>
@@ -49,19 +51,18 @@
                 <input name="stock" id="stock" lay-verType="tips" lay-verify="required|number" class="layui-input" lay-reqText="请输入库存" placeholder="请输入库存" value="{{d.params.data.model.stock|| '' }}" />
             </div>
         </div>
-        <div class="layui-form-item">
-            <label for="name" class="layui-form-label">订购数量</label>
-            <div class="layui-input-block">
-                <input name="purchaseNumber" id="purchaseNumber" lay-verType="tips" lay-verify="required|number" class="layui-input" lay-reqText="请输入订购数量" placeholder="请输入订购数量" value="{{d.params.data.model.purchaseNumber || '' }}" />
-            </div>
+        <!--<div class="layui-form-item">
+        <label for="name" class="layui-form-label">订购数量</label>
+        <div class="layui-input-block">
+            <input name="purchaseNumber" id="purchaseNumber" lay-verType="tips" lay-verify="required|number" class="layui-input" lay-reqText="请输入订购数量" placeholder="请输入订购数量" value="{{d.params.data.model.purchaseNumber || '' }}" />
         </div>
+    </div>-->
         <div class="layui-form-item">
             <label for="name" class="layui-form-label">有效时间</label>
             <div class="layui-input-block">
                 <input name="avilableTime" id="avilableTime" lay-verType="tips" class="layui-input" placeholder="请输入订购数量" value="{{ d.params.data.model.avilableTime ? layui.util.toDateString(d.params.data.model.avilableTime, 'yyyy-MM-dd') : '' }}" />
             </div>
         </div>
-
         <div class="layui-form-item">
             <label class="layui-form-label layui-form-required">状态:</label>
             <div class="layui-input-block">
@@ -73,7 +74,6 @@
                 </select>
             </div>
         </div>
-
         <div class="layui-form-item text-right core-hidden">
             <input type="button" class="layui-btn" lay-submit lay-filter="LAY-app-Good-editForm-submit" id="LAY-app-Good-editForm-submit" value="确认编辑">
         </div>
@@ -102,6 +102,29 @@
                 form.verify({
                     verifyname: [/^[\S]{0,32}$/, '分类名称最大只允许输入32位字符，且不能出现空格'],
                 });
+
+                //品牌LOGO图片上传
+                $('#upBtn').click(function () {
+                    cropperImg.cropImg({
+                        aspectRatio: 1 / 1,
+                        imgSrc: $('#viewImgBox').attr('src'),
+                        onCrop: function (data) {
+                            var loadIndex = layer.load(2);
+                            coreHelper.Post("api/Tools/UploadFilesFByBase64", { base64: data }, function (res) {
+                                if (0 === res.code) {
+                                    $('#viewImgBox').attr('src', res.data.fileUrl);
+                                    $("#url").val(res.data.fileUrl);
+                                    layer.msg(res.msg);
+                                    layer.close(loadIndex);
+                                } else {
+                                    layer.close(loadIndex);
+                                    layer.msg(res.msg, { icon: 2, anim: 6 });
+                                }
+                            });
+                        }
+                    });
+                });
+
 
                 laydate.render({
                     elem: '#avilableTime',

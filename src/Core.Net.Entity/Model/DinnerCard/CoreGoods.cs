@@ -64,13 +64,13 @@ namespace Core.Net.Entity.Model.DinnerCard
         [SugarColumn(ColumnDescription = "库存")]
         [Required(ErrorMessage = "请输入{0}")]
         public int stock { get; set; }
-        /// <summary>
-        ///订购数量
-        /// </summary>
-        [Display(Name = "订购数量")]
-        [SugarColumn(ColumnDescription = "订购数量")]
-        [Required(ErrorMessage = "请输入{0}")]
-        public int purchaseNumber { get; set; }
+        ///// <summary>
+        /////订购数量
+        ///// </summary>
+        //[Display(Name = "订购数量")]
+        //[SugarColumn(ColumnDescription = "订购数量")]
+        //[Required(ErrorMessage = "请输入{0}")]
+        //public int purchaseNumber { get; set; }
         /// <summary>
         ///是否上架
         /// </summary>
