@@ -1,39 +1,47 @@
 ﻿using Core.Net.Configuration;
 using Core.Net.Entity.Dtos;
+using Core.Net.Entity.Enums;
+using Core.Net.Entity.Model.DinnerCard;
 using Core.Net.Entity.Model.Expression;
 using Core.Net.Entity.Model.Systems;
 using Core.Net.Entity.ViewModels;
+using Core.Net.Service.DinnerCards;
 using Core.Net.Service.Systems;
 using Core.Net.Util.Extensions;
 using Core.Net.Util.Helper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Core.Net.Web.Admin.Controllers.Systems
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class SysUserController :BaseController
+    public class SysUserController : BaseController
     {
         private readonly ISysUserServices _sysUserServices;
         private readonly ISysOrganizationServices _sysOrganizationServices;
         private readonly ISysRoleServices _sysRoleServices;
+        private readonly ICoreOrderServices _coreOrderServices;
         private readonly ISysUserRoleServices _sysUserRoleServices;
 
         /// <summary>
         ///     构造函数
         /// </summary>
-        public SysUserController(ISysUserServices sysUserServices, ISysOrganizationServices sysOrganizationServices, ISysRoleServices sysRoleServices, ISysUserRoleServices sysUserRoleServices)
+        public SysUserController(ISysUserServices sysUserServices, ISysOrganizationServices sysOrganizationServices, ISysRoleServices sysRoleServices, ISysUserRoleServices sysUserRoleServices, ICoreOrderServices coreOrderServices)
         {
             _sysUserServices = sysUserServices;
             _sysOrganizationServices = sysOrganizationServices;
             _sysRoleServices = sysRoleServices;
+            _coreOrderServices = coreOrderServices;
             _sysUserRoleServices = sysUserRoleServices;
         }
 
@@ -50,7 +58,7 @@ namespace Core.Net.Web.Admin.Controllers.Systems
         {
             //返回数据
             var jm = new AdminUiCallBack { code = 0 };
-            return  Json(jm);
+            return Json(jm);
         }
 
         #endregion
@@ -279,9 +287,9 @@ namespace Core.Net.Web.Admin.Controllers.Systems
             //返回数据
             var userSexTypes = EnumHelper.EnumToList<GlobalEnumVars.UserSexTypes>();
             var roles = await _sysRoleServices.QueryListByClauseAsync(p => p.deleted == false);
-
+            var orgs = _sysOrganizationServices.Query();
             var jm = new AdminUiCallBack { code = 0 };
-            jm.data = new { userSexTypes, roles };
+            jm.data = new { userSexTypes, roles, orgs };
 
 
             return new JsonResult(jm);
@@ -304,13 +312,17 @@ namespace Core.Net.Web.Admin.Controllers.Systems
             var jm = new AdminUiCallBack();
 
             var haveName = await _sysUserServices.ExistsAsync(p => p.userName == entity.userName);
+
+
             if (haveName)
             {
                 jm.msg = "账号已经存在";
                 return new JsonResult(jm);
             }
+            var org = _sysOrganizationServices.QueryByClause(p => p.id == entity.organizationId);
 
             entity.createTime = DateTime.Now;
+            entity.organizationName = org.organizationName;
             entity.passWord = CommonHelper.Md5For32(entity.passWord);
             var id = await _sysUserServices.InsertAsync(entity);
             //设置用户角色
@@ -355,7 +367,7 @@ namespace Core.Net.Web.Admin.Controllers.Systems
         public async Task<JsonResult> GetEdit([FromBody] FMIntId entity)
         {
             var jm = new AdminUiCallBack();
-
+            var orgs = _sysOrganizationServices.Query();
             var model = await _sysUserServices.QueryByIdAsync(entity.id);
             if (model == null)
             {
@@ -375,7 +387,8 @@ namespace Core.Net.Web.Admin.Controllers.Systems
                 model,
                 userSexTypes,
                 roles,
-                roleIds
+                roleIds,
+                orgs
             };
 
             return new JsonResult(jm);
@@ -414,15 +427,15 @@ namespace Core.Net.Web.Admin.Controllers.Systems
                     return new JsonResult(jm);
                 }
             }
-
+            var org = _sysOrganizationServices.QueryByClause(p => p.id == entity.organizationId);
             //事物处理过程开始
             oldModel.userName = entity.userName;
-            if (!string.IsNullOrEmpty(entity.passWord))
-            {
-                var md5Str = CommonHelper.Md5For32(entity.passWord);
-                oldModel.passWord = md5Str;
-            }
-
+            //if (!string.IsNullOrEmpty(entity.passWord))
+            //{
+            //    var md5Str = CommonHelper.Md5For32(entity.passWord);
+            //    oldModel.passWord = md5Str;
+            //}
+            oldModel.organizationName = org.organizationName;
             oldModel.organizationId = entity.organizationId > 0 ? entity.organizationId : 0;
             oldModel.nickName = entity.nickName;
             oldModel.sex = entity.sex;
@@ -533,5 +546,208 @@ namespace Core.Net.Web.Admin.Controllers.Systems
 
         #endregion
 
+
+
+        #region 修改余额============================================================
+
+        // POST: Api/CoreCmsUser/GetEditBalance
+        /// <summary>
+        ///     修改余额
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Description("修改余额")]
+        public async Task<JsonResult> GetEditBalance([FromBody] FMIntId entity)
+        {
+            //返回数据
+            var jm = new AdminUiCallBack();
+
+            var model = await _sysUserServices.QueryByIdAsync(entity.id);
+            if (model == null)
+            {
+                jm.msg = "不存在此信息";
+                return new JsonResult(jm);
+            }
+
+            jm.code = 0;
+            jm.data = model;
+
+            return new JsonResult(jm);
+        }
+
+        #endregion
+
+        #region 修改余额提交============================================================
+
+        // POST: Api/CoreCmsUser/DoEditBalance
+        /// <summary>
+        ///     修改余额提交
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Description("修改余额提交")]
+        public async Task<JsonResult> DoEditBalance([FromBody] FMUpdateDecimalDataByIntId entity)
+        {
+            var jm = new AdminUiCallBack();
+            var model = await _sysUserServices.QueryByIdAsync(entity.id);
+            if (model == null)
+            {
+                jm.msg = "不存在此信息";
+                return new JsonResult(jm);
+            }
+            model.balance = (Convert.ToDecimal(model.balance) + entity.data).ToString();
+            var bl = await _sysUserServices.UpdateAsync(model);
+
+            CoreOrder coreOrder = new CoreOrder();
+            coreOrder.organizationId = (int)model.organizationId;
+            coreOrder.sysUserId = model.id;
+            coreOrder.userName = model.userName;
+            coreOrder.organizationName = model.organizationName;
+            coreOrder.orderNo = RandomNumber.GetRandomOrder();
+            //coreOrder.costOrderNo = model.userName;
+            coreOrder.orderType = (int)OrderTypeEnum.MoneyRecharge;
+            coreOrder.status = (int)OrderStatusEnum.Complete;
+            coreOrder.amount = entity.data;
+            coreOrder.balance = Convert.ToDecimal(model.balance);
+            coreOrder.createTime = DateTime.Now;
+            coreOrder.telePhone = model.phone;
+            await _coreOrderServices.InsertAsync(coreOrder);
+            jm.code = bl ? 0 : 1;
+            jm.msg = bl ? GlobalConstVars.EditSuccess : GlobalConstVars.EditFailure;
+            return new JsonResult(jm);
+        }
+
+        #endregion
+
+        #region 修改余额============================================================
+
+        // POST: Api/CoreCmsUser/GetEditBalance
+        /// <summary>
+        ///     修改余额
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Description("修改余额")]
+        public async Task<JsonResult> GetEditPwd([FromBody] FMIntId entity)
+        {
+            //返回数据
+            var jm = new AdminUiCallBack();
+            var model = await _sysUserServices.QueryByIdAsync(entity.id);
+            if (model == null)
+            {
+                jm.msg = "不存在此信息";
+                return new JsonResult(jm);
+            }
+            jm.code = 0;
+            jm.data = model;
+            return new JsonResult(jm);
+        }
+
+        #endregion
+
+        #region 修改余额提交============================================================
+
+        // POST: Api/CoreCmsUser/DoEditBalance
+        /// <summary>
+        ///     修改余额提交
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Description("修改余额提交")]
+        public async Task<JsonResult> DoEditPwd([FromBody] FMUpdateStrDataByIntId entity)
+        {
+            var jm = new AdminUiCallBack();
+            var model = await _sysUserServices.QueryByIdAsync(entity.id);
+            if (model == null)
+            {
+                jm.msg = "不存在此信息";
+                return new JsonResult(jm);
+            }
+            model.passWord = CommonHelper.Md5For32(entity.pwd);
+            var bl = await _sysUserServices.UpdateAsync(model);
+            jm.code = bl ? 0 : 1;
+            jm.msg = bl ? GlobalConstVars.EditSuccess : GlobalConstVars.EditFailure;
+            return new JsonResult(jm);
+        }
+
+        #endregion
+
+
+        public IActionResult GetImport()
+        {
+            var jm = new AdminUiCallBack { code = 0 };
+            return new JsonResult(jm);
+        }
+
+        [HttpPost]
+        public IActionResult DoImport(IFormFile excelfile)
+        {
+            var jm = new AdminUiCallBack { code = 0 };
+            var files = HttpContext.Request.Form.Files;
+            if (files.Count > 0)
+            {
+                var file = files[0];
+                try
+                {
+                    using (var stream = new MemoryStream())
+                    {
+                        file.CopyToAsync(stream);//取到文件流
+                        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                        using (var dt = new Excel().ReadExcel(stream))
+                        {
+                            for (int row = 0; row < dt.Rows.Count; row++)
+                            {
+                                SysUser sysUser = new SysUser();
+
+                                if (dt.Rows[row]["账号"] != null)
+                                {
+                                    sysUser.userName = dt.Rows[row]["账号"].ToString();
+                                }
+
+                                if (dt.Rows[row]["身份证号"] != null)
+                                {
+                                    sysUser.idCardNo = dt.Rows[row]["身份证号"].ToString();
+                                }
+
+                                if (dt.Rows[row]["手机号"] != null)
+                                {
+                                    sysUser.phone = dt.Rows[row]["手机号"].ToString();
+                                }
+
+                                if (dt.Rows[row]["餐卡卡号"] != null)
+                                {
+                                    sysUser.cardNo = dt.Rows[row]["餐卡卡号"].ToString();
+                                }
+                                var name = dt.Rows[row]["部门"].ToString();
+                                var org = _sysOrganizationServices.QueryByClause(p => p.organizationName.Contains(name));
+                                if (org != null)
+                                {
+                                    sysUser.organizationId = org.id;
+                                    sysUser.organizationName = dt.Rows[row]["部门"].ToString();
+                                }
+                                else
+                                {
+                                    var orgg = _sysOrganizationServices.QueryByClause(p => p.organizationName=="默认");
+                                    sysUser.organizationId = orgg.id;
+                                    sysUser.balance = "0";
+                                    sysUser.organizationName = orgg.organizationName;
+                                }
+                                sysUser.createTime = DateTime.Now;
+                                _sysUserServices.Insert(sysUser);
+
+                            }
+                            return new JsonResult(jm);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return new JsonResult(ex.Message);
+                }
+            }
+            return new JsonResult(jm);
+        }
     }
 }

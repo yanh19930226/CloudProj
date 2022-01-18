@@ -6,10 +6,10 @@
                 "title": "系统管理",
                 "icon": "layui-icon-user",
                 "list": [{
-                    "name": "organization",
-                    "title": "部门机构",
-                    "jump": "system/sysorganization/index"
-                }, {
+                        "name": "org",
+                        "title": "部门管理",
+                    "jump": "dinnercard/org/index"
+                    }, {
                     "name": "sysuser",
                     "title": "用户管理",
                     "jump": "system/sysuser/index"

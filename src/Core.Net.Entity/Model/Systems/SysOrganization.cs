@@ -31,7 +31,7 @@ namespace Core.Net.Entity.Model.Systems
         /// </summary>
         [Display(Name = "上级id,0是顶级")]
         [SugarColumn(ColumnDescription = "上级id,0是顶级")]
-        [Required(ErrorMessage = "请输入{0}")]
+        //[Required(ErrorMessage = "请输入{0}")]
         public System.Int32 parentId { get; set; }
         /// <summary>
         /// 机构名称
@@ -52,7 +52,7 @@ namespace Core.Net.Entity.Model.Systems
         /// </summary>
         [Display(Name = "机构类型")]
         [SugarColumn(ColumnDescription = "机构类型")]
-        [Required(ErrorMessage = "请输入{0}")]
+        //[Required(ErrorMessage = "请输入{0}")]
         public System.Int32 organizationType { get; set; }
         /// <summary>
         /// 负责人id
@@ -65,7 +65,7 @@ namespace Core.Net.Entity.Model.Systems
         /// </summary>
         [Display(Name = "排序号")]
         [SugarColumn(ColumnDescription = "排序号")]
-        [Required(ErrorMessage = "请输入{0}")]
+        //[Required(ErrorMessage = "请输入{0}")]
         public System.Int32 sortNumber { get; set; }
         /// <summary>
         /// 备注
@@ -79,7 +79,7 @@ namespace Core.Net.Entity.Model.Systems
         /// </summary>
         [Display(Name = "是否删除,0否,1是")]
         [SugarColumn(ColumnDescription = "是否删除,0否,1是")]
-        [Required(ErrorMessage = "请输入{0}")]
+        //[Required(ErrorMessage = "请输入{0}")]
         public System.Boolean deleted { get; set; }
         /// <summary>
         /// 创建时间

@@ -1,0 +1,39 @@
+<script type="text/html" template lay-done="layui.data.sendParams(d);">
+    <div class="layui-form coreshop-form" lay-filter="LAY-app-CoreCmsUser-editForm" id="LAY-app-CoreCmsUser-editForm">
+        <input type="hidden" name="id" id="id" value="{{d.params.data.id || '' }}" />
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">新密码：</label>
+                <div class="layui-input-inline layui-inline-3">
+                    <input type="text" name="pwd" id="data" class="layui-input"  lay-reqText="请输入新密码" placeholder="请输入新密码">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item core-hidden">
+            <label class="layui-form-label"></label>
+            <input type="button" class="layui-btn" lay-submit lay-filter="LAY-app-CoreCmsUser-editPwdForm-submit" id="LAY-app-CoreCmsUser-editPwdForm-submit" value="确认编辑">
+        </div>
+    </div>
+</script>
+<script>
+    layui.data.sendParams = function (d) {
+        console.log(d);
+        layui.use(['admin', 'form', 'laydate', 'upload', 'coreHelper'],
+            function () {
+                var $ = layui.$
+                    , form = layui.form
+                    , admin = layui.admin
+                    , laydate = layui.laydate
+                    , upload = layui.upload
+                    , coreHelper = layui.coreHelper;
+
+                //form.verify({
+                //    verifybalance: [/\d+(\.\d{0,2})?/, '请输入数字或小数'],
+                //});
+                //重载form
+                form.render(null, 'LAY-app-CoreCmsUser-editForm');
+            })
+    };
+</script>

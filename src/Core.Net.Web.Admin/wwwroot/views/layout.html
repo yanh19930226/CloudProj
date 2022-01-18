@@ -7,11 +7,6 @@
                     <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
                 </a>
             </li>
-            <!--<li class="layui-nav-item layui-this layui-hide-xs layui-hide-sm layui-show-md-inline-block">
-              <a lay-href="" title="">
-                控制台
-              </a>
-            </li>-->
             <li class="layui-nav-item layui-hide-xs" lay-unselect>
                 <a href="" target="_blank" title="前台">
                     <i class="layui-icon layui-icon-website"></i>
@@ -27,36 +22,21 @@
             </li>
         </ul>
         <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
-
+            <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                <a href="javascript:;">
+                    后台系统
+                    <!--<cite>{{ d.data.username }}</cite>-->
+                </a>
+                <dl class="layui-nav-child">
+                    <!--<dd><a lay-href="set/user/info">基本资料</a></dd>
+        <dd><a lay-href="set/user/password">修改密码</a></dd>-->
+                    <dd layadmin-event="logout" style="text-align: center;"><a>退出</a></dd>
+                </dl>
+                <a href="javascript:;">
+                    <!--<i class="layui-icon layui-icon-screen-full"></i>-->
+                </a>
+            </li>
             <!--<li class="layui-nav-item" lay-unselect>
-                <a lay-href="app/message/" layadmin-event="message">
-                    <i class="layui-icon layui-icon-notice"></i>-->
-
-                    <!-- 如果有新消息，则显示小圆点 -->
-                    <!--<script type="text/html" template lay-url="./json/message/new.js">
-                        {{# if(d.data.newmsg){ }}
-                        <span class="layui-badge-dot"></span>
-                        {{# } }}
-                    </script>
-
-                </a>
-            </li>-->
-            <li class="layui-nav-item layui-hide-xs" lay-unselect>
-                <a href="javascript:;" layadmin-event="theme">
-                    <i class="layui-icon layui-icon-theme"></i>
-                </a>
-            </li>
-            <!--<li class="layui-nav-item layui-hide-xs" lay-unselect>
-                <a href="javascript:;" layadmin-event="note">
-                    <i class="layui-icon layui-icon-note"></i>
-                </a>
-            </li>-->
-            <li class="layui-nav-item layui-hide-xs" lay-unselect>
-                <a href="javascript:;" layadmin-event="fullscreen">
-                    <i class="layui-icon layui-icon-screen-full"></i>
-                </a>
-            </li>
-            <li class="layui-nav-item" lay-unselect>
                 <script type="text/html" template lay-url="./json/user/session.js"
                         lay-done="layui.element.render('nav', 'layadmin-layout-right');">
                     <a href="javascript:;">
@@ -65,11 +45,11 @@
                     <dl class="layui-nav-child">
                         <dd><a lay-href="set/user/info">基本资料</a></dd>
                         <dd><a lay-href="set/user/password">修改密码</a></dd>
-                        <hr>
+                        
                         <dd layadmin-event="logout" style="text-align: center;"><a>退出</a></dd>
                     </dl>
                 </script>
-            </li>
+            </li>-->
 
             <li class="layui-nav-item layui-hide-xs" lay-unselect>
                 <a href="javascript:;" ></a>

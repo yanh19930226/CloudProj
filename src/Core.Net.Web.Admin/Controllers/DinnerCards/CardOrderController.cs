@@ -95,7 +95,6 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             {
                 dictData = _sysDictionaryDataServices.QueryListByClause(p => p.dictId == dict.id);
             }
-
             //机构
             List<KV> orgkVs = new List<KV>();
             var organizations =  _sysOrganizationServices.Query();

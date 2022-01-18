@@ -174,7 +174,7 @@ namespace Core.Net.Entity.Model.Systems
         /// 组织机构名称
         /// </summary>
         [Display(Name = "组织机构名称")]
-        [SugarColumn(IsIgnore = true)]
+        //[SugarColumn(IsIgnore = true)]
         public string organizationName { get; set; }
     }
 }

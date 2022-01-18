@@ -17,6 +17,7 @@
 <script type="text/html" id="LAY-app-SysUser-toolbar">
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="addData"><i class="layui-icon layui-icon-add-1"></i>添加数据</button>
+        <button class="layui-btn layui-btn-sm" lay-event="importData"><i class="layui-icon layui-icon-add-1"></i>导入数据</button>
     </div>
 </script>
 
@@ -30,6 +31,8 @@
 
 
 <script type="text/html" id="LAY-app-SysUser-tableBox-bar">
+    <a class="layui-btn layui-btn-xs" lay-event="editPwd">修改密码</a>
+    <a class="layui-btn layui-btn-xs" lay-event="editBalance">修改余额</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-dropdown="#userTbDelDrop{{d.LAY_INDEX}}" no-shade="true">删除</a>
     <div class="dropdown-menu-nav dropdown-popconfirm dropdown-top-right layui-hide" id="userTbDelDrop{{d.LAY_INDEX}}"
@@ -119,7 +122,7 @@
                             { field: 'state', title: '状态', sort: false, templet: '#switch_state', width: 105 },
                             { field: 'createTime', title: '注册时间', width: 130, sort: false },
                             { field: 'updateTime', title: '修改时间', width: 130, sort: false },
-                            { width: 122, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-SysUser-tableBox-bar' }
+                            { width: 250, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-SysUser-tableBox-bar' }
                         ]
                     ]
                 });
@@ -140,6 +143,10 @@
                         case 'addData':
                             doCreate();
                             break;
+                        case 'importData':
+                            debugger;
+                            doIm();
+                            break;
                     };
                 });
                 //监听工具条
@@ -149,6 +156,15 @@
                             doDelete(obj);
                         } else if (obj.event === 'edit') {
                             doEdit(obj)
+                        }
+                        else if (obj.event === 'editBalance') {
+                            doEditBalance(obj);
+                        }
+                        else if (obj.event === 'editPwd') {
+                            doEditPwd(obj);
+                        }
+                        else {
+                            doPwd(obj)
                         }
                     });
                 //执行创建操作
@@ -194,6 +210,84 @@
                     });
                 }
                 //执行编辑操作
+                function doIm() {
+                    debugger;
+                    coreHelper.Post("Api/SysUser/GetImport", null, function (e) {
+                        debugger;
+                        if (e.code === 0) {
+                            admin.popup({
+                                shadeClose: false,
+                                title: '导入',
+                                area: ['380px', '600px'],
+                                id: 'LAY-popup-SysUser-import',
+                                success: function (layero, index) {
+                                    view(this.id).render('system/sysuser/import', { data: e.data }).done(function () {
+                                        debugger;
+                                        //监听提交
+                                        form.on('submit(LAY-app-SysUser-importForm-submit)',
+                                            function (data) {
+                                                var field = data.field.excelfile; //获取提交的字段
+                                                debugger;
+                                                var fileUpload = $("#excelfile").get(0);
+                                                var files = fileUpload.files;
+                                                var data = new FormData();
+                                                console.log("length=" + files.length);
+                                                for (var i = 0; i < files.length; i++) {
+                                                    data.append(files[i].name, files[i]);
+                                                }
+                                                $.ajax({
+                                                    type: "POST",
+                                                    url: setter.apitestUrl+"/Api/SysUser/DoImport",
+                                                    contentType: false,
+                                                    dateType: "json",
+                                                    processData: false,
+                                                    data: data,
+                                                    success: function (json) {
+                                                        if (json.code === 0) {
+                                                              layui.table.reloadData('LAY-app-SysUser-tableBox'); //重载表格
+                                                              layer.close(index); //再执行关闭
+                                                              layer.msg(e.msg);
+                                                        }
+                                                        else {
+                                                            layer.msg(e.msg);
+                                                        }
+                                                        //alert(json);
+                                                        //var list = JSON.parse(json);
+                                                        //alert(list.res);
+                                                    },
+                                                    error: function () {
+                                                        alert("There was error uploading files!");
+                                                    }
+                                                });
+                                              
+
+                                                ////提交 Ajax 成功后，关闭当前弹层并重载表格
+                                                //coreHelper.Post("Api/SysUser/DoImport", field, function (e) {
+                                                //    if (e.code === 0) {
+                                                //        layui.table.reloadData('LAY-app-SysUser-tableBox'); //重载表格
+                                                //        layer.close(index); //再执行关闭
+                                                //        layer.msg(e.msg);
+                                                //    } else {
+                                                //        layer.msg(e.msg);
+                                                //    }
+                                                //});
+                                            });
+                                    })
+                                    // 禁止弹窗出现滚动条
+                                    $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                                }
+                                , btn: ['确定', '取消']
+                                , yes: function (index, layero) {
+                                    layero.contents().find("#LAY-app-SysUser-importForm-submit").click();
+                                }
+                            });
+                        } else {
+                            layer.msg(e.msg);
+                        }
+                    });
+                }
+
+                //执行编辑操作
                 function doEdit(obj) {
                     coreHelper.Post("Api/SysUser/GetEdit", { id: obj.data.id }, function (e) {
                         if (e.code === 0) {
@@ -228,6 +322,88 @@
                                 , btn: ['确定', '取消']
                                 , yes: function (index, layero) {
                                     layero.contents().find("#LAY-app-SysUser-editForm-submit").click();
+                                }
+                            });
+                        } else {
+                            layer.msg(e.msg);
+                        }
+                    });
+                }
+                //执行编辑余额
+                function doEditBalance(obj) {
+                    coreHelper.Post("Api/SysUser/GetEditBalance", { id: obj.data.id }, function (e) {
+                        if (e.code === 0) {
+                            admin.popup({
+                                shadeClose: false,
+                                title: '修改余额',
+                                area: ['500px', '300px'],
+                                id: 'LAY-popup-CoreCmsUser-EditBalance',
+                                success: function (layero, index) {
+                                    view(this.id).render('system/sysuser/editBalance', { data: e.data }).done(function () {
+                                        //监听提交
+                                        form.on('submit(LAY-app-CoreCmsUser-editBalanceForm-submit)',
+                                            function (data) {
+                                                var field = data.field; //获取提交的字段
+                                                field.data = parseFloat(field.data).toFixed(2);
+
+                                                //提交 Ajax 成功后，关闭当前弹层并重载表格
+                                                coreHelper.Post("Api/SysUser/DoEditBalance", field, function (e) {
+                                                    console.log(e)
+                                                    if (e.code === 0) {
+                                                        layui.table.reload('LAY-app-SysUser-tableBox'); //重载表格
+                                                        layer.close(index); //再执行关闭
+                                                        layer.msg(e.msg);
+                                                    } else {
+                                                        layer.msg(e.msg);
+                                                    }
+                                                });
+                                            });
+                                    })
+                                }
+                                , btn: ['确定', '取消']
+                                , yes: function (index, layero) {
+                                    layero.contents().find("#LAY-app-CoreCmsUser-editBalanceForm-submit").click();
+                                }
+                            });
+                        } else {
+                            layer.msg(e.msg);
+                        }
+                    });
+                }
+                //执行编辑余额
+                function doEditPwd(obj) {
+                    coreHelper.Post("Api/SysUser/GetEditPwd", { id: obj.data.id }, function (e) {
+                        if (e.code === 0) {
+                            admin.popup({
+                                shadeClose: false,
+                                title: '修改密码',
+                                area: ['500px', '300px'],
+                                id: 'LAY-popup-CoreCmsUser-EditPwd',
+                                success: function (layero, index) {
+                                    view(this.id).render('system/sysuser/editPwd', { data: e.data }).done(function () {
+                                        //监听提交
+                                        form.on('submit(LAY-app-CoreCmsUser-editPwdForm-submit)',
+                                            function (data) {
+                                                var field = data.field; //获取提交的字段
+                                                field.data = parseFloat(field.data).toFixed(2);
+
+                                                //提交 Ajax 成功后，关闭当前弹层并重载表格
+                                                coreHelper.Post("Api/SysUser/DoEditPwd", field, function (e) {
+                                                    console.log(e)
+                                                    if (e.code === 0) {
+                                                        layui.table.reload('LAY-app-SysUser-tableBox'); //重载表格
+                                                        layer.close(index); //再执行关闭
+                                                        layer.msg(e.msg);
+                                                    } else {
+                                                        layer.msg(e.msg);
+                                                    }
+                                                });
+                                            });
+                                    })
+                                }
+                                , btn: ['确定', '取消']
+                                , yes: function (index, layero) {
+                                    layero.contents().find("#LAY-app-CoreCmsUser-editPwdForm-submit").click();
                                 }
                             });
                         } else {

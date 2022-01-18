@@ -2,6 +2,18 @@
     <div class="layui-form coreshop-form layui-form-pane" lay-filter="LAY-app-SysUser-createForm" id="LAY-app-SysUser-createForm">
 
         <div class="layui-form-item">
+            <label for="brandId" class="layui-form-label">部门</label>
+            <div class="layui-input-block" id="brandIdView">
+                <select name="organizationId" id="organizationId">
+                    <option value="0">请选择</option>
+                    {{# layui.each(d.params.data.orgs, function(index, item){ }}
+                    <option value="{{ item.id }}">{{ item.organizationName }}</option>
+                    {{# }); }}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
             <label for="trueName" class="layui-form-label">角色</label>
             <div class="layui-input-block">
                 <div id="selectBox" class="xm-select-demo"></div>
@@ -24,15 +36,15 @@
         <div class="layui-form-item">
             <label for="userName" class="layui-form-label">餐卡号</label>
             <div class="layui-input-block">
-                <input name="cardNo" id="cardNo" lay-verType="tips" lay-verify="required|verifyuserName" class="layui-input" lay-reqText="请输入餐卡号" placeholder="请输入餐卡号" />
+                <input name="cardNo" id="cardNo" lay-verType="tips"  class="layui-input" lay-reqText="请输入餐卡号" placeholder="请输入餐卡号" />
             </div>
         </div>
-        <div class="layui-form-item">
+        <!--<div class="layui-form-item">
             <label for="userName" class="layui-form-label">余额</label>
             <div class="layui-input-block">
                 <input name="balance" id="balance" lay-verType="tips" lay-verify="required|verifyuserName" class="layui-input" lay-reqText="请输入余额" placeholder="请输入余额" />
             </div>
-        </div>
+        </div>-->
 
 
 
@@ -102,8 +114,7 @@
                         value: 'id',
                     },
                     data: d.params.data.roles
-                })
-
+                });
                 form.verify({
 
                     verifyuserName: [/^[\S]{0,50}$/, '账号最大只允许输入50位字符，且不能出现空格'],

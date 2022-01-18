@@ -61,6 +61,24 @@ namespace Core.Net.Entity.Dtos
     }
 
     /// <summary>
+    ///     按照序列进行更新Decimal类型数据
+    /// </summary>
+    public class FMUpdateStrDataByIntId
+    {
+        /// <summary>
+        ///     序列
+        /// </summary>
+        [Required(ErrorMessage = "请输入序列")]
+        public int id { get; set; }
+        /// <summary>
+        ///     数据
+        /// </summary>
+        [Required(ErrorMessage = "请输入相应数据")]
+        public string pwd { get; set; }
+    }
+
+
+    /// <summary>
     ///     更新积分提交model
     /// </summary>
     public class FMUpdateUserPoint

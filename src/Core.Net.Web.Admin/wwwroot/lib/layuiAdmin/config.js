@@ -18,6 +18,7 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function (exports) {
             tokenName: 'Authorization' //自动携带 token 的字段名。可设置 false 不携带。
         }
         //额外增加
+        , apitestUrl: 'http://localhost:5000' //api请求地址
         , apiUrl: '/' //api请求地址
         , fileUrl: '/' //资源请求地址
         , noImagePicUrl: layui.cache.base + 'style/res/noImage.jpg' //api请求地址
