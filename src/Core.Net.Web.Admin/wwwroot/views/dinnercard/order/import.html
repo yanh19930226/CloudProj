@@ -1,0 +1,31 @@
+﻿<script type="text/html" template lay-done="layui.data.done(d);">
+    <div class="layui-form coreshop-form layui-form-pane" lay-filter="LAY-app-Order-importForm" id="LAY-app-Order-importForm">
+
+        <form id="upload-form"  enctype="multipart/form-data" >
+            <input type="file" id="excelfile" name="excelfile" /> <br />
+            <a nores="true" target="_blank" href="/Resource/用户模板.xlsx">下载模板</a>
+        </form>
+        <div class="layui-form-item text-right core-hidden">
+            <input type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="LAY-app-Order-importForm-submit" id="LAY-app-Order-importForm-submit" value="确认添加">
+        </div>
+    </div>
+</script>
+<script>
+    var debug = layui.setter.debug;
+    layui.data.done = function (d) {
+        //开启调试情况下获取接口赋值数据
+        if (debug) { console.log(d.params.data); }
+        layui.use(['admin', 'form', 'laydate', 'upload', 'coreHelper', 'xmSelect'],
+            function () {
+                var $ = layui.$
+                    , form = layui.form
+                    , admin = layui.admin
+                    , laydate = layui.laydate
+                    , upload = layui.upload
+                    , cropperImg = layui.cropperImg
+                    , xmSelect = layui.xmSelect;
+                //重载form
+                form.render(null, 'LAY-app-Order-importForm');
+            })
+    };
+</script>

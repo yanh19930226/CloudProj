@@ -38,7 +38,7 @@
 <script type="text/html" id="LAY-app-Org-pagebar">
 </script>
 <script type="text/html" id="LAY-app-Org-tableBox-bar">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-dropdown="#OrgTbDelDrop{{d.LAY_INDEX}}" no-shade="true">删除</a>
     <div class="dropdown-menu-nav dropdown-popconfirm dropdown-top-right layui-hide" id="OrgTbDelDrop{{d.LAY_INDEX}}"
          style="max-width: 200px;white-space: normal;min-width: auto;margin-left: 10px;">
@@ -101,12 +101,8 @@
                     text: { none: '暂无相关数据' },
                     cols: [
                         [
-                           /* { type: "checkbox", fixed: "left" },*/
-                            { field: 'id', title: '序列', width: 60, sort: false },
-                            { field: 'organizationName', title: '部门名称', sort: false, width: 200 },
-                         /*   { field: 'OrgName', title: '商家名称', sort: false, width: 200 },*/
-                            //{ field: 'status', title: '状态', width: 105, templet: '#switch_isStatus', sort: false, unresize: true },
-                            //{ field: 'sort', title: '排序 ', sort: false, width: 60 },
+                          /*  { field: 'id', title: '序列', sort: false },*/
+                            { field: 'organizationName', title: '部门名称', sort: false },
                             { width: 120, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-Org-tableBox-bar' }
                         ]
                     ]

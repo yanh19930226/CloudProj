@@ -59,6 +59,8 @@
 
 <script type="text/html" id="LAY-app-Order-toolbar">
     <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="doExportExcel"><i class="layui-icon layui-icon-add-circle"></i>订单导出</button>
+        <button class="layui-btn layui-btn-sm" lay-event="importData"><i class="layui-icon layui-icon-add-circle"></i>订单导入发货</button>
         <button class="layui-btn layui-btn-sm" lay-event="doBatchConfirm"><i class="layui-icon layui-icon-console"></i>批量确认</button>
         <button class="layui-btn layui-btn-sm" lay-event="doBatchCancel"><i class="layui-icon layui-icon-about"></i>批量取消</button>
     </div>
@@ -151,18 +153,17 @@
                     cols: [
                         [
                             { type: "checkbox", fixed: "left" },
-                            { field: 'id', title: '序列', width: 60, sort: false },
-                            { field: 'organizationName', title: '机构部门', width: 60, sort: false },
+                            { field: 'organizationName', title: '部门', sort: false },
                          /*   { field: 'roleName', title: '岗位', sort: false, width: 200 },*/
-                            { field: 'userName', title: '用户', sort: false, width: 200 },
-                            { field: 'orderNo', title: '订单编号', sort: false, width: 105 },
+                            { field: 'userName', title: '用户', sort: false },
+                            { field: 'orderNo', title: '订单编号', sort: false },
                             {
-                                field: 'orderType', title: '订单类型', sort: false, width: 100, templet: function (data) {
+                                field: 'orderType', title: '订单类型', sort: false, templet: function (data) {
                                     return "商品消费";
                                 }
                             },
-                            { field: 'totalPrice', title: '总金额', sort: false, width: 105 },
-                            { field: 'telePhone', title: '手机号', sort: false, width: 105 },
+                            { field: 'totalPrice', title: '总金额', sort: false },
+                            { field: 'telePhone', title: '手机号', sort: false },
                             {
                                 field: 'status', title: '订单状态', sort: false, width: 80, templet: function (data) {
                                     for (var i = 0; i < d.data.dictData.length; i++) {
@@ -173,7 +174,7 @@
                                     return "";
                                 }
                             },
-                            { field: 'createTime', title: '创建时间', sort: false, width: 150 },
+                            { field: 'createTime', title: '创建时间', sort: false },
                             { width: 220, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-Order-tableBox-bar' }
                         ]
                     ]
@@ -195,6 +196,8 @@
                 });
                 //头工具栏事件
                 table.on('toolbar(LAY-app-Order-tableBox)', function (obj) {
+
+                    debugger;
                     var checkStatus = table.checkStatus(obj.config.id);
                     switch (obj.event) {
                         case 'doBatchConfirm':
@@ -205,6 +208,13 @@
                             break;
                         case 'addData':
                             doCreate();
+                            break;
+                        case 'doExportExcel':
+                            doExportExcel(checkStatus);
+                            break;
+                        case 'importData':
+                            debugger;
+                            doIm();
                             break;
                     };
                 });
@@ -295,6 +305,95 @@
                                 layer.msg(e.msg);
                             });
                         });
+                }
+                //执行选择目录导出数据
+                function doExportExcel(checkStatus) {
+                    var checkData = checkStatus.data;
+                    if (checkData.length === 0) {
+                        return layer.msg('请选择您要导出的数据');
+                    }
+                    layer.confirm('确定导出选择的内容吗？',
+                        function (index) {
+                            var delidsStr = [];
+                            layui.each(checkData,
+                                function (index, item) {
+                                    delidsStr.push(item.orderNo);
+                                });
+                            layer.close(index);
+                            coreHelper.Post("Api/Order/SelectExcel", { orderNo: delidsStr }, function (e) {
+                                if (debug) { console.log(e); } //开启调试返回数据
+                                if (e.code === 0) {
+                                    window.open(e.data);
+                                } else {
+                                    layer.msg(e.msg);
+                                }
+                            });
+                        });
+                }
+
+                //执行编辑操作
+                function doIm() {
+                    debugger;
+                    coreHelper.Post("Api/Order/GetImport", null, function (e) {
+                        debugger;
+                        if (e.code === 0) {
+                            admin.popup({
+                                shadeClose: false,
+                                title: '导入',
+                                area: ['380px', '600px'],
+                                id: 'LAY-popup-Order-import',
+                                success: function (layero, index) {
+                                    view(this.id).render('dinnercard/order/import', { data: e.data }).done(function () {
+                                        debugger;
+                                        //监听提交
+                                        form.on('submit(LAY-app-Order-importForm-submit)',
+                                            function (data) {
+                                                var field = data.field.excelfile; //获取提交的字段
+                                                debugger;
+                                                var fileUpload = $("#excelfile").get(0);
+                                                var files = fileUpload.files;
+                                                var data = new FormData();
+                                                console.log("length=" + files.length);
+                                                for (var i = 0; i < files.length; i++) {
+                                                    data.append(files[i].name, files[i]);
+                                                }
+                                                $.ajax({
+                                                    type: "POST",
+                                                    url: setter.apitestUrl + "/Api/Order/DoImport",
+                                                    contentType: false,
+                                                    dateType: "json",
+                                                    processData: false,
+                                                    data: data,
+                                                    success: function (json) {
+                                                        debugger;
+                                                        if (json.code === 0) {
+                                                            console.log(json.msg);
+                                                            layer.msg(json.msg);
+                                                            layui.table.reloadData('LAY-app-Order-tableBox'); //重载表格
+                                                            layer.close(index); //再执行关闭
+                                                        }
+                                                        else {
+                                                            layer.msg(e.msg);
+                                                        }
+                                                    },
+                                                    error: function () {
+                                                        alert("There was error uploading files!");
+                                                    }
+                                                });
+                                            });
+                                    })
+                                    // 禁止弹窗出现滚动条
+                                    $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                                }
+                                , btn: ['确定', '取消']
+                                , yes: function (index, layero) {
+                                    layero.contents().find("#LAY-app-Order-importForm-submit").click();
+                                }
+                            });
+                        } else {
+                            layer.msg(e.msg);
+                        }
+                    });
                 }
             });
     };

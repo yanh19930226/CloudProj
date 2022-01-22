@@ -269,10 +269,8 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
                 jm.msg = "不存在此信息";
                 return jm;
             }
-
             oldModel.status = entity.data;
             oldModel.createTime = DateTime.Now;
-
             var bl = await _businessServices.UpdateAsync(oldModel);
             jm.code = bl ? 0 : 1;
             jm.msg = bl ? GlobalConstVars.EditSuccess : GlobalConstVars.EditFailure;

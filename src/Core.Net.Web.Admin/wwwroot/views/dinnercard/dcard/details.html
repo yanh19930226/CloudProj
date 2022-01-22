@@ -1,0 +1,55 @@
+<script type="text/html" template lay-done="layui.data.done(d);">
+    <div class="layui-form coreshop-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">餐卡号:</label>
+            <div class="layui-inline-4 layui-form-mid">
+                {{ d.params.data.dcard.cardno || '' }}
+            </div>
+            <label class="layui-form-label">当前员工:</label>
+            <div class="layui-inline-4 layui-form-mid">
+                {{ d.params.data.dcard.username || '' }}
+            </div>
+        </div>
+    </div>
+    <table class="layui-table layui-form" id="LAY-app-Detail-tableBox"></table>
+</script>
+<script>
+    var debug = layui.setter.debug;
+    layui.data.done = function (d) {
+        //开启调试情况下获取接口赋值数据
+        if (debug) { console.log(d.params.data); }
+
+        layui.use(['admin', 'form', 'coreHelper', 'table'], function () {
+            var $ = layui.$
+                , setter = layui.setter
+                , admin = layui.admin
+                , table = layui.table
+                , coreHelper = layui.coreHelper
+                , form = layui.form;
+
+            //数据绑定
+            table.render({
+                elem: '#LAY-app-Detail-tableBox',
+                data: d.params.data.detail,
+                method: 'POST',
+                defaultToolbar: ['filter', 'print', 'exports'],
+                height: '300px',
+                page: false,
+                limit: 30,
+                limits: [10, 15, 20, 25, 30, 50, 100, 200],
+                text: { none: '暂无相关数据' },
+                cols: [
+                    [
+                        { field: 'username', title: '姓名', sort: false },
+                        { field: 'orgname', title: '部门', sort: false },
+                        { field: 'telephone', title: '手机', sort: false },
+                        { field: 'action', title: '动作', sort: false },
+                        { field: 'opuser', title: '操作人', sort: false },
+                        { field: 'optime', title: '时间', sort: false },
+                    ]
+                ]
+            });
+            form.render(null, 'LAY-app-DT-detailsForm');
+        });
+    };
+</script>

@@ -148,7 +148,14 @@
         </member>
         <member name="M:Core.Api.Controllers.OrderController.CompleteOrder(System.Int32)">
             <summary>
-            完成订单
+            确认完成订单
+            </summary>
+            <param name="orderId">订单Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.OrderController.BatchCompleteOrder(Core.Api.Models.Dtos.FMListIdsDto)">
+            <summary>
+            批量确认完成订单
             </summary>
             <param name="orderId">订单Id</param>
             <returns></returns>
@@ -156,6 +163,13 @@
         <member name="M:Core.Api.Controllers.OrderController.CancelOrder(System.Int32)">
             <summary>
             取消订单
+            </summary>
+            <param name="orderId">订单Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Core.Api.Controllers.OrderController.BatchCancelOrder(Core.Api.Models.Dtos.FMListIdsDto)">
+            <summary>
+            批量取消订单
             </summary>
             <param name="orderId">订单Id</param>
             <returns></returns>
@@ -169,7 +183,7 @@
         </member>
         <member name="M:Core.Api.Controllers.OrderController.GoodStatic(Core.Api.Models.Dtos.AllGoodDto)">
             <summary>
-            商品统计查询
+             管理员商品统计查询
             </summary>
             <returns></returns>
         </member>
@@ -233,7 +247,7 @@
         </member>
         <member name="P:Core.Api.Models.Dtos.AllGoodDto.goodText">
             <summary>
-            商品名称
+            商家名称
             </summary>
         </member>
         <member name="P:Core.Api.Models.Dtos.AllGoodDto.goodStatus">
@@ -451,7 +465,7 @@
             订单ID
              </summary>
         </member>
-        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.oraganizationId">
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDto.organizationId">
             <summary>
             机构Id
             </summary>

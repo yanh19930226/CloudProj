@@ -48,12 +48,11 @@
     <ProjectReference Include="..\Core.Net.Loging\Core.Net.Loging.csproj" />
     <ProjectReference Include="..\Core.Net.Middlewares\Core.Net.Middlewares.csproj" />
     <ProjectReference Include="..\Core.Net.Service\Core.Net.Service.csproj" />
+    <ProjectReference Include="..\Core.Net.Util\Core.Net.Util.csproj" />
     <ProjectReference Include="..\Core.Net\Core.Net.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\files\2021-05-01\20210501075941520-CoreCmsBillDelivery导出%28查询结果%29.xls" />
-    <None Include="wwwroot\files\2021-05-02\20210502104200309-数据库表导出.xls" />
     <None Include="wwwroot\json\menu.js" />
     <None Include="wwwroot\lib\bootstrap\css\bootstrap-grid.css.map" />
     <None Include="wwwroot\lib\bootstrap\css\bootstrap-grid.min.css.map" />

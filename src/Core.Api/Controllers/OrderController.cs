@@ -6,6 +6,7 @@ using Core.Net.Entity.Model.Expression;
 using Core.Net.Entity.ViewModels;
 using Core.Net.Service.DinnerCards;
 using Core.Net.Service.Systems;
+using Core.Net.Util.Helper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SqlSugar;
@@ -81,7 +82,8 @@ namespace Core.Api.Controllers
                 coreOrder.userName = user.userName;
                 coreOrder.roleId = Convert.ToInt32(user.id);
                 coreOrder.roleName = "";
-                var orderNo = Guid.NewGuid().ToString("N");
+
+                var orderNo = RandomNumber.GetRandomOrder();
                 coreOrder.orderNo = orderNo;
                 //订单类型
                 coreOrder.orderType = (int)OrderTypeEnum.GoodOrder;
@@ -94,7 +96,7 @@ namespace Core.Api.Controllers
                 //订单消费金额
                 coreOrder.amount = totalPrice;
                 //余额
-                coreOrder.balance = (Convert.ToDecimal(user.balance) - totalPrice);
+                //coreOrder.balance = (Convert.ToDecimal(user.balance) - totalPrice);
                 coreOrder.telePhone = user.phone;
                 coreOrder.createTime = DateTime.Now;
                 await _coreOrderServices.InsertAsync(coreOrder);
@@ -115,7 +117,7 @@ namespace Core.Api.Controllers
                     await _coreGoodOrderDetailServices.InsertAsync(coreGoodOrderDetail);
                 }
 
-                user.balance= (Convert.ToDecimal(user.balance) - totalPrice).ToString();
+                //user.balance= (Convert.ToDecimal(user.balance) - totalPrice).ToString();
                 _sysUserServices.Update(user);
 
                 _unitOfWork.CommitTran();
@@ -227,9 +229,9 @@ namespace Core.Api.Controllers
 
         #endregion
 
-        #region 完成订单
+        #region 确认完成订单
         /// <summary>
-        /// 完成订单
+        /// 确认完成订单
         /// </summary>
         /// <param name="orderId">订单Id</param>
         /// <returns></returns>
@@ -251,6 +253,37 @@ namespace Core.Api.Controllers
                 await _coreOrderServices.UpdateAsync(order);
 
                 jm.Success(true, "订单完成");
+            }
+            return Ok(jm);
+        }
+        #endregion
+
+        #region 批量确认完成订单
+        /// <summary>
+        /// 批量确认完成订单
+        /// </summary>
+        /// <param name="orderId">订单Id</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> BatchCompleteOrder([FromBody] FMListIdsDto fMListIdsDto)
+        {
+            var jm = new CallBackResult<bool>();
+
+            foreach (var item in fMListIdsDto.Ids)
+            {
+                var order = await _coreOrderServices.QueryByClauseAsync(p => p.id == item);
+
+                if (order == null)
+                {
+                    jm.Failed("订单不存在");
+                }
+                else
+                {
+                    order.status = (int)OrderStatusEnum.Complete;
+                    order.completeTime = DateTime.Now;
+                    await _coreOrderServices.UpdateAsync(order);
+                    jm.Success(true, "订单完成");
+                }
             }
             return Ok(jm);
         }
@@ -280,6 +313,38 @@ namespace Core.Api.Controllers
                 await _coreOrderServices.UpdateAsync(order);
                 jm.Success(true, "订单取消");
             }
+            return Ok(jm);
+        }
+        #endregion
+
+        #region 批量取消订单
+        /// <summary>
+        /// 批量取消订单
+        /// </summary>
+        /// <param name="orderId">订单Id</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> BatchCancelOrder([FromBody] FMListIdsDto fMListIdsDto)
+        {
+            var jm = new CallBackResult<bool>();
+
+            foreach (var item in fMListIdsDto.Ids)
+            {
+
+                var order = await _coreOrderServices.QueryByClauseAsync(p => p.id == item);
+
+                if (order == null)
+                {
+                    jm.Failed("订单不存在");
+                }
+                else
+                {
+                    order.status = (int)OrderStatusEnum.Canceled;
+                    await _coreOrderServices.UpdateAsync(order);
+                    jm.Success(true, "订单取消");
+                }
+            }
+
             return Ok(jm);
         }
         #endregion
@@ -356,9 +421,9 @@ namespace Core.Api.Controllers
         }
         #endregion
 
-        #region 商品统计查询
+        #region  管理员商品统计查询
         /// <summary>
-        /// 商品统计查询
+        ///  管理员商品统计查询
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -366,59 +431,41 @@ namespace Core.Api.Controllers
         {
             var jm = new CallBackResult<OrderListInfoDto>();
             var where = PredicateBuilder.True<CoreOrder>();
+          
+            //员工信息
+            if (!string.IsNullOrEmpty(allOrderDto.goodText))
+            {
+                where = where.And(p => p.businessName.Contains(allOrderDto.goodText));
+            }
+            //订单类型
+            if (!string.IsNullOrEmpty(allOrderDto.orderStatus))
+            {
+                var orderStatus = Convert.ToInt32(allOrderDto.orderStatus);
+                where = where.And(p => p.status == orderStatus);
+            }
+            //开始时间
+            if (!string.IsNullOrEmpty(allOrderDto.startTime))
+            {
+                var startTime = Convert.ToDateTime(allOrderDto.startTime);
+                where = where.And(p => p.createTime >= startTime);
+            }
+            //结束时间
+            if (!string.IsNullOrEmpty(allOrderDto.endTime))
+            {
+                var endTime = Convert.ToDateTime(allOrderDto.endTime);
+                where = where.And(p => p.createTime <= endTime);
+            }
+            var orderlist = await _coreOrderServices.QueryListByClauseAsync(where);
+            OrderListInfoDto orderListInfoDto = new OrderListInfoDto();
 
-            ////机构部门
-            //if (!string.IsNullOrEmpty(allOrderDto.organizationId))
-            //{
-            //    var orgId = Convert.ToInt32(allOrderDto.organizationId);
-            //    where = where.And(p => p.oraganizationId == orgId);
-            //}
-            ////岗位角色
-            //if (!string.IsNullOrEmpty(allOrderDto.roleId))
-            //{
-            //    var rid = Convert.ToInt32(allOrderDto.roleId);
-            //    where = where.And(p => p.roleId == rid);
-            //}
-            ////员工信息
-            //if (!string.IsNullOrEmpty(allOrderDto.userText))
-            //{
-            //    where = where.And(p => p.userName.Contains(allOrderDto.userText));
-            //}
-            ////订单编号
-            //if (!string.IsNullOrEmpty(allOrderDto.orderNo))
-            //{
-            //    where = where.And(p => p.orderNo.Contains(allOrderDto.orderNo));
-            //}
-            ////订单类型
-            //if (!string.IsNullOrEmpty(allOrderDto.orderType))
-            //{
-            //    var orderType = Convert.ToInt32(allOrderDto.orderType);
-            //    where = where.And(p => p.orderType == orderType);
-            //}
-            ////开始时间
-            //if (!string.IsNullOrEmpty(allOrderDto.startTime))
-            //{
-            //    var startTime = Convert.ToDateTime(allOrderDto.startTime);
-            //    where = where.And(p => p.createTime >= startTime);
-            //}
-            ////结束时间
-            //if (!string.IsNullOrEmpty(allOrderDto.endTime))
-            //{
-            //    var endTime = Convert.ToDateTime(allOrderDto.endTime);
-            //    where = where.And(p => p.createTime <= endTime);
-            //}
+            if (orderlist != null && orderlist.Count > 0)
+            {
+                orderListInfoDto.orders = orderlist;
+                orderListInfoDto.OrderTotalFeet = orderlist.Sum(p => p.totalPrice);
+                orderListInfoDto.OrderCount = orderlist.Count;
+            }
 
-            //var orderlist = await _coreGoodsOrderServices.QueryListByClauseAsync(where);
-            //OrderListInfoDto orderListInfoDto = new OrderListInfoDto();
-
-            //if (orderlist != null && orderlist.Count > 0)
-            //{
-            //    orderListInfoDto.orders = orderlist;
-            //    orderListInfoDto.OrderTotalFeet = orderlist.Sum(p => p.totalPrice);
-            //    orderListInfoDto.OrderCount = orderlist.Count;
-            //}
-
-            //jm.Success(orderListInfoDto, "数据调用成功");
+            jm.Success(orderListInfoDto, "数据调用成功");
 
             return Ok(jm);
         }

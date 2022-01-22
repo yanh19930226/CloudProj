@@ -10,50 +10,38 @@
 <style>
     /* 重写样式 */
 </style>
-<script type="text/html" template lay-type="Post" lay-url="Api/CoreCmsArticleType/GetIndex" lay-done="layui.data.done(d);">
-    
-</script>
-<div class="table-body">
-    <table id="LAY-app-CoreCmsArticleType-tableBox" lay-filter="LAY-app-CoreCmsArticleType-tableBox"></table>
-</div>
-
-<script type="text/html" id="LAY-app-CoreCmsArticleType-toolbar">
-    <div class="layui-form coreshop-toolbar-search-form">
+<script type="text/html" template lay-type="Post" lay-url="Api/DinnerCard/GetIndex" lay-done="layui.data.done(d);">
+    <div class="layui-form coreshop-search-form">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label" for="name">分类名称</label>
+                <label class="layui-form-label" for="text">餐卡号</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="name" placeholder="请输入分类名称" class="layui-input">
+                    <input type="text" name="text" placeholder="请输入餐卡号" class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
-                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="LAY-app-CoreCmsArticleType-search"><i class="layui-icon layui-icon-search"></i>筛选</button>
+                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="LAY-app-DinnerCard-search"><i class="layui-icon layui-icon-search"></i>筛选</button>
             </div>
         </div>
     </div>
 </script>
-<script type="text/html" id="LAY-app-CoreCmsArticleType-pagebar">
-    <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="addData"><i class="layui-icon layui-icon-add-1"></i>添加数据</button>
-    </div>
+
+<script type="text/html" id="LAY-app-DinnerCard-toolbar">
+ 
 </script>
-<script type="text/html" id="LAY-app-CoreCmsArticleType-tableBox-bar">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-dropdown="#CoreCmsArticleTypeTbDelDrop{{d.LAY_INDEX}}" no-shade="true">删除</a>
-    <div class="dropdown-menu-nav dropdown-popconfirm dropdown-top-right layui-hide" id="CoreCmsArticleTypeTbDelDrop{{d.LAY_INDEX}}"
-         style="max-width: 200px;white-space: normal;min-width: auto;margin-left: 10px;">
-        <div class="dropdown-anchor"></div>
-        <div class="dropdown-popconfirm-title">
-            <i class="layui-icon layui-icon-help"></i>
-            确定要删除吗？
-        </div>
-        <div class="dropdown-popconfirm-btn">
-            <a class="layui-btn layui-btn-primary cursor" btn-cancel>取消</a>
-            <a class="layui-btn layui-btn-normal cursor" lay-event="del">确定</a>
-        </div>
-    </div>
 
+<div class="table-body">
+    <table id="LAY-app-DinnerCard-tableBox" lay-filter="LAY-app-DinnerCard-tableBox"></table>
+</div>
 
+<script type="text/html" id="LAY-app-DinnerCard-toolbar">
+</script>
+
+<script type="text/html" id="LAY-app-DinnerCard-pagebar">
+</script>
+
+<script type="text/html" id="LAY-app-DinnerCard-tableBox-bar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看详情</a>
 </script>
 
 <script>
@@ -80,20 +68,20 @@
                 form.render();
                 var searchwhere;
                 //监听搜索
-                form.on('submit(LAY-app-CoreCmsArticleType-search)',
+                form.on('submit(LAY-app-DinnerCard-search)',
                     function (data) {
                         var field = data.field;
                         searchwhere = field;
                         //执行重载
-                        table.reload('LAY-app-CoreCmsArticleType-tableBox', { where: field });
+                        table.reload('LAY-app-DinnerCard-tableBox', { where: field });
                     });
                 //数据绑定
                 table.render({
-                    elem: '#LAY-app-CoreCmsArticleType-tableBox',
-                    url: layui.setter.apiUrl + 'Api/CoreCmsArticleType/GetPageList',
+                    elem: '#LAY-app-DinnerCard-tableBox',
+                    url: layui.setter.apiUrl + 'Api/DinnerCard/GetPageList',
                     method: 'POST',
-                    toolbar: '#LAY-app-CoreCmsArticleType-toolbar',
-                    pagebar: '#LAY-app-CoreCmsArticleType-pagebar',
+                    toolbar: '#LAY-app-DinnerCard-toolbar',
+                    pagebar: '#LAY-app-DinnerCard-pagebar',
                     className: 'pagebarbox',
                     defaultToolbar: ['filter', 'print', 'exports'],
                     height: 'full-127',//面包屑142px,搜索框4行172,3行137,2行102,1行67
@@ -103,18 +91,19 @@
                     text: { none: '暂无相关数据' },
                     cols: [
                         [
-                            { type: "checkbox", fixed: "left" },
-                            { field: 'id', title: '序列', width: 60, sort: false },
-                            { field: 'name', title: '分类名称', sort: false, width: 200 },
-                            { field: 'parentId', title: '父id', sort: false, width: 105 },
-                            { field: 'sort', title: '排序 ', sort: false, width: 60 },
-                            { width: 120, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-CoreCmsArticleType-tableBox-bar' }
+                       /*     { type: "checkbox", fixed: "left" },*/
+                            { field: 'cardno', title: '餐卡号', sort: false },
+                            { field: 'username', title: '姓名', sort: false },
+                            { field: 'orgname', title: '部门', sort: false },
+                            { field: 'telephone', title: '手机', sort: false },
+                            //{ field: 'status', title: '状态', width: 105, templet: '#switch_isStatus', sort: false, unresize: true },
+                            { width: 220, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-DinnerCard-tableBox-bar' }
                         ]
                     ]
                 });
                 //监听排序事件
-                table.on('sort(LAY-app-CoreCmsArticleType-tableBox)', function (obj) {
-                    table.reload('LAY-app-CoreCmsArticleType-tableBox', {
+                table.on('sort(LAY-app-DinnerCard-tableBox)', function (obj) {
+                    table.reload('LAY-app-DinnerCard-tableBox', {
                         initSort: obj, //记录初始排序，如果不设的话，将无法标记表头的排序状态。
                         where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
                             orderField: obj.field, //排序字段
@@ -123,66 +112,34 @@
                     });
                 });
                 //监听行双击事件
-                table.on('rowDouble(LAY-app-CoreCmsArticleType-tableBox)', function (obj) {
+                table.on('rowDouble(LAY-app-DinnerCard-tableBox)', function (obj) {
                     //查看详情
                     doDetails(obj);
                 });
                 //头工具栏事件
-                table.on('pagebar(LAY-app-CoreCmsArticleType-tableBox)', function (obj) {
+                table.on('toolbar(LAY-app-DinnerCard-tableBox)', function (obj) {
                     var checkStatus = table.checkStatus(obj.config.id);
-                    switch (obj.event) {
-                        case 'addData':
-                            doCreate();
-                            break;
-                    };
                 });
                 //监听工具条
-                table.on('tool(LAY-app-CoreCmsArticleType-tableBox)',
+                table.on('tool(LAY-app-DinnerCard-tableBox)',
                     function (obj) {
                         if (obj.event === 'detail') {
                             doDetails(obj);
-                        } else if (obj.event === 'del') {
-                            doDelete(obj);
-                        } else if (obj.event === 'edit') {
-                            doEdit(obj)
-                        }
+                        } 
                     });
-                //执行创建操作
-                function doCreate() {
-                    coreHelper.Post("Api/CoreCmsArticleType/GetCreate", null, function (e) {
+                //执行详细操作
+                function doDetails(obj) {
+                    coreHelper.Post("Api/DinnerCard/GetDetails", { id: obj.data.id }, function (e) {
                         if (e.code === 0) {
                             admin.popup({
                                 shadeClose: false,
-                                title: '创建数据',
-                                area: ['500px', '250px'],
-                                id: 'LAY-popup-CoreCmsArticleType-create',
+                                title: '查看详情',
+                                area: ['1000px', '600px'],
+                                id: 'LAY-popup-DinnerCard-details',
                                 success: function (layero, index) {
-                                    view(this.id).render('content/article/articletype/create', { data: e.data }).done(function () {
-                                        //监听提交
-                                        form.on('submit(LAY-app-CoreCmsArticleType-createForm-submit)',
-                                            function (data) {
-                                                var field = data.field; //获取提交的字段
-
-                                                if (debug) { console.log(field); } //开启调试返回数据
-                                                //提交 Ajax 成功后，关闭当前弹层并重载表格
-                                                coreHelper.Post("Api/CoreCmsArticleType/DoCreate", field, function (e) {
-                                                    console.log(e)
-                                                    if (e.code === 0) {
-                                                        layui.table.reload('LAY-app-CoreCmsArticleType-tableBox'); //重载表格
-                                                        layer.close(index); //再执行关闭
-                                                        layer.msg(e.msg);
-                                                    } else {
-                                                        layer.msg(e.msg);
-                                                    }
-                                                });
-                                            });
+                                    view(this.id).render('dinnercard/dcard/details', { data: e.data }).done(function () {
+                                        form.render();
                                     });
-                                    // 禁止弹窗出现滚动条
-                                    $(layero).children('.layui-layer-content').css('overflow', 'visible');
-                                }
-                                , btn: ['确定', '取消']
-                                , yes: function (index, layero) {
-                                    layero.contents().find("#LAY-app-CoreCmsArticleType-createForm-submit").click();
                                 }
                             });
                         } else {
@@ -190,59 +147,6 @@
                         }
                     });
                 }
-                //执行编辑操作
-                function doEdit(obj) {
-                    coreHelper.Post("Api/CoreCmsArticleType/GetEdit", { id: obj.data.id }, function (e) {
-                        if (e.code === 0) {
-                            admin.popup({
-                                shadeClose: false,
-                                title: '编辑数据',
-                                area: ['500px', '250px'],
-                                id: 'LAY-popup-CoreCmsArticleType-edit',
-                                success: function (layero, index) {
-                                    view(this.id).render('content/article/articletype/edit', { data: e.data }).done(function () {
-                                        //监听提交
-                                        form.on('submit(LAY-app-CoreCmsArticleType-editForm-submit)',
-                                            function (data) {
-                                                var field = data.field; //获取提交的字段
-
-
-                                                if (debug) { console.log(field); } //开启调试返回数据
-                                                //提交 Ajax 成功后，关闭当前弹层并重载表格
-                                                coreHelper.Post("Api/CoreCmsArticleType/DoEdit", field, function (e) {
-                                                    console.log(e)
-                                                    if (e.code === 0) {
-                                                        layui.table.reload('LAY-app-CoreCmsArticleType-tableBox'); //重载表格
-                                                        layer.close(index); //再执行关闭
-                                                        layer.msg(e.msg);
-                                                    } else {
-                                                        layer.msg(e.msg);
-                                                    }
-                                                });
-                                            });
-                                    })
-                                    // 禁止弹窗出现滚动条
-                                    $(layero).children('.layui-layer-content').css('overflow', 'visible');
-                                }
-                                , btn: ['确定', '取消']
-                                , yes: function (index, layero) {
-                                    layero.contents().find("#LAY-app-CoreCmsArticleType-editForm-submit").click();
-                                }
-                            });
-                        } else {
-                            layer.msg(e.msg);
-                        }
-                    });
-                }
-                //执行单个删除
-                function doDelete(obj) {
-                    coreHelper.Post("Api/CoreCmsArticleType/DoDelete", { id: obj.data.id }, function (e) {
-                        if (debug) { console.log(e); } //开启调试返回数据
-                        table.reload('LAY-app-CoreCmsArticleType-tableBox');
-                        layer.msg(e.msg);
-                    });
-                }
-
             });
     };
 </script>

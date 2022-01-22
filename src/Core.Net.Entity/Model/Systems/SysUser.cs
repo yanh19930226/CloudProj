@@ -122,8 +122,7 @@ namespace Core.Net.Entity.Model.Systems
         /// </summary>
         [Display(Name = "余额")]
         [SugarColumn(ColumnDescription = "余额", IsNullable = true)]
-        [StringLength(500, ErrorMessage = "【{0}】不能超过{1}字符长度")]
-        public string balance { get; set; }
+        public decimal? balance { get; set; }
 
         /// <summary>
         /// 机构id

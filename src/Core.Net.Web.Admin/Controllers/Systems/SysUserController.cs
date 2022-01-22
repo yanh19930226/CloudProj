@@ -32,17 +32,22 @@ namespace Core.Net.Web.Admin.Controllers.Systems
         private readonly ISysRoleServices _sysRoleServices;
         private readonly ICoreOrderServices _coreOrderServices;
         private readonly ISysUserRoleServices _sysUserRoleServices;
+        private readonly IDinnerCardServices _dinnerCardServices;
+        private readonly IDinnerCardDetailServices _dinnerCardDetailServices;
+
 
         /// <summary>
         ///     构造函数
         /// </summary>
-        public SysUserController(ISysUserServices sysUserServices, ISysOrganizationServices sysOrganizationServices, ISysRoleServices sysRoleServices, ISysUserRoleServices sysUserRoleServices, ICoreOrderServices coreOrderServices)
+        public SysUserController(ISysUserServices sysUserServices, ISysOrganizationServices sysOrganizationServices, ISysRoleServices sysRoleServices, ISysUserRoleServices sysUserRoleServices, ICoreOrderServices coreOrderServices, IDinnerCardDetailServices dinnerCardDetailServices, IDinnerCardServices dinnerCardServices)
         {
             _sysUserServices = sysUserServices;
             _sysOrganizationServices = sysOrganizationServices;
             _sysRoleServices = sysRoleServices;
             _coreOrderServices = coreOrderServices;
             _sysUserRoleServices = sysUserRoleServices;
+            _dinnerCardDetailServices = dinnerCardDetailServices;
+            _dinnerCardServices = dinnerCardServices;
         }
 
         #region 首页数据============================================================
@@ -92,9 +97,6 @@ namespace Core.Net.Web.Admin.Controllers.Systems
                 case "passWord":
                     orderEx = p => p.passWord;
                     break;
-                case "nickName":
-                    orderEx = p => p.nickName;
-                    break;
                 case "avatar":
                     orderEx = p => p.avatar;
                     break;
@@ -112,7 +114,6 @@ namespace Core.Net.Web.Admin.Controllers.Systems
                     break;
                 case "trueName":
                     orderEx = p => p.trueName;
-                    break;
                     break;
                 case "birthday":
                     orderEx = p => p.birthday;
@@ -285,13 +286,10 @@ namespace Core.Net.Web.Admin.Controllers.Systems
         public async Task<JsonResult> GetCreate()
         {
             //返回数据
-            var userSexTypes = EnumHelper.EnumToList<GlobalEnumVars.UserSexTypes>();
             var roles = await _sysRoleServices.QueryListByClauseAsync(p => p.deleted == false);
             var orgs = _sysOrganizationServices.Query();
             var jm = new AdminUiCallBack { code = 0 };
-            jm.data = new { userSexTypes, roles, orgs };
-
-
+            jm.data = new {roles, orgs };
             return new JsonResult(jm);
         }
 
@@ -312,8 +310,6 @@ namespace Core.Net.Web.Admin.Controllers.Systems
             var jm = new AdminUiCallBack();
 
             var haveName = await _sysUserServices.ExistsAsync(p => p.userName == entity.userName);
-
-
             if (haveName)
             {
                 jm.msg = "账号已经存在";
@@ -323,6 +319,7 @@ namespace Core.Net.Web.Admin.Controllers.Systems
 
             entity.createTime = DateTime.Now;
             entity.organizationName = org.organizationName;
+            entity.balance = 0;
             entity.passWord = CommonHelper.Md5For32(entity.passWord);
             var id = await _sysUserServices.InsertAsync(entity);
             //设置用户角色
@@ -374,18 +371,14 @@ namespace Core.Net.Web.Admin.Controllers.Systems
                 jm.msg = "不存在此信息";
                 return new JsonResult(jm);
             }
-
-            var userSexTypes = EnumHelper.EnumToList<GlobalEnumVars.UserSexTypes>();
             var userRoles = await _sysUserRoleServices.QueryListByClauseAsync(p => p.userId == model.id);
             var roleIds = userRoles.Select(p => p.roleId).ToList();
             var roles = await _sysRoleServices.QueryListByClauseAsync(p => p.deleted == false);
-
 
             jm.code = 0;
             jm.data = new
             {
                 model,
-                userSexTypes,
                 roles,
                 roleIds,
                 orgs
@@ -400,7 +393,7 @@ namespace Core.Net.Web.Admin.Controllers.Systems
 
         // POST: Api/SysUser/Edit
         /// <summary>
-        ///     编辑提交
+        ///  编辑提交
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
@@ -417,7 +410,6 @@ namespace Core.Net.Web.Admin.Controllers.Systems
                 return new JsonResult(jm);
             }
 
-
             if (oldModel.userName != entity.userName)
             {
                 var haveName = await _sysUserServices.ExistsAsync(p => p.userName == entity.userName);
@@ -430,17 +422,11 @@ namespace Core.Net.Web.Admin.Controllers.Systems
             var org = _sysOrganizationServices.QueryByClause(p => p.id == entity.organizationId);
             //事物处理过程开始
             oldModel.userName = entity.userName;
-            //if (!string.IsNullOrEmpty(entity.passWord))
-            //{
-            //    var md5Str = CommonHelper.Md5For32(entity.passWord);
-            //    oldModel.passWord = md5Str;
-            //}
             oldModel.organizationName = org.organizationName;
             oldModel.organizationId = entity.organizationId > 0 ? entity.organizationId : 0;
             oldModel.nickName = entity.nickName;
             oldModel.sex = entity.sex;
             oldModel.phone = entity.phone;
-            oldModel.balance = entity.balance;
             oldModel.cardNo = entity.cardNo;
             oldModel.idCardNo = entity.idCardNo;
             oldModel.updateTime = DateTime.Now;
@@ -546,13 +532,11 @@ namespace Core.Net.Web.Admin.Controllers.Systems
 
         #endregion
 
-
-
         #region 修改余额============================================================
 
         // POST: Api/CoreCmsUser/GetEditBalance
         /// <summary>
-        ///     修改余额
+        ///  修改余额
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -596,16 +580,14 @@ namespace Core.Net.Web.Admin.Controllers.Systems
                 jm.msg = "不存在此信息";
                 return new JsonResult(jm);
             }
-            model.balance = (Convert.ToDecimal(model.balance) + entity.data).ToString();
+            model.balance = model.balance + entity.data;
             var bl = await _sysUserServices.UpdateAsync(model);
-
             CoreOrder coreOrder = new CoreOrder();
             coreOrder.organizationId = (int)model.organizationId;
             coreOrder.sysUserId = model.id;
             coreOrder.userName = model.userName;
             coreOrder.organizationName = model.organizationName;
             coreOrder.orderNo = RandomNumber.GetRandomOrder();
-            //coreOrder.costOrderNo = model.userName;
             coreOrder.orderType = (int)OrderTypeEnum.MoneyRecharge;
             coreOrder.status = (int)OrderStatusEnum.Complete;
             coreOrder.amount = entity.data;
@@ -620,11 +602,11 @@ namespace Core.Net.Web.Admin.Controllers.Systems
 
         #endregion
 
-        #region 修改余额============================================================
+        #region 修改密码============================================================
 
         // POST: Api/CoreCmsUser/GetEditBalance
         /// <summary>
-        ///     修改余额
+        ///     修改密码
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -646,11 +628,11 @@ namespace Core.Net.Web.Admin.Controllers.Systems
 
         #endregion
 
-        #region 修改余额提交============================================================
+        #region 修改密码提交============================================================
 
         // POST: Api/CoreCmsUser/DoEditBalance
         /// <summary>
-        ///     修改余额提交
+        /// 修改密码提交
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
@@ -674,7 +656,100 @@ namespace Core.Net.Web.Admin.Controllers.Systems
 
         #endregion
 
+        #region 编辑绑定============================================================
 
+        // POST: Api/SysUser/GetEdit
+        /// <summary>
+        ///  编辑绑定
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Description("编辑绑定")]
+        public async Task<JsonResult> GetBind([FromBody] FMIntId entity)
+        {
+            var jm = new AdminUiCallBack();
+            var model = await _sysUserServices.QueryByIdAsync(entity.id);
+            if (model == null)
+            {
+                jm.msg = "不存在此信息";
+                return new JsonResult(jm);
+            }
+            jm.code = 0;
+            jm.data = new
+            {
+                model,
+            };
+
+            return new JsonResult(jm);
+        }
+
+        #endregion
+
+        #region 绑定提交============================================================
+        // POST: Api/SysUser/Edit
+        /// <summary>
+        ///  绑定提交
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Description("绑定提交")]
+        public async Task<JsonResult> DoBind([FromBody] FMUpdateStrDataByIntId entity)
+        {
+            var jm = new AdminUiCallBack();
+            var oldModel = await _sysUserServices.QueryByIdAsync(entity.id);
+            if (oldModel == null)
+            {
+                jm.msg = "不存在此信息";
+                return new JsonResult(jm);
+            }
+            oldModel.cardNo = entity.pwd;
+              //事物处理过程结束
+            var bl = await _sysUserServices.UpdateAsync(oldModel);
+            if (bl)
+            {
+                var dnnercard =await  _dinnerCardServices.QueryByClauseAsync(p => p.sysuserid == oldModel.id);
+
+                if (dnnercard==null)
+                {
+                    //添加餐卡绑定信息
+                    DinnerCard dinnerCard = new DinnerCard();
+                    dinnerCard.sysuserid = oldModel.id;
+                    dinnerCard.cardno = entity.pwd;
+                    dinnerCard.username = oldModel.userName;
+                    dinnerCard.orgid = (int)oldModel.organizationId;
+                    dinnerCard.orgname = oldModel.organizationName;
+                    dinnerCard.telephone = oldModel.phone;
+                    dinnerCard.createtime = DateTime.Now;
+                    await _dinnerCardServices.InsertAsync(dinnerCard);
+                }
+                else
+                {
+                    dnnercard.cardno = entity.pwd;
+                    await _dinnerCardServices.UpdateAsync(dnnercard);
+                }
+                //添加餐卡记录
+                DinnerCardDetail dinnerCardDetail = new DinnerCardDetail();
+                dinnerCardDetail.cardno = entity.pwd;
+                dinnerCardDetail.username = oldModel.userName;
+                dinnerCardDetail.orgname = oldModel.organizationName;
+                dinnerCardDetail.telephone = oldModel.phone;
+                dinnerCardDetail.action = "绑定";
+                dinnerCardDetail.opuser = "";
+                dinnerCardDetail.optime = DateTime.Now;
+                dinnerCardDetail.createtime = DateTime.Now;
+                await _dinnerCardDetailServices.InsertAsync(dinnerCardDetail);
+            }
+
+            jm.code = bl ? 0 : 1;
+            jm.msg = bl ? GlobalConstVars.EditSuccess : GlobalConstVars.EditFailure;
+            return new JsonResult(jm);
+        }
+
+        #endregion
+
+        #region 用户导入
         public IActionResult GetImport()
         {
             var jm = new AdminUiCallBack { code = 0 };
@@ -701,9 +776,9 @@ namespace Core.Net.Web.Admin.Controllers.Systems
                             {
                                 SysUser sysUser = new SysUser();
 
-                                if (dt.Rows[row]["账号"] != null)
+                                if (dt.Rows[row]["姓名"] != null)
                                 {
-                                    sysUser.userName = dt.Rows[row]["账号"].ToString();
+                                    sysUser.userName = dt.Rows[row]["姓名"].ToString();
                                 }
 
                                 if (dt.Rows[row]["身份证号"] != null)
@@ -729,15 +804,16 @@ namespace Core.Net.Web.Admin.Controllers.Systems
                                 }
                                 else
                                 {
-                                    var orgg = _sysOrganizationServices.QueryByClause(p => p.organizationName=="默认");
+                                    var orgg = _sysOrganizationServices.QueryByClause(p => p.organizationName == "默认");
                                     sysUser.organizationId = orgg.id;
-                                    sysUser.balance = "0";
+                                    sysUser.balance = 0M;
                                     sysUser.organizationName = orgg.organizationName;
                                 }
                                 sysUser.createTime = DateTime.Now;
                                 _sysUserServices.Insert(sysUser);
 
                             }
+                            jm.msg = "导入成功"; 
                             return new JsonResult(jm);
                         }
                     }
@@ -749,5 +825,67 @@ namespace Core.Net.Web.Admin.Controllers.Systems
             }
             return new JsonResult(jm);
         }
+        #endregion
+
+        #region 批量充值
+        public IActionResult GetImportCz()
+        {
+            var jm = new AdminUiCallBack { code = 0 };
+            return new JsonResult(jm);
+        }
+
+        [HttpPost]
+        public IActionResult DoImportCz(IFormFile excelfile)
+        {
+            var jm = new AdminUiCallBack { code = 0 };
+            var files = HttpContext.Request.Form.Files;
+            if (files.Count > 0)
+            {
+                var file = files[0];
+                try
+                {
+                    using (var stream = new MemoryStream())
+                    {
+                        file.CopyToAsync(stream);//取到文件流
+                        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                        using (var dt = new Excel().ReadExcel(stream))
+                        {
+                            for (int row = 0; row < dt.Rows.Count; row++)
+                            {
+                                var phone = dt.Rows[row]["手机号"].ToString();
+                                var name = dt.Rows[row]["姓名"].ToString();
+                                var user = _sysUserServices.QueryByClause(p => p.phone == phone&&p.userName==name);
+                                var cz =Convert.ToDecimal(dt.Rows[row]["金额"].ToString());
+                                user.balance = user.balance == null ? 0 : user.balance;
+                                user.balance = user.balance + cz;
+                                _sysUserServices.Update(user);
+
+                                CoreOrder coreOrder = new CoreOrder();
+                                coreOrder.organizationId = (int)user.organizationId;
+                                coreOrder.sysUserId = user.id;
+                                coreOrder.userName = user.userName;
+                                coreOrder.organizationName = user.organizationName;
+                                coreOrder.orderNo = RandomNumber.GetRandomOrder();
+                                coreOrder.orderType = (int)OrderTypeEnum.MoneyRecharge;
+                                coreOrder.status = (int)OrderStatusEnum.Complete;
+                                coreOrder.amount = cz;
+                                coreOrder.balance = Convert.ToDecimal(user.balance);
+                                coreOrder.createTime = DateTime.Now;
+                                coreOrder.telePhone = user.phone;
+                                 _coreOrderServices.Insert(coreOrder);
+                            }
+                            jm.msg = "充值成功";
+                            return new JsonResult(jm);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return new JsonResult(ex.Message);
+                }
+            }
+            return new JsonResult(jm);
+        }
+        #endregion
     }
 }

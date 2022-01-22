@@ -69,6 +69,14 @@ namespace Core.Net.Entity.Model.DinnerCard
         [Required(ErrorMessage = "请输入{0}")]
         public int goodNum { get; set; }
         /// <summary>
+        /// <summary>
+        ///实发数量
+        /// </summary>
+        [Display(Name = "实发数量")]
+        [SugarColumn(ColumnDescription = "实发数量")]
+        [Required(ErrorMessage = "请输入{0}")]
+        public int? realNum { get; set; }
+        /// <summary>
         ///商品单价(冗余字段)
         /// </summary>
         [Display(Name = "商品单价")]

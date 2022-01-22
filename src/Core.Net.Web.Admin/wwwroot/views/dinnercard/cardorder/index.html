@@ -113,15 +113,13 @@
                     text: { none: '暂无相关数据' },
                     cols: [
                         [
-                          /*  { type: "checkbox", fixed: "left" },*/
                             { field: 'id', title: '序列', width: 60, sort: false },
                             { field: 'organizationName', title: '部门', width: 150, sort: false },
-                         /*   { field: 'roleName', title: '岗位', sort: false, width: 150 },*/
                             { field: 'userName', title: '用户', sort: false, width: 150 },
-                            { field: 'orderNo', title: '系统订单号', sort: false, width: 200 },
-                            { field: 'costOrderNo', title: '餐卡订单号', sort: false, width: 150 },
+                            //{ field: 'orderNo', title: '系统订单号', sort: false, width: 200 },
+                            //{ field: 'costOrderNo', title: '餐卡订单号', sort: false, width: 150 },
                             {
-                                field: 'orderType', title: '订单类型', sort: false, width: 80, templet: function (data) {
+                                field: 'orderType', title: '订单类型', sort: false, templet: function (data) {
                                     for (var i = 0; i < d.data.dictData.length; i++) {
                                         if (d.data.dictData[i].dictDataCode == data.orderType) {
                                             return d.data.dictData[i].dictDataName;

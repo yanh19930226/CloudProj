@@ -39,38 +39,11 @@
                 <input name="cardNo" id="cardNo" lay-verType="tips"  class="layui-input" lay-reqText="请输入餐卡号" placeholder="请输入餐卡号" />
             </div>
         </div>
-        <!--<div class="layui-form-item">
-            <label for="userName" class="layui-form-label">余额</label>
-            <div class="layui-input-block">
-                <input name="balance" id="balance" lay-verType="tips" lay-verify="required|verifyuserName" class="layui-input" lay-reqText="请输入余额" placeholder="请输入余额" />
-            </div>
-        </div>-->
-
-
 
         <div class="layui-form-item">
             <label for="passWord" class="layui-form-label">密码</label>
             <div class="layui-input-block">
                 <input name="passWord" id="passWord" lay-verType="tips" lay-verify="required|verifypassWord" class="layui-input" lay-reqText="请输入密码" placeholder="请输入密码" />
-            </div>
-        </div>
-
-        <div class="layui-form-item">
-            <label for="nickName" class="layui-form-label">昵称</label>
-            <div class="layui-input-block">
-                <input name="nickName" id="nickName" lay-verType="tips" lay-verify="required|verifynickName" class="layui-input" lay-reqText="请输入昵称" placeholder="请输入昵称" />
-            </div>
-        </div>
-
-        <div class="layui-form-item">
-            <label for="sex" class="layui-form-label">性别</label>
-            <div class="layui-input-block">
-                <select name="sex" id="sex" lay-verType="tips" lay-verify="required" lay-verType="tips" lay-verify="required|number" lay-reqText="请选择性别">
-                    <option value="" selected="selected">请选择</option>
-                    {{# layui.each(d.params.data.userSexTypes, function(index, item){ }}
-                    <option value="{{ item.value }}">{{ item.title }}</option>
-                    {{# }); }}
-                </select>
             </div>
         </div>
 
@@ -124,7 +97,6 @@
                     verifyphone: [/^[\S]{0,50}$/, '手机号最大只允许输入50位字符，且不能出现空格'],
                     verifyemail: [/^[\S]{0,50}$/, '邮箱最大只允许输入50位字符，且不能出现空格'],
                     verifytrueName: [/^[\S]{0,50}$/, '真实姓名最大只允许输入50位字符，且不能出现空格'],
-                    verifyidCard: [/^[\S]{0,50}$/, '身份证号最大只允许输入50位字符，且不能出现空格'],
                     verifyintroduction: [/^[\S]{0,500}$/, '个人简介最大只允许输入500位字符，且不能出现空格'],
                 });
                 //重载form

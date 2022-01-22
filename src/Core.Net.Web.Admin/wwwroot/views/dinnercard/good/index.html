@@ -71,7 +71,7 @@
 
 
 <script type="text/html" id="LAY-app-Good-tableBox-bar">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-dropdown="#GoodTbDelDrop{{d.LAY_INDEX}}" no-shade="true">删除</a>
     <div class="dropdown-menu-nav dropdown-popconfirm dropdown-top-right layui-hide" id="GoodTbDelDrop{{d.LAY_INDEX}}"
          style="max-width: 200px;white-space: normal;min-width: auto;margin-left: 10px;">
@@ -141,13 +141,11 @@
                     text: { none: '暂无相关数据' },
                     cols: [
                         [
-                          /*  { type: "checkbox", fixed: "left" },*/
-                            { field: 'id', title: '序列', width: 60, sort: false },
-                            { field: 'businessName', title: '商家', width: 100, sort: false },
-                            { field: 'goodNo', title: '商品编号', sort: false, width: 200 },
-                            { field: 'goodName', title: '商品标题', sort: false, width: 200 },
+                            { field: 'businessName', title: '商家', sort: false },
+                            { field: 'goodNo', title: '商品编号', sort: false },
+                            { field: 'goodName', title: '商品标题', sort: false },
                             {
-                                field: 'url', title: '商品图片', width: 150, sort: false,
+                                field: 'url', title: '商品图片',  sort: false,
                                 templet: function (d) {
                                     if (d.url) {
                                         return '<a href="javascript:void(0);" onclick=layui.coreHelper.viewImage("' + d.url + '")><image style="max-width:28px;max-height:28px;" src="' + d.url + '" /></a>';
@@ -156,12 +154,12 @@
                                     }
                                 }
                             },
-                            { field: 'unitPrice', title: '价格', sort: false, width: 80 },
-                            { field: 'stock', title: '库存', sort: false, width: 80 },
+                            { field: 'unitPrice', title: '价格', sort: false },
+                            { field: 'stock', title: '库存', sort: false },
                          /*   { field: 'purchaseNumber', title: '订购数量', sort: false, width: 80 },*/
-                            { field: 'avilableTime', title: '有效时间', sort: false, width: 150 },
+                            { field: 'avilableTime', title: '有效时间', sort: false },
                             {
-                                field: 'status', title: '状态', sort: false, width: 80, templet: function (data) {
+                                field: 'status', title: '状态', sort: false, templet: function (data) {
                                     for (var i = 0; i < d.data.dictData2.length; i++) {
                                         if (d.data.dictData2[i].dictDataCode == data.status) {
                                             return d.data.dictData2[i].dictDataName;
@@ -170,7 +168,7 @@
                                     return "";
                                 }
                             },
-                            { field: 'createTime', title: '创建时间时间', sort: false, width: 150 },
+                            { field: 'createTime', title: '创建时间时间', sort: false },
                             { width: 120, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-Good-tableBox-bar' }
                         ]
                     ]

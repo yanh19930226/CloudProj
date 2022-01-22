@@ -16,8 +16,9 @@
 
 <script type="text/html" id="LAY-app-SysUser-toolbar">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="addData"><i class="layui-icon layui-icon-add-1"></i>添加数据</button>
-        <button class="layui-btn layui-btn-sm" lay-event="importData"><i class="layui-icon layui-icon-add-1"></i>导入数据</button>
+        <button class="layui-btn layui-btn-sm " lay-event="addData"><i class="layui-icon layui-icon-add-1"></i>添加数据</button>
+        <button class="layui-btn layui-btn-sm layui-btn-checked" lay-event="importData"><i class="layui-icon layui-icon-add-1"></i>用户导入</button>
+        <button class="layui-btn layui-btn-sm layui-btn-warm" lay-event="batchBalance"><i class="layui-icon layui-icon-add-1"></i>批量充值</button>
     </div>
 </script>
 
@@ -31,9 +32,10 @@
 
 
 <script type="text/html" id="LAY-app-SysUser-tableBox-bar">
-    <a class="layui-btn layui-btn-xs" lay-event="editPwd">修改密码</a>
-    <a class="layui-btn layui-btn-xs" lay-event="editBalance">修改余额</a>
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs" lay-event="bind">餐卡绑定</a>
+    <a class="layui-btn layui-btn-xs layui-btn-checked" lay-event="editPwd">修改密码</a>
+    <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="editBalance">充值</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-dropdown="#userTbDelDrop{{d.LAY_INDEX}}" no-shade="true">删除</a>
     <div class="dropdown-menu-nav dropdown-popconfirm dropdown-top-right layui-hide" id="userTbDelDrop{{d.LAY_INDEX}}"
          style="max-width: 200px;white-space: normal;min-width: auto;margin-left: 10px;">
@@ -100,13 +102,11 @@
                     cols: [
                         [
                             { type: "checkbox", fixed: "left" },
-                            { field: 'id', title: '用户id', width: 80, sort: false },
-                            { field: 'userName', title: '账号', sort: false, width: 105 },
-                            { field: 'idCardNo', title: '身份证号', sort: false, width: 105 },
-                            { field: 'cardNo', title: '餐卡号', sort: false, width: 105 },
-                            { field: 'balance', title: '余额', sort: false, width: 105 },
-                            { field: 'nickName', title: '昵称', sort: false },
-                            { field: 'phone', title: '手机号码', sort: false, width: 130 },
+                            { field: 'userName', title: '姓名', sort: false },
+                            { field: 'cardNo', title: '餐卡号', sort: false },
+                            { field: 'balance', title: '余额', sort: false },
+                            { field: 'phone', title: '手机号码', sort: false },
+                            { field: 'organizationName', title: '部门', sort: false },
                             {
                                 field: 'roleName', title: '角色', templet: function (d) {
                                     if (d.roles) {
@@ -119,10 +119,10 @@
 
                                 }, sort: true
                             },
-                            { field: 'state', title: '状态', sort: false, templet: '#switch_state', width: 105 },
-                            { field: 'createTime', title: '注册时间', width: 130, sort: false },
-                            { field: 'updateTime', title: '修改时间', width: 130, sort: false },
-                            { width: 250, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-SysUser-tableBox-bar' }
+                            { field: 'state', title: '状态', sort: false, templet: '#switch_state' },
+                            { field: 'createTime', title: '注册时间',sort: false },
+                            { field: 'updateTime', title: '修改时间',sort: false },
+                            { width: 350, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-SysUser-tableBox-bar' }
                         ]
                     ]
                 });
@@ -147,6 +147,10 @@
                             debugger;
                             doIm();
                             break;
+                        case 'batchBalance':
+                            debugger;
+                            doBatchBalance();
+                            break;
                     };
                 });
                 //监听工具条
@@ -162,6 +166,9 @@
                         }
                         else if (obj.event === 'editPwd') {
                             doEditPwd(obj);
+                        }
+                        else if (obj.event === 'bind') {
+                            doBind(obj);
                         }
                         else {
                             doPwd(obj)
@@ -286,7 +293,6 @@
                         }
                     });
                 }
-
                 //执行编辑操作
                 function doEdit(obj) {
                     coreHelper.Post("Api/SysUser/GetEdit", { id: obj.data.id }, function (e) {
@@ -370,7 +376,7 @@
                         }
                     });
                 }
-                //执行编辑余额
+                //执行编辑密码
                 function doEditPwd(obj) {
                     coreHelper.Post("Api/SysUser/GetEditPwd", { id: obj.data.id }, function (e) {
                         if (e.code === 0) {
@@ -404,6 +410,108 @@
                                 , btn: ['确定', '取消']
                                 , yes: function (index, layero) {
                                     layero.contents().find("#LAY-app-CoreCmsUser-editPwdForm-submit").click();
+                                }
+                            });
+                        } else {
+                            layer.msg(e.msg);
+                        }
+                    });
+                }
+                //执行批量充值
+                function doBatchBalance(obj) {
+                    coreHelper.Post("Api/SysUser/GetImportCz", null, function (e) {
+                        debugger;
+                        if (e.code === 0) {
+                            admin.popup({
+                                shadeClose: false,
+                                title: '批量充值导入',
+                                area: ['380px', '600px'],
+                                id: 'LAY-popup-SysUser-import',
+                                success: function (layero, index) {
+                                    view(this.id).render('system/sysuser/cz', { data: e.data }).done(function () {
+                                        debugger;
+                                        //监听提交
+                                        form.on('submit(LAY-app-SysUser-importForm-submit)',
+                                            function (data) {
+                                                var field = data.field.excelfile; //获取提交的字段
+                                                debugger;
+                                                var fileUpload = $("#excelfile").get(0);
+                                                var files = fileUpload.files;
+                                                var data = new FormData();
+                                                console.log("length=" + files.length);
+                                                for (var i = 0; i < files.length; i++) {
+                                                    data.append(files[i].name, files[i]);
+                                                }
+                                                $.ajax({
+                                                    type: "POST",
+                                                    url: setter.apitestUrl + "/Api/SysUser/DoImportCz",
+                                                    contentType: false,
+                                                    dateType: "json",
+                                                    processData: false,
+                                                    data: data,
+                                                    success: function (json) {
+                                                        if (json.code === 0) {
+                                                            layer.close(index); //再执行关闭
+                                                            layer.msg(e.msg);
+                                                            layui.table.reloadData('LAY-app-SysUser-tableBox'); //重载表格
+
+                                                        }
+                                                        else {
+                                                            layer.msg(e.msg);
+                                                        }
+                                                    },
+                                                    error: function () {
+                                                        alert("There was error uploading files!");
+                                                    }
+                                                });
+                                            });
+                                    })
+                                    // 禁止弹窗出现滚动条
+                                    $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                                }
+                                , btn: ['确定', '取消']
+                                , yes: function (index, layero) {
+                                    layero.contents().find("#LAY-app-SysUser-importForm-submit").click();
+                                }
+                            });
+                        } else {
+                            layer.msg(e.msg);
+                        }
+                    });
+                };
+                //餐卡绑定
+                function doBind(obj) {
+                    coreHelper.Post("Api/SysUser/GetBind", { id: obj.data.id }, function (e) {
+                        if (e.code === 0) {
+                            admin.popup({
+                                shadeClose: false,
+                                title: '餐卡绑定',
+                                area: ['500px', '300px'],
+                                id: 'LAY-popup-CoreCmsUser-Bind',
+                                success: function (layero, index) {
+                                    view(this.id).render('system/sysuser/bind', { data: e.data }).done(function () {
+                                        //监听提交
+                                        form.on('submit(LAY-app-CoreCmsUser-bindForm-submit)',
+                                            function (data) {
+                                                var field = data.field; //获取提交的字段
+                                                field.data = parseFloat(field.data).toFixed(2);
+                                                //提交 Ajax 成功后，关闭当前弹层并重载表格
+                                                coreHelper.Post("Api/SysUser/DoBind", field, function (e) {
+                                                    console.log(e)
+                                                    if (e.code === 0) {
+                                                        layui.table.reload('LAY-app-SysUser-tableBox'); //重载表格
+                                                        layer.close(index); //再执行关闭
+                                                        layer.msg(e.msg);
+                                                    } else {
+                                                        layer.msg(e.msg);
+                                                    }
+                                                });
+                                            });
+                                    })
+                                }
+                                , btn: ['确定', '取消']
+                                , yes: function (index, layero) {
+                                    layero.contents().find("#LAY-app-CoreCmsUser-bindForm-submit").click();
                                 }
                             });
                         } else {
@@ -445,7 +553,6 @@
                         layer.msg(e.msg);
                     });
                 });
-
             });
     };
 </script>

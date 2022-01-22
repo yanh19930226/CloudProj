@@ -8,10 +8,10 @@ namespace Core.Api.Models.Dtos
     /// <summary>
     /// 商品统计搜索
     /// </summary>
-    public class AllGoodDto
+    public class AllGoodDto:FMPage
     {
         /// <summary>
-        /// 商品名称
+        /// 商家名称
         /// </summary>
         public string goodText { get; set; }
         /// <summary>

@@ -17,6 +17,7 @@ namespace Core.Net.Entity.Model.DinnerCard
         /// </summary>
         public DinnerCard()
         {
+
         }
         /// <summary>
         /// 餐卡ID
@@ -31,35 +32,47 @@ namespace Core.Net.Entity.Model.DinnerCard
         [Display(Name = "用户id")]
         [SugarColumn(ColumnDescription = "用户id")]
         [Required(ErrorMessage = "请输入{0}")]
-        public System.Int32 sysUserId { get; set; }
+        public System.Int32 sysuserid { get; set; }
         /// <summary>
         ///餐卡号
         /// </summary>
         [Display(Name = "餐卡号")]
         [SugarColumn(ColumnDescription = "餐卡号", IsNullable = true)]
         [StringLength(50, ErrorMessage = "【{0}】不能超过{1}字符长度")]
-        public System.String cardNo { get; set; }
+        public System.String cardno { get; set; }
         /// <summary>
-        ///餐卡状态
+        ///用户名
         /// </summary>
-        [Display(Name = "餐卡状态")]
-        [SugarColumn(ColumnDescription = "餐卡状态")]
-        [Required(ErrorMessage = "请输入{0}")]
-        public System.Int32 status { get; set; }
+        [Display(Name = "用户名")]
+        [SugarColumn(ColumnDescription = "用户名", IsNullable = true)]
+        [StringLength(50, ErrorMessage = "【{0}】不能超过{1}字符长度")]
+        public System.String username { get; set; }
         /// <summary>
-        ///余额
+        ///电话
         /// </summary>
-        [Display(Name = "余额")]
-        [SugarColumn(ColumnDescription = "余额")]
+        [Display(Name = "电话")]
+        [SugarColumn(ColumnDescription = "电话", IsNullable = true)]
+        [StringLength(50, ErrorMessage = "【{0}】不能超过{1}字符长度")]
+        public System.String telephone { get; set; }
+        /// <summary>
+        ///orgid
+        /// </summary>
+        [Display(Name = "orgid")]
+        [SugarColumn(ColumnDescription = "orgid")]
         [Required(ErrorMessage = "请输入{0}")]
-        public System.Decimal Balance { get; set; }
-
-
+        public int orgid { get; set; }
+        /// <summary>
+        ///orgid
+        /// </summary>
+        [Display(Name = "orgname")]
+        [SugarColumn(ColumnDescription = "orgname")]
+        [Required(ErrorMessage = "请输入{0}")]
+        public String orgname { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>
         [Display(Name = "创建时间")]
         [SugarColumn(ColumnDescription = "创建时间", IsNullable = true)]
-        public System.DateTime? createTime { get; set; }
+        public System.DateTime? createtime { get; set; }
     }
 }

@@ -27,4 +27,11 @@ namespace Core.Net.Entity.Dtos
         public object data { get; set; } = null;
     }
 
+
+    public class FMArrayStrIds
+    {
+        public string[] orderNo { get; set; }
+        public object data { get; set; } = null;
+    }
+
 }
