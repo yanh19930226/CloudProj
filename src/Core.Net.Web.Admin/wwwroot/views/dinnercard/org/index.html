@@ -101,9 +101,9 @@
                     text: { none: '暂无相关数据' },
                     cols: [
                         [
-                          /*  { field: 'id', title: '序列', sort: false },*/
+                            { field: 'id', title: '序列', width: 80,templet: '#zizeng', sort: false },
                             { field: 'organizationName', title: '部门名称', sort: false },
-                            { width: 120, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-Org-tableBox-bar' }
+                            { align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-Org-tableBox-bar' }
                         ]
                     ]
                 });
@@ -250,7 +250,9 @@
             });
     };
 </script>
-
+<script type="text/html" id="zizeng">
+    {{d.LAY_TABLE_INDEX+1}}
+</script>
 
 <!--设置是否显示-->
 <script type="text/html" id="switch_isStatus">

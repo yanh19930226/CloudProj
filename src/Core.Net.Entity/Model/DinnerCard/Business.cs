@@ -12,7 +12,6 @@ namespace Core.Net.Entity.Model.DinnerCard
     [SugarTable("Business", TableDescription = "商家表")]
     public class Business
     {
-
         /// <summary>
         /// 商家表
         /// </summary>
@@ -27,12 +26,6 @@ namespace Core.Net.Entity.Model.DinnerCard
         [Required(ErrorMessage = "请输入{0}")]
         public System.Int32 id { get; set; }
         /// <summary>
-        /// 商家编码
-        /// </summary>
-        [Display(Name = "商家编码")]
-        [SugarColumn(ColumnDescription = "商家编码")]
-        public string businessCode { get; set; }
-        /// <summary>
         /// 商家名称
         /// </summary>
         [Display(Name = "商家名称")]
@@ -46,6 +39,12 @@ namespace Core.Net.Entity.Model.DinnerCard
         [SugarColumn(ColumnDescription = "商家名称")]
         public int sort { get; set; }
         /// <summary>
+        /// 商家余额
+        /// </summary>
+        [Display(Name = "商家余额")]
+        [SugarColumn(ColumnDescription = "商家余额")]
+        public decimal money { get; set; }
+        /// <summary>
         ///状态
         /// </summary>
         [Display(Name = "状态")]
@@ -57,12 +56,5 @@ namespace Core.Net.Entity.Model.DinnerCard
         [Display(Name = "创建时间")]
         [SugarColumn(ColumnDescription = "创建时间", IsNullable = true)]
         public System.DateTime? createTime { get; set; }
-        /// <summary>
-        /// 付款方式
-        /// </summary>
-        [Display(Name = "付款方式")]
-        [SugarColumn(ColumnDescription = "付款方式")]
-        [Required(ErrorMessage = "请输入{0}")]
-        public int payMode { get; set; }
     }
 }

@@ -91,6 +91,7 @@
                     text: { none: '暂无相关数据' },
                     cols: [
                         [
+                            { field: 'id', title: '序列', templet: '#zizeng', sort: false },
                        /*     { type: "checkbox", fixed: "left" },*/
                             { field: 'cardno', title: '餐卡号', sort: false },
                             { field: 'username', title: '姓名', sort: false },
@@ -151,3 +152,6 @@
     };
 </script>
 
+<script type="text/html" id="zizeng">
+    {{d.LAY_TABLE_INDEX+1}}
+</script>

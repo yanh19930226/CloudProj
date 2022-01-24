@@ -84,10 +84,13 @@ namespace Yande.CloudTool.Api.Controllers
             try
             {
                 //1.根据卡号查询用户相关信息
-                var dinnerCard = _dinnerCardServices.QueryByClause(p => p.cardNo == consumTransactionDto.CardNo);
-                var sysUserId = dinnerCard.sysUserId;
-                //用户信息
-                var user = await _sysUserServices.QueryByClauseAsync(p => p.id == sysUserId);
+                var user = _sysUserServices.QueryByClause(p=>p.cardNo== consumTransactionDto.CardNo);
+
+
+                //var dinnerCard = _dinnerCardServices.QueryByClause(p => p.cardNo == consumTransactionDto.CardNo);
+                //var sysUserId = dinnerCard.sysUserId;
+                ////用户信息
+                //var user = await _sysUserServices.QueryByClauseAsync(p => p.id == sysUserId);
 
                 //刷卡扣费
                 if (consumTransactionDto.Mode==0)
@@ -97,18 +100,20 @@ namespace Yande.CloudTool.Api.Controllers
                     coreOrder.organizationId = Convert.ToInt32(user.organizationId);
                     coreOrder.roleId = 1;
                     coreOrder.sysUserId = Convert.ToInt32(user.id);
+                    coreOrder.organizationName = user.organizationName;
                     //卡号
                     coreOrder.cardNo = consumTransactionDto.CardNo;
                     coreOrder.costOrderNo = consumTransactionDto.Order;
-                    coreOrder.orderNo = Guid.NewGuid().ToString("N");
+                    coreOrder.orderNo = RandomNumber.GetRandomOrder();
                     coreOrder.orderType = consumTransactionDto.Mode;
+
                     coreOrder.status = 1;
                     //消费金额
                     coreOrder.amount = Convert.ToDecimal(consumTransactionDto.Amount);
-                    //订单总价
-                    coreOrder.totalPrice = Convert.ToDecimal(consumTransactionDto.Amount);
+                    //变动前
+                    coreOrder.totalPrice = Convert.ToDecimal(user.balance);
                     //余额
-                    coreOrder.balance = dinnerCard.Balance - Convert.ToDecimal(consumTransactionDto.Amount);
+                    coreOrder.balance = Convert.ToDecimal(user.balance) - Convert.ToDecimal(consumTransactionDto.Amount);
                     coreOrder.createTime = DateTime.Now;
                     coreOrder.payType = Convert.ToInt32(consumTransactionDto.PayType);
 
@@ -124,19 +129,15 @@ namespace Yande.CloudTool.Api.Controllers
                     coreOrder.userName = user.userName;
                     coreOrder.telePhone = user.phone;
                     #endregion
-
-                    dinnerCard.Balance = dinnerCard.Balance - Convert.ToDecimal(consumTransactionDto.Amount);
-
-                    await _dinnerCardServices.UpdateAsync(dinnerCard);
-
+                    user.balance = coreOrder.balance;
+                     _sysUserServices.Update(user);
                     await _coreOrderServices.InsertAsync(coreOrder);
-
                     //3.扣减卡上金额并返回数据
                     resp.Status = 1;
                     resp.Msg = "Success";
                     resp.Name = user.userName;
                     resp.CardNo = consumTransactionDto.CardNo;
-                    resp.Money = dinnerCard.Balance.ToString();
+                    resp.Money = coreOrder.balance.ToString();
                     resp.Subsidy = "";
                     resp.Times = "0";
                     resp.Integral = "0";
@@ -156,7 +157,7 @@ namespace Yande.CloudTool.Api.Controllers
                     resp.Msg = "Success";
                     resp.Name = user.userName;
                     resp.CardNo = consumTransactionDto.CardNo;
-                    resp.Money = dinnerCard.Balance.ToString();
+                    resp.Money = user.balance.ToString();
                     resp.Subsidy = "10000.00";
                     resp.Times = "0";
                     resp.Integral = "0";

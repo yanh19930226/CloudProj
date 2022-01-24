@@ -71,7 +71,7 @@ namespace Core.Net.Web.Admin.Controllers
 
             model.password = CommonHelper.Md5For32(model.password);
 
-            var user = await _sysUserServices.QueryByClauseAsync(p => p.userName == model.userName && p.passWord == model.password);
+            var user = await _sysUserServices.QueryByClauseAsync(p => p.userName == model.userName || p.phone == model.userName && p.passWord == model.password);
             if (user != null)
             {
                 if (user.state == 1)
@@ -85,7 +85,7 @@ namespace Core.Net.Web.Admin.Controllers
                         new Claim(ClaimTypes.GivenName, user.nickName==null?"":user.nickName),
                         new Claim(ClaimTypes.Name, user.userName),
                         new Claim(JwtRegisteredClaimNames.Jti, user.id.ToString()),
-                        new Claim(ClaimTypes.Expiration, DateTime.Now.AddSeconds(_permissionRequirement.Expiration.TotalSeconds).ToString()) };
+                        new Claim(ClaimTypes.Expiration, DateTime.Now.AddDays(_permissionRequirement.Expiration.TotalDays).ToString()) };
                 claims.AddRange(userRoles.Split(',').Select(s => new Claim(ClaimTypes.Role, s)));
 
                 // jwt

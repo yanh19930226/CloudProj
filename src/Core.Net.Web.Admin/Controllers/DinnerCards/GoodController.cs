@@ -5,12 +5,12 @@ using Core.Net.Entity.Model.Expression;
 using Core.Net.Entity.Model.Systems;
 using Core.Net.Entity.ViewModels;
 using Core.Net.Service.DinnerCards;
-using Core.Net.Service.Goods;
 using Core.Net.Service.Impl.DinnerCards;
 using Core.Net.Service.Systems;
 using Core.Net.Util.Extensions;
 using Core.Net.Util.Helper;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SqlSugar;
 using System;
@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.Net.Web.Admin.Controllers.DinnerCards
@@ -37,7 +38,6 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         private readonly ICoreGoodsServices _coreGoodsServices;
         private readonly ISysDictionaryServices _sysDictionaryServices;
         private readonly ISysDictionaryDataServices _sysDictionaryDataServices;
-        private readonly ICoreCmsGoodsCategoryServices _coreCmsGoodsCategoryServices;
 
         ///  <summary>
         ///  构造函数
@@ -51,7 +51,6 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             ISysDictionaryServices sysDictionaryServices,
             IBusinessServices businessServices,
             ISysDictionaryDataServices sysDictionaryDataServices,
-                  ICoreCmsGoodsCategoryServices coreCmsGoodsCategoryServices,
             ICoreGoodsServices coreGoodsServices
             )
         {
@@ -61,7 +60,6 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             _sysDictionaryDataServices = sysDictionaryDataServices;
             _dinnerCardServices = dinnerCardServices;
             _coreGoodsServices = coreGoodsServices;
-            _coreCmsGoodsCategoryServices = coreCmsGoodsCategoryServices;
         }
         #region 首页数据============================================================
         // POST: Api/CoreCmsArticleType/GetIndex
@@ -212,8 +210,10 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         [Description("创建提交")]
         public async Task<JsonResult> DoCreate([FromBody] CoreGoods entity)
         {
+            var aurl = HttpRequestExtensions.GetAbsoluteUri(Request);
             var jm = new AdminUiCallBack();
             entity.createTime = DateTime.Now;
+            entity.absUrl = aurl + entity.url;
             entity.goodNo = RandomNumber.GetRandomProduct();
             entity.businessName = _businessServices.QueryByClause(p => p.id == entity.businessId).businessName;
             var bl = await _coreGoodsServices.InsertAsync(entity) > 0;
@@ -280,7 +280,7 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         {
             var jm = new AdminUiCallBack();
 
-            
+            var absurl = HttpRequestExtensions.GetAbsoluteUri(Request);
 
             var oldModel = await _coreGoodsServices.QueryByIdAsync(entity.id);
             if (oldModel == null)
@@ -296,6 +296,7 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             oldModel.status = entity.status;
             oldModel.unitPrice = entity.unitPrice;
             oldModel.url = entity.url;
+            oldModel.absUrl = absurl+ entity.url;
             oldModel.stock = entity.stock;
             oldModel.avilableTime = entity.avilableTime;
             //事物处理过程结束
@@ -335,5 +336,21 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         }
         #endregion
 
+    }
+
+
+    public static class HttpRequestExtensions
+    {
+        public static string GetAbsoluteUri(this HttpRequest request)
+        {
+            return new StringBuilder()
+             .Append(request.Scheme)
+             .Append("://")
+             .Append(request.Host)
+             //.Append(request.PathBase)
+             //.Append(request.Path)
+             //.Append(request.QueryString)
+             .ToString();
+        }
     }
 }

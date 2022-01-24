@@ -13,7 +13,6 @@
 <script type="text/html" template lay-type="Post" lay-url="Api/SysNLogRecords/GetIndex" lay-done="layui.data.done(d);">
     <div class="layui-form coreshop-search-form">
         <div class="layui-form-item">
-
             <div class="layui-inline">
                 <label class="layui-form-label" for="LogDate">时间</label>
                 <div class="layui-input-inline" style="width: 260px;">
@@ -26,6 +25,7 @@
         </div>
     </div>
 </script>
+
 <div class="table-body">
     <table id="LAY-app-SysNLogRecords-tableBox" lay-filter="LAY-app-SysNLogRecords-tableBox"></table>
 </div>
@@ -37,6 +37,7 @@
         <button class="layui-btn layui-btn-sm" lay-event="queryExportExcel"><i class="layui-icon layui-icon-download-circle"></i>查询导出</button>
     </div>
 </script>
+
 <script type="text/html" id="LAY-app-SysNLogRecords-tableBox-bar">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-dropdown="#SysNLogRecordsTbDelDrop{{d.LAY_INDEX}}" no-shade="true">删除</a>
@@ -105,21 +106,14 @@
                     cols: [
                         [
                             { type: "checkbox", fixed: "left" },
-                            { field: 'id', title: '序列', width: 70, sort: false },
+                            { field: 'id', title: '序列', templet: '#zizeng', sort: false },
                             { field: 'logDate', title: '时间', width: 130, sort: false },
                             { field: 'logLevel', title: '级别', sort: false, width: 85 },
                             { field: 'logTitle', title: '标题', sort: false, width: 200 },
                             { field: 'logType', title: '类型', sort: false, width: 150 },
-                            //{ field: 'logger', title: '记录器名字', sort: false, width: 105 },
                             { field: 'message', title: '消息', sort: false},
-                            //{ field: 'exception', title: '异常信息', sort: false },
                             { field: 'machineName', title: '名称', sort: false, width: 150 },
                             { field: 'machineIp', title: 'ip', sort: false, width: 100 },
-                            //{ field: 'netRequestMethod', title: '请求方式', sort: false, width: 85 },
-                            //{ field: 'netRequestUrl', title: '请求地址', sort: false, width: 405 },
-                            //{ field: 'netUserIsauthenticated', title: '是否授权', sort: false, width: 105 },
-                            //{ field: 'netUserAuthtype', title: '授权类型', sort: false, width: 105 },
-                            //{ field: 'netUserIdentity', title: '身份认证', sort: false, width: 105 },
                             { width: 142, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-SysNLogRecords-tableBox-bar' }
                         ]
                     ]
@@ -173,7 +167,7 @@
                                 area: ['1000px', '90%'],
                                 id: 'LAY-popup-SysNLogRecords-details',
                                 success: function (layero, index) {
-                                    view(this.id).render('logs/SysNLogRecords/details', { data: e.data }).done(function () {
+                                    view(this.id).render('logs/sysnlogrecords/details', { data: e.data }).done(function () {
                                         form.render();
                                     });
                                     // 禁止弹窗出现滚动条
@@ -256,4 +250,8 @@
 
             });
     };
+</script>
+
+<script type="text/html" id="zizeng">
+    {{d.LAY_TABLE_INDEX+1}}
 </script>

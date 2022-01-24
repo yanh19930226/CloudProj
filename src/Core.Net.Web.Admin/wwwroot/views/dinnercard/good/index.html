@@ -141,6 +141,7 @@
                     text: { none: '暂无相关数据' },
                     cols: [
                         [
+                            { field: 'id', title: '序列', templet: '#zizeng', sort: false },
                             { field: 'businessName', title: '商家', sort: false },
                             { field: 'goodNo', title: '商品编号', sort: false },
                             { field: 'goodName', title: '商品标题', sort: false },
@@ -307,3 +308,6 @@
     };
 </script>
 
+<script type="text/html" id="zizeng">
+    {{d.LAY_TABLE_INDEX+1}}
+</script>

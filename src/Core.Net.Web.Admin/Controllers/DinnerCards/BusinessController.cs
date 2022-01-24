@@ -1,5 +1,6 @@
 ﻿using Core.Net.Configuration;
 using Core.Net.Entity.Dtos;
+using Core.Net.Entity.Enums;
 using Core.Net.Entity.Model.DinnerCard;
 using Core.Net.Entity.Model.Expression;
 using Core.Net.Entity.Model.Systems;
@@ -32,7 +33,7 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
     [Authorize(Permissions.Name)]
     public class BusinessController : Controller
     {
-
+        private readonly IBusinessOrderServices _businessOrderServices;
         private readonly IBusinessServices _businessServices;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ISysDictionaryServices _sysDictionaryServices;
@@ -44,10 +45,12 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         /// <param name="webHostEnvironment"></param>
         /// <param name="coreCmsNoticeServices"></param>
         public BusinessController(IWebHostEnvironment webHostEnvironment,
+            IBusinessOrderServices businessOrderServices,
              ISysDictionaryServices sysDictionaryServices,
       ISysDictionaryDataServices sysDictionaryDataServices,
         IBusinessServices businessServices)
         {
+            _businessOrderServices = businessOrderServices;
             _sysDictionaryServices = sysDictionaryServices;
             _sysDictionaryDataServices = sysDictionaryDataServices;
             _webHostEnvironment = webHostEnvironment;
@@ -69,10 +72,7 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             var where = PredicateBuilder.True<Business>();
             //标题 nvarchar
             var name = Request.Form["name"].FirstOrDefault();
-            if (!string.IsNullOrEmpty(name)) @where = @where.And(p => p.businessName.Contains(name)||p.businessCode.Contains(name));
-
-            var payMode = Request.Form["payMode"].FirstOrDefault().ObjectToInt(0);
-            if (payMode > 0) @where = @where.And(p => p.payMode == payMode);
+            if (!string.IsNullOrEmpty(name)) @where = @where.And(p => p.businessName.Contains(name));
             //获取数据
             var list = _businessServices.QueryListByClause(where).OrderByDescending(p => p.createTime).ToList();
             //返回数据
@@ -146,7 +146,6 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         public async Task<JsonResult> DoCreate([FromBody] Business entity)
         {
             var jm = new AdminUiCallBack();
-            entity.businessCode = RandomNumber.GetRandomBusiness();
             entity.createTime = DateTime.Now;
             var bl = await _businessServices.InsertAsync(entity) > 0;
             jm.code = bl ? 0 : 1;
@@ -214,7 +213,6 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             }
             //事物处理过程开始
             oldModel.id = entity.id;
-            oldModel.businessCode = entity.businessCode;
             oldModel.businessName = entity.businessName;
             oldModel.sort = entity.sort;
             oldModel.status = entity.status;
@@ -276,6 +274,76 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             jm.msg = bl ? GlobalConstVars.EditSuccess : GlobalConstVars.EditFailure;
 
             return jm;
+        }
+
+        #endregion
+
+        #region 商家提现============================================================
+
+        // POST: Api/CoreCmsUser/GetEditBalance
+        /// <summary>
+        ///     商家提现
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Description("商家提现")]
+        public async Task<JsonResult> GetCash([FromBody] FMIntId entity)
+        {
+            //返回数据
+            var jm = new AdminUiCallBack();
+            var model = await _businessServices.QueryByIdAsync(entity.id);
+            if (model == null)
+            {
+                jm.msg = "不存在此信息";
+                return new JsonResult(jm);
+            }
+            jm.code = 0;
+            jm.data = model;
+            return new JsonResult(jm);
+        }
+
+        #endregion
+
+        #region 商家提现提交============================================================
+
+        // POST: Api/CoreCmsUser/DoEditBalance
+        /// <summary>
+        /// 商家提现提交
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Description("商家提现提交")]
+        public async Task<JsonResult> DoCash([FromBody] FMUpdateDecimalDataByIntId entity)
+        {
+            var jm = new AdminUiCallBack();
+            var model = await _businessServices.QueryByIdAsync(entity.id);
+            if (model == null)
+            {
+                jm.msg = "不存在此信息";
+                return new JsonResult(jm);
+            }
+
+            model.money = model.money-entity.data;
+            var business = _businessServices.QueryByClause(p => p.id == entity.id);
+
+            BusinessOrder businessOrder = new BusinessOrder();
+            businessOrder.businessName = business.businessName;
+            businessOrder.businessid = business.id;
+            businessOrder.userid = business.id;
+            businessOrder.ordertype =(int)BusinessOrderTypeEnum.Cash;
+            businessOrder.userName = business.businessName;
+            businessOrder.before = business.money;
+            businessOrder.after = business.money - entity.data;
+            businessOrder.change = entity.data;
+            businessOrder.createtime = DateTime.Now;
+            businessOrder.orderNo = "商家提现";
+            await _businessOrderServices.InsertAsync(businessOrder);
+            //修改商家金额记录表
+            var bl = await _businessServices.UpdateAsync(model);
+            jm.code = bl ? 0 : 1;
+            jm.msg = bl ? GlobalConstVars.EditSuccess : GlobalConstVars.EditFailure;
+            return new JsonResult(jm);
         }
 
         #endregion

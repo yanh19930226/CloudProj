@@ -1,0 +1,39 @@
+<script type="text/html" template lay-done="layui.data.sendParams(d);">
+    <div class="layui-form coreshop-form" lay-filter="LAY-app-Business-cashForm" id="LAY-app-Business-cashForm">
+        <input type="hidden" name="id" id="id" value="{{d.params.data.id || '' }}" />
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">金额：</label>
+                <div class="layui-input-inline layui-inline-3">
+                    <input type="text" name="data" id="data" class="layui-input"  lay-reqText="请输入金额" placeholder="请输入金额">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item core-hidden">
+            <label class="layui-form-label"></label>
+            <input type="button" class="layui-btn" lay-submit lay-filter="LAY-app-Business-cashForm-submit" id="LAY-app-Business-cashForm-submit" value="确认编辑">
+        </div>
+    </div>
+</script>
+<script>
+    layui.data.sendParams = function (d) {
+        console.log(d);
+        layui.use(['admin', 'form', 'laydate', 'upload', 'coreHelper'],
+            function () {
+                var $ = layui.$
+                    , form = layui.form
+                    , admin = layui.admin
+                    , laydate = layui.laydate
+                    , upload = layui.upload
+                    , coreHelper = layui.coreHelper;
+
+                //form.verify({
+                //    verifybalance: [/\d+(\.\d{0,2})?/, '请输入数字或小数'],
+                //});
+                //重载form
+                form.render(null, 'LAY-app-Business-cashForm');
+            })
+    };
+</script>

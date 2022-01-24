@@ -14,6 +14,18 @@
     <div class="layui-form coreshop-search-form">
         <div class="layui-form-item">
             <div class="layui-inline">
+                <label class="layui-form-label" for="businessName">商家</label>
+                <div class="layui-input-inline">
+                    <select name="businessName">
+                        <option value="">商家</option>
+                        {{# layui.each(d.data.busi, function(index, item){ }}
+                        <option value="{{ item.businessName }}">{{ item.businessName }}</option>
+                        {{# }); }}
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-inline">
                 <label class="layui-form-label" for="status">订单状态</label>
                 <div class="layui-input-inline">
                     <select name="status">
@@ -153,8 +165,9 @@
                     cols: [
                         [
                             { type: "checkbox", fixed: "left" },
+                            { field: 'id', title: '序列', templet: '#zizeng', sort: false },
+                            { field: 'businessName', title: '商家', sort: false, width: 200 },
                             { field: 'organizationName', title: '部门', sort: false },
-                         /*   { field: 'roleName', title: '岗位', sort: false, width: 200 },*/
                             { field: 'userName', title: '用户', sort: false },
                             { field: 'orderNo', title: '订单编号', sort: false },
                             {
@@ -162,7 +175,7 @@
                                     return "商品消费";
                                 }
                             },
-                            { field: 'totalPrice', title: '总金额', sort: false },
+                            { field: 'amount', title: '总金额', sort: false },
                             { field: 'telePhone', title: '手机号', sort: false },
                             {
                                 field: 'status', title: '订单状态', sort: false, width: 80, templet: function (data) {
@@ -367,7 +380,6 @@
                                                     success: function (json) {
                                                         debugger;
                                                         if (json.code === 0) {
-                                                            console.log(json.msg);
                                                             layer.msg(json.msg);
                                                             layui.table.reloadData('LAY-app-Order-tableBox'); //重载表格
                                                             layer.close(index); //再执行关闭
@@ -399,3 +411,6 @@
     };
 </script>
 
+<script type="text/html" id="zizeng">
+    {{d.LAY_TABLE_INDEX+1}}
+</script>

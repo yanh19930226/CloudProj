@@ -99,11 +99,11 @@ namespace Core.Api.Controllers
                 Key = "",
                 Value = "全部"
             });
-            kVs.Add(new KV()
-            {
-                Key = "0",
-                Value = "未付款"
-            });
+            //kVs.Add(new KV()
+            //{
+            //    Key = "0",
+            //    Value = "未付款"
+            //});
             kVs.Add(new KV()
             {
                 Key = "1",
@@ -112,13 +112,13 @@ namespace Core.Api.Controllers
             kVs.Add(new KV()
             {
                 Key = "2",
-                Value = "已付款"
+                Value = "已下单"
             });
 
             kVs.Add(new KV()
             {
                 Key = "3",
-                Value = "已退款"
+                Value = "备货中"
             });
 
             kVs.Add(new KV()

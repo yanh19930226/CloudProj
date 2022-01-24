@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Impl\Stocks\**" />
+    <EmbeddedResource Remove="Impl\Stocks\**" />
+    <None Remove="Impl\Stocks\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Core.Net.Configuration\Core.Net.Configuration.csproj" />
     <ProjectReference Include="..\Core.Net.Data\Core.Net.Data.csproj" />
     <ProjectReference Include="..\Core.Net.Entity\Core.Net.Entity.csproj" />
@@ -16,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Impl\Stocks\" />
     <Folder Include="Stocks\" />
   </ItemGroup>
 

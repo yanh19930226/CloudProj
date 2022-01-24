@@ -13,19 +13,19 @@ namespace Core.Net.Service.Users
 {
     public interface ICoreCmsUserServices : IBaseServices<CoreCmsUser>
     {
-        /// <summary>
-        ///     更新积分
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        Task<AdminUiCallBack> UpdatePiont(FMUpdateUserPoint entity);
+        ///// <summary>
+        /////     更新积分
+        ///// </summary>
+        ///// <param name="model"></param>
+        ///// <returns></returns>
+        //Task<AdminUiCallBack> UpdatePiont(FMUpdateUserPoint entity);
 
-        /// <summary>
-        ///     更新余额
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="money"></param>
-        /// <returns></returns>
-        Task<AdminUiCallBack> UpdateBalance(int id, decimal money);
+        ///// <summary>
+        /////     更新余额
+        ///// </summary>
+        ///// <param name="id"></param>
+        ///// <param name="money"></param>
+        ///// <returns></returns>
+        //Task<AdminUiCallBack> UpdateBalance(int id, decimal money);
     }
 }

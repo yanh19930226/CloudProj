@@ -11,7 +11,7 @@
     /* 重写样式 */
 </style>
 <script type="text/html" template lay-type="Post" lay-url="{{ layui.setter.apiUrl }}Api/SysUser/GetIndex" lay-done="layui.data.done(d);">
-    
+
 </script>
 
 <script type="text/html" id="LAY-app-SysUser-toolbar">
@@ -27,7 +27,7 @@
 </div>
 
 <script type="text/html" id="LAY-app-SysUser-pagebar">
-    
+
 </script>
 
 
@@ -102,6 +102,7 @@
                     cols: [
                         [
                             { type: "checkbox", fixed: "left" },
+                            { field: 'id', title: '序列', templet: '#zizeng', sort: false },
                             { field: 'userName', title: '姓名', sort: false },
                             { field: 'cardNo', title: '餐卡号', sort: false },
                             { field: 'balance', title: '余额', sort: false },
@@ -120,8 +121,8 @@
                                 }, sort: true
                             },
                             { field: 'state', title: '状态', sort: false, templet: '#switch_state' },
-                            { field: 'createTime', title: '注册时间',sort: false },
-                            { field: 'updateTime', title: '修改时间',sort: false },
+                            { field: 'createTime', title: '注册时间', sort: false },
+                            //{ field: 'updateTime', title: '修改时间', sort: false },
                             { width: 350, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-SysUser-tableBox-bar' }
                         ]
                     ]
@@ -178,7 +179,8 @@
                 function doCreate() {
                     coreHelper.Post("Api/SysUser/GetCreate", null, function (e) {
                         if (e.code === 0) {
-                            admin.popup({ shadeClose: false,
+                            admin.popup({
+                                shadeClose: false,
                                 title: '创建数据',
                                 area: ['380px', '600px'],
                                 id: 'LAY-popup-SysUser-create',
@@ -244,16 +246,16 @@
                                                 }
                                                 $.ajax({
                                                     type: "POST",
-                                                    url: setter.apitestUrl+"/Api/SysUser/DoImport",
+                                                    url: setter.apitestUrl + "/Api/SysUser/DoImport",
                                                     contentType: false,
                                                     dateType: "json",
                                                     processData: false,
                                                     data: data,
                                                     success: function (json) {
                                                         if (json.code === 0) {
-                                                              layui.table.reloadData('LAY-app-SysUser-tableBox'); //重载表格
-                                                              layer.close(index); //再执行关闭
-                                                              layer.msg(e.msg);
+                                                            layer.msg(json.msg);
+                                                            layer.close(index); //再执行关闭
+                                                            layui.table.reloadData('LAY-app-SysUser-tableBox'); //重载表格
                                                         }
                                                         else {
                                                             layer.msg(e.msg);
@@ -266,7 +268,7 @@
                                                         alert("There was error uploading files!");
                                                     }
                                                 });
-                                              
+
 
                                                 ////提交 Ajax 成功后，关闭当前弹层并重载表格
                                                 //coreHelper.Post("Api/SysUser/DoImport", field, function (e) {
@@ -297,7 +299,8 @@
                 function doEdit(obj) {
                     coreHelper.Post("Api/SysUser/GetEdit", { id: obj.data.id }, function (e) {
                         if (e.code === 0) {
-                            admin.popup({ shadeClose: false,
+                            admin.popup({
+                                shadeClose: false,
                                 title: '编辑数据',
                                 area: ['380px', '600px'],
                                 id: 'LAY-popup-SysUser-edit',
@@ -451,8 +454,8 @@
                                                     data: data,
                                                     success: function (json) {
                                                         if (json.code === 0) {
+                                                            layer.msg(json.msg);
                                                             layer.close(index); //再执行关闭
-                                                            layer.msg(e.msg);
                                                             layui.table.reloadData('LAY-app-SysUser-tableBox'); //重载表格
 
                                                         }
@@ -557,6 +560,9 @@
     };
 </script>
 
+<script type="text/html" id="zizeng">
+    {{d.LAY_TABLE_INDEX+1}}
+</script>
 <script type="text/html" id="switch_state">
     <input type="checkbox" name="switch_state" value="{{d.id}}" lay-skin="switch" lay-text="在职|离职" lay-filter="switch_state" {{ d.state==0 ? 'checked' : '' }}>
 </script>

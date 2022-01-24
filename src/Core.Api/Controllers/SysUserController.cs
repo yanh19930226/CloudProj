@@ -73,7 +73,7 @@ namespace Core.Api.Controllers
                 myInfoDto.phone = model.phone;
                 myInfoDto.createTime = model.createTime;
                 myInfoDto.idCardNo = model.idCardNo;
-                myInfoDto.balance = model.balance;
+                myInfoDto.balance = model.balance.ToString();
             }
             jm.Success(myInfoDto, "数据调用成功");
             return Ok(jm);

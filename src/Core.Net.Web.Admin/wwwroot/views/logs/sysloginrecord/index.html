@@ -101,7 +101,7 @@
                     cols: [
                         [
                             { type: "checkbox", fixed: "left" },
-                            { field: 'id', title: '主键', width: 70, sort: false },
+                            { field: 'id', title: '序列', templet: '#zizeng', sort: false },
                             { field: 'username', title: '用户账号', sort: false, width: 105 },
                             { field: 'os', title: '操作系统', sort: false, width: 205 },
                             //{ field: 'device', title: '设备名', sort: false, width: 105 },
@@ -168,7 +168,7 @@
                                 area: ['700px', '550px'],
                                 id: 'LAY-popup-SysLoginRecord-details',
                                 success: function (layero, index) {
-                                    view(this.id).render('logs/sysLoginRecord/details', { data: e.data }).done(function () {
+                                    view(this.id).render('logs/sysloginrecord/details', { data: e.data }).done(function () {
                                         form.render();
                                     });
                                     // 禁止弹窗出现滚动条
@@ -222,4 +222,7 @@
 
             });
     };
+</script>
+<script type="text/html" id="zizeng">
+    {{d.LAY_TABLE_INDEX+1}}
 </script>

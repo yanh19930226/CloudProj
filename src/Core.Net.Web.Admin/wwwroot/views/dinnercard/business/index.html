@@ -12,25 +12,11 @@
 </style>
 <script type="text/html" template lay-type="Post" lay-url="Api/Business/GetIndex" lay-done="layui.data.done(d);">
     <div class="layui-form coreshop-search-form">
-
-
-        <div class="layui-form-item">
+       <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label" for="payMode">付款类型</label>
+                <label class="layui-form-label" for="name">商家名称</label>
                 <div class="layui-input-inline">
-                    <select name="payMode">
-                        <option value="">付款类型</option>
-                        {{# layui.each(d.data.dictData, function(index, item){ }}
-                        <option value="{{ item.dictDataCode }}">{{ item.dictDataName }}</option>
-                        {{# }); }}
-                    </select>
-                </div>
-            </div>
-
-            <div class="layui-inline">
-                <label class="layui-form-label" for="name">关键字</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="name" id="name" placeholder="请输入商家编码/商家名称" class="layui-input">
+                    <input type="text" name="name" id="name" placeholder="请输入商家名称" class="layui-input">
                 </div>
             </div>
 
@@ -49,11 +35,15 @@
         <button class="layui-btn layui-btn-sm" lay-event="addData"><i class="layui-icon layui-icon-add-1"></i>添加数据</button>
     </div>
 </script>
+
 <script type="text/html" id="LAY-app-Business-pagebar">
 </script>
+
 <script type="text/html" id="LAY-app-Business-tableBox-bar">
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-dropdown="#BusinessTbDelDrop{{d.LAY_INDEX}}" no-shade="true">删除</a>
+    <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="cash">提现</a>
+
+    <!--<a class="layui-btn layui-btn-danger layui-btn-xs" data-dropdown="#BusinessTbDelDrop{{d.LAY_INDEX}}" no-shade="true">删除</a>
     <div class="dropdown-menu-nav dropdown-popconfirm dropdown-top-right layui-hide" id="BusinessTbDelDrop{{d.LAY_INDEX}}"
          style="max-width: 200px;white-space: normal;min-width: auto;margin-left: 10px;">
         <div class="dropdown-anchor"></div>
@@ -65,7 +55,7 @@
             <a class="layui-btn layui-btn-primary cursor" btn-cancel>取消</a>
             <a class="layui-btn layui-btn-normal cursor" lay-event="del">确定</a>
         </div>
-    </div>
+    </div>-->
 </script>
 
 <script>
@@ -96,7 +86,7 @@
                     function (data) {
                         var field = data.field;
                         searchwhere = field;
-                        //执行重载
+                        //执行重载 
                         table.reload('LAY-app-Business-tableBox', { where: field });
                     });
                 //数据绑定
@@ -115,23 +105,11 @@
                     text: { none: '暂无相关数据' },
                     cols: [
                         [
-                           /* { type: "checkbox", fixed: "left" },*/
-                            //{ field: 'id', title: '序列', width: 60, sort: false },
-                            { field: 'businessCode', title: '商家编码', sort: false, width: 200 },
-                            { field: 'businessName', title: '商家名称', sort: false, width: 200 },
-                            {
-                                field: 'noticeType', title: '付款类型', sort: false, width: 80, templet: function (data) {
-                                    for (var i = 0; i < d.data.dictData.length; i++) {
-                                        if (d.data.dictData[i].dictDataCode == data.payMode) {
-                                            return d.data.dictData[i].dictDataName;
-                                        }
-                                    }
-                                    return "";
-                                }
-                            },
-                            { field: 'status', title: '状态', width: 105, templet: '#switch_isStatus', sort: false, unresize: true },
-                            //{ field: 'sort', title: '排序 ', sort: false, width: 60 },
-                            { width: 120, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-Business-tableBox-bar' }
+                            { field: 'id', title: '序列', templet: '#zizeng', sort: false},
+                            { field: 'businessName', title: '商家名称', sort: false },
+                            { field: 'money', title: '商家余额', sort: false },
+                            { field: 'status', title: '状态', templet: '#switch_isStatus', sort: false, unresize: true },
+                            {align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-Business-tableBox-bar' }
                         ]
                     ]
                 });
@@ -164,8 +142,8 @@
                     function (obj) {
                         if (obj.event === 'detail') {
                             doDetails(obj);
-                        } else if (obj.event === 'del') {
-                            doDelete(obj);
+                        } else if (obj.event === 'cash') {
+                            doCash(obj);
                         } else if (obj.event === 'edit') {
                             doEdit(obj)
                         }
@@ -257,15 +235,57 @@
                         }
                     });
                 }
-                //执行单个删除
-                function doDelete(obj) {
-                    coreHelper.Post("Api/Business/DoDelete", { id: obj.data.id }, function (e) {
-                        if (debug) { console.log(e); } //开启调试返回数据
-                        table.reload('LAY-app-Business-tableBox');
-                        layer.msg(e.msg);
+                //提现
+                //执行编辑密码
+                function doCash(obj) {
+                    coreHelper.Post("Api/Business/GetCash", { id: obj.data.id }, function (e) {
+                        if (e.code === 0) {
+                            admin.popup({
+                                shadeClose: false,
+                                title: '商家提现',
+                                area: ['500px', '300px'],
+                                id: 'LAY-popup-Business-Cash',
+                                success: function (layero, index) {
+                                    view(this.id).render('dinnercard/business/cash', { data: e.data }).done(function () {
+                                        //监听提交
+                                        form.on('submit(LAY-app-Business-cashForm-submit)',
+                                            function (data) {
+                                                var field = data.field; //获取提交的字段
+                                                field.data = parseFloat(field.data).toFixed(2);
+
+                                                //提交 Ajax 成功后，关闭当前弹层并重载表格
+                                                coreHelper.Post("Api/Business/DoCash", field, function (e) {
+                                                    console.log(e)
+                                                    if (e.code === 0) {
+                                                        layui.table.reload('LAY-app-Business-tableBox'); //重载表格
+                                                        layer.close(index); //再执行关闭
+                                                        layer.msg(e.msg);
+                                                    } else {
+                                                        layer.msg(e.msg);
+                                                    }
+                                                });
+                                            });
+                                    })
+                                }
+                                , btn: ['确定', '取消']
+                                , yes: function (index, layero) {
+                                    layero.contents().find("#LAY-app-Business-cashForm-submit").click();
+                                }
+                            });
+                        } else {
+                            layer.msg(e.msg);
+                        }
                     });
                 }
 
+                //执行单个删除
+                //function doDelete(obj) {
+                //    coreHelper.Post("Api/Business/DoDelete", { id: obj.data.id }, function (e) {
+                //        if (debug) { console.log(e); } //开启调试返回数据
+                //        table.reload('LAY-app-Business-tableBox');
+                //        layer.msg(e.msg);
+                //    });
+                //}
                 //监听 表格复选框操作
                 layui.form.on('switch(switch_isStatus)', function (obj) {
                     coreHelper.Post("Api/Business/DoSetisStatus", { id: this.value, data: obj.elem.checked }, function (e) {
@@ -277,6 +297,10 @@
 
             });
     };
+</script>
+
+<script type="text/html" id="zizeng">
+    {{d.LAY_TABLE_INDEX+1}}
 </script>
 
 

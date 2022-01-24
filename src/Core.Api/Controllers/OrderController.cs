@@ -26,6 +26,8 @@ namespace Core.Api.Controllers
         private readonly ICoreOrderServices _coreOrderServices;
         private readonly ICoreGoodsServices _coreGoodsServices;
         private readonly ISysUserServices _sysUserServices;
+        private readonly IBusinessServices _businessServices;
+        private readonly IBusinessOrderServices _businessOrderServices;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISysOrganizationServices _sysOrganizationServices;
         private readonly ICoreGoodOrderDetailServices _coreGoodOrderDetailServices;
@@ -33,8 +35,10 @@ namespace Core.Api.Controllers
         /// OrderController
         /// </summary>
         /// <param name="coreOrderServices"></param>
-        public OrderController(ICoreOrderServices coreOrderServices, ICoreGoodOrderDetailServices coreGoodOrderDetailServices, ISysUserServices sysUserServices, ISysOrganizationServices sysOrganizationServices, ICoreGoodsServices coreGoodsServices, IUnitOfWork unitOfWork)
+        public OrderController(ICoreOrderServices coreOrderServices, ICoreGoodOrderDetailServices coreGoodOrderDetailServices, ISysUserServices sysUserServices, ISysOrganizationServices sysOrganizationServices, ICoreGoodsServices coreGoodsServices, IUnitOfWork unitOfWork, IBusinessServices businessServices, IBusinessOrderServices businessOrderServices)
         {
+            _businessOrderServices = businessOrderServices;
+            _businessServices = businessServices;
             _coreOrderServices = coreOrderServices;
             _sysUserServices = sysUserServices;
             _coreGoodsServices = coreGoodsServices;
@@ -55,48 +59,43 @@ namespace Core.Api.Controllers
             var jm = new CallBackResult<bool>();
             try
             {
-
                 _unitOfWork.BeginTran();
-
                 var user = _sysUserServices.QueryByClause(p => p.id == Convert.ToInt32(SysUserId));
-
-
-
                 List<CoreGoods> goodlist = new List<CoreGoods>();
-
                 var totalPrice = 0M;
-
+                string  bname = "";
                 foreach (var item in createOrderDto.GoodInfos)
                 {
                     var uprice = _coreGoodsServices.QueryByClause(p => p.id == item.GoodId).unitPrice;
                     totalPrice += item.Number * uprice;
-                    goodlist.Add(_coreGoodsServices.QueryByClause(p => p.id == item.GoodId));
+
+                    var good = _coreGoodsServices.QueryByClause(p => p.id == item.GoodId);
+                    goodlist.Add(good);
+                    bname = good.businessName;
                 }
-
                 var org = _sysOrganizationServices.QueryByClause(p => p.id == user.organizationId);
-
                 CoreOrder coreOrder = new CoreOrder();
+                coreOrder.cardNo = user.cardNo;
                 coreOrder.organizationId = Convert.ToInt32(user.organizationId);
                 coreOrder.organizationName = org?.organizationName;
                 coreOrder.sysUserId = Convert.ToInt32(user.id);
                 coreOrder.userName = user.userName;
                 coreOrder.roleId = Convert.ToInt32(user.id);
-                coreOrder.roleName = "";
-
+                coreOrder.roleName ="";
+                coreOrder.businessName = bname;
                 var orderNo = RandomNumber.GetRandomOrder();
                 coreOrder.orderNo = orderNo;
                 //订单类型
                 coreOrder.orderType = (int)OrderTypeEnum.GoodOrder;
                 //订单状态
-                coreOrder.status = (int)OrderStatusEnum.UnPayed;
+                coreOrder.status = (int)OrderStatusEnum.Payed;
                 coreOrder.payType = (int)PayTypeEnum.Other;
-
                 //订单变动前金额
                 coreOrder.totalPrice = Convert.ToDecimal(user.balance);
                 //订单消费金额
                 coreOrder.amount = totalPrice;
                 //余额
-                //coreOrder.balance = (Convert.ToDecimal(user.balance) - totalPrice);
+                coreOrder.balance = Convert.ToDecimal(user.balance);
                 coreOrder.telePhone = user.phone;
                 coreOrder.createTime = DateTime.Now;
                 await _coreOrderServices.InsertAsync(coreOrder);
@@ -106,22 +105,18 @@ namespace Core.Api.Controllers
                     //创建订单详细
                     CoreGoodOrderDetail coreGoodOrderDetail = new CoreGoodOrderDetail();
                     coreGoodOrderDetail.orderNo = orderNo;
-                    coreGoodOrderDetail.url = item.url;
+                    coreGoodOrderDetail.url = item.absUrl;
                     coreGoodOrderDetail.goodId = item.id;
                     coreGoodOrderDetail.goodNo = item.goodNo;
                     coreGoodOrderDetail.goodName = item.goodName;
                     coreGoodOrderDetail.goodNum = createOrderDto.GoodInfos.Where(p => p.GoodId == item.id).FirstOrDefault().Number;
                     coreGoodOrderDetail.unitPrice = item.unitPrice;
                     coreGoodOrderDetail.createTime = DateTime.Now;
-                    coreGoodOrderDetail.goodNo = orderNo;
+                    coreGoodOrderDetail.realNum =0;
                     await _coreGoodOrderDetailServices.InsertAsync(coreGoodOrderDetail);
                 }
-
-                //user.balance= (Convert.ToDecimal(user.balance) - totalPrice).ToString();
                 _sysUserServices.Update(user);
-
                 _unitOfWork.CommitTran();
-
                 jm.Success("创建成功");
             }
             catch (Exception ex)
@@ -155,6 +150,7 @@ namespace Core.Api.Controllers
             }
 
             var list = await _coreOrderServices.QueryPageAsync(where, p => p.createTime, OrderByType.Desc, orderSearchDto.page, orderSearchDto.limit);
+            
             jm.Count = list.TotalCount;
             jm.Success(list, "数据调用成功");
             return Ok(jm);
@@ -211,6 +207,7 @@ namespace Core.Api.Controllers
                     coreOrderDetail.goodNo = item.goodNo;
                     coreOrderDetail.goodNum = item.goodNum;
                     coreOrderDetail.unitPrice = item.unitPrice;
+                    coreOrderDetail.realNum =(int)item.realNum;
                     list.Add(coreOrderDetail);
                 }
                 orderDetailDto.coreOrder = coreOrderDto;
@@ -249,8 +246,39 @@ namespace Core.Api.Controllers
             else
             {
                 order.status = (int)OrderStatusEnum.Complete;
+                var user = _sysUserServices.QueryByClause(p => p.id == order.sysUserId);
+
+                var detail = _coreGoodOrderDetailServices.QueryListByClause(p => p.orderNo == order.orderNo);
+                decimal aa = 0;
+                foreach (var item in detail)
+                {
+                    aa = aa+(Convert.ToDecimal(item.realNum) * item.unitPrice);
+                }
+                user.balance = user.balance - aa;
                 order.completeTime = DateTime.Now;
+                order.balance = Convert.ToDecimal(user.balance);
+                order.amount = Convert.ToDecimal(aa);
+                _sysUserServices.Update(user);
+
                 await _coreOrderServices.UpdateAsync(order);
+
+                //商家金额管理
+                var business = _businessServices.QueryByClause(p=>p.businessName== order.businessName);
+                business.money = business.money + aa;
+                await _businessServices.UpdateAsync(business);
+
+                BusinessOrder businessOrder = new BusinessOrder();
+                businessOrder.businessName = order.businessName;
+                businessOrder.businessid = business.id;
+                businessOrder.userid = order.sysUserId;
+                businessOrder.ordertype = (int)BusinessOrderTypeEnum.Cost;
+                businessOrder.userName = order.userName;
+                businessOrder.before = business.money;
+                businessOrder.after = business.money+aa;
+                businessOrder.change = aa;
+                businessOrder.createtime = DateTime.Now;
+                businessOrder.orderNo = "商品消费";
+                await _businessOrderServices.InsertAsync(businessOrder);
 
                 jm.Success(true, "订单完成");
             }
@@ -272,6 +300,7 @@ namespace Core.Api.Controllers
             foreach (var item in fMListIdsDto.Ids)
             {
                 var order = await _coreOrderServices.QueryByClauseAsync(p => p.id == item);
+                var business = _businessServices.QueryByClause(p => p.businessName == order.businessName);
 
                 if (order == null)
                 {
@@ -281,7 +310,22 @@ namespace Core.Api.Controllers
                 {
                     order.status = (int)OrderStatusEnum.Complete;
                     order.completeTime = DateTime.Now;
+                    order.balance = order.balance - order.amount;
                     await _coreOrderServices.UpdateAsync(order);
+
+                    //商家金额管理
+                    BusinessOrder businessOrder = new BusinessOrder();
+                    businessOrder.businessName = order.businessName;
+                    businessOrder.businessid = business.id;
+                    businessOrder.userid = order.sysUserId;
+                    businessOrder.ordertype = (int)BusinessOrderTypeEnum.Cost;
+                    businessOrder.userName = order.userName;
+                    businessOrder.before = business.money;
+                    businessOrder.after = business.money - order.amount;
+                    businessOrder.change = order.amount;
+                    businessOrder.createtime = DateTime.Now;
+                    businessOrder.orderNo = "商家提现";
+                    await _businessOrderServices.InsertAsync(businessOrder);
                     jm.Success(true, "订单完成");
                 }
             }
@@ -411,7 +455,7 @@ namespace Core.Api.Controllers
             if (orderlist != null && orderlist.Count > 0)
             {
                 orderListInfoDto.orders = orderlist;
-                orderListInfoDto.OrderTotalFeet = orderlist.Sum(p => p.totalPrice);
+                orderListInfoDto.OrderTotalFeet = orderlist.Sum(p => p.amount);
                 orderListInfoDto.OrderCount = orderlist.Count;
             }
 
@@ -427,15 +471,20 @@ namespace Core.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> GoodStatic([FromBody] AllGoodDto allOrderDto)
+        public async Task<IActionResult> GoodStatic([FromBody] BusinessGoodDto allOrderDto)
         {
             var jm = new CallBackResult<OrderListInfoDto>();
             var where = PredicateBuilder.True<CoreOrder>();
-          
-            //员工信息
-            if (!string.IsNullOrEmpty(allOrderDto.goodText))
+            var good= (int)OrderTypeEnum.GoodOrder;
+
+            where = where.And(p => p.orderType == good);
+
+            //商家名称
+            if (!string.IsNullOrEmpty(allOrderDto.businessId))
             {
-                where = where.And(p => p.businessName.Contains(allOrderDto.goodText));
+                var bid = Convert.ToInt32(allOrderDto.businessId);
+                var business = _businessServices.QueryByClause(p => p.id == bid);
+                where = where.And(p => p.businessName.Contains(business.businessName));
             }
             //订单类型
             if (!string.IsNullOrEmpty(allOrderDto.orderStatus))
@@ -461,10 +510,9 @@ namespace Core.Api.Controllers
             if (orderlist != null && orderlist.Count > 0)
             {
                 orderListInfoDto.orders = orderlist;
-                orderListInfoDto.OrderTotalFeet = orderlist.Sum(p => p.totalPrice);
+                orderListInfoDto.OrderTotalFeet = orderlist.Sum(p => p.amount);
                 orderListInfoDto.OrderCount = orderlist.Count;
             }
-
             jm.Success(orderListInfoDto, "数据调用成功");
 
             return Ok(jm);

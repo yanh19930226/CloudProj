@@ -709,7 +709,7 @@ namespace Core.Net.Web.Admin.Controllers.Systems
             var bl = await _sysUserServices.UpdateAsync(oldModel);
             if (bl)
             {
-                var dnnercard =await  _dinnerCardServices.QueryByClauseAsync(p => p.sysuserid == oldModel.id);
+                var dnnercard =await  _dinnerCardServices.QueryByClauseAsync(p => p.cardno == oldModel.cardNo);
 
                 if (dnnercard==null)
                 {
@@ -723,23 +723,52 @@ namespace Core.Net.Web.Admin.Controllers.Systems
                     dinnerCard.telephone = oldModel.phone;
                     dinnerCard.createtime = DateTime.Now;
                     await _dinnerCardServices.InsertAsync(dinnerCard);
+
+                    //添加餐卡记录
+                    DinnerCardDetail dinnerCardDetail = new DinnerCardDetail();
+                    dinnerCardDetail.cardno = entity.pwd;
+                    dinnerCardDetail.username = oldModel.userName;
+                    dinnerCardDetail.orgname = oldModel.organizationName;
+                    dinnerCardDetail.telephone = oldModel.phone;
+                    dinnerCardDetail.action = "绑定";
+                    dinnerCardDetail.opuser = "";
+                    dinnerCardDetail.optime = DateTime.Now;
+                    dinnerCardDetail.createtime = DateTime.Now;
+                    await _dinnerCardDetailServices.InsertAsync(dinnerCardDetail);
                 }
                 else
                 {
+                    //更新旧卡信息
+                    var old = _dinnerCardServices.QueryByClause(p=>p.cardno== oldModel.cardNo);
+                    old.orgid =null;
+                    old.orgname = "";
+                    old.sysuserid = null;
+                    old.telephone = "";
+                    old.username = "";
+                    await _dinnerCardServices.UpdateAsync(old);
+
+                    //添加餐卡记录
+                    DinnerCardDetail dinnerCardDetail = new DinnerCardDetail();
+                    dinnerCardDetail.cardno = old.cardno;
+                    dinnerCardDetail.username = oldModel.userName;
+                    dinnerCardDetail.orgname = oldModel.organizationName;
+                    dinnerCardDetail.telephone = oldModel.phone;
+                    dinnerCardDetail.action = "解绑";
+                    dinnerCardDetail.opuser = "";
+                    dinnerCardDetail.optime = DateTime.Now;
+                    dinnerCardDetail.createtime = DateTime.Now;
+                    await _dinnerCardDetailServices.InsertAsync(dinnerCardDetail);
+
+
+                    dnnercard.sysuserid = oldModel.id;
+                    dnnercard.cardno = entity.pwd;
+                    dnnercard.username = oldModel.userName;
+                    dnnercard.orgid = (int)oldModel.organizationId;
+                    dnnercard.orgname = oldModel.organizationName;
+                    dnnercard.telephone = oldModel.phone;
                     dnnercard.cardno = entity.pwd;
                     await _dinnerCardServices.UpdateAsync(dnnercard);
                 }
-                //添加餐卡记录
-                DinnerCardDetail dinnerCardDetail = new DinnerCardDetail();
-                dinnerCardDetail.cardno = entity.pwd;
-                dinnerCardDetail.username = oldModel.userName;
-                dinnerCardDetail.orgname = oldModel.organizationName;
-                dinnerCardDetail.telephone = oldModel.phone;
-                dinnerCardDetail.action = "绑定";
-                dinnerCardDetail.opuser = "";
-                dinnerCardDetail.optime = DateTime.Now;
-                dinnerCardDetail.createtime = DateTime.Now;
-                await _dinnerCardDetailServices.InsertAsync(dinnerCardDetail);
             }
 
             jm.code = bl ? 0 : 1;

@@ -32,7 +32,7 @@ namespace Core.Net.Entity.Model.DinnerCard
         [Display(Name = "用户id")]
         [SugarColumn(ColumnDescription = "用户id")]
         [Required(ErrorMessage = "请输入{0}")]
-        public System.Int32 sysuserid { get; set; }
+        public System.Int32? sysuserid { get; set; }
         /// <summary>
         ///餐卡号
         /// </summary>
@@ -60,7 +60,7 @@ namespace Core.Net.Entity.Model.DinnerCard
         [Display(Name = "orgid")]
         [SugarColumn(ColumnDescription = "orgid")]
         [Required(ErrorMessage = "请输入{0}")]
-        public int orgid { get; set; }
+        public int? orgid { get; set; }
         /// <summary>
         ///orgid
         /// </summary>

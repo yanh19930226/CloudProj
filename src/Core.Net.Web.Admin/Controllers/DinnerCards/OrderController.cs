@@ -15,7 +15,6 @@ using Core.Net.Entity.Model.Systems;
 using Core.Net.Entity.ViewModels;
 using Core.Net.Filter;
 using Core.Net.Service.DinnerCards;
-using Core.Net.Service.Goods;
 using Core.Net.Service.Systems;
 using Core.Net.Util.Extensions;
 using Core.Net.Util.Helper;
@@ -49,7 +48,6 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         private readonly ICoreGoodsServices _coreGoodsServices;
         private readonly ISysDictionaryServices _sysDictionaryServices;
         private readonly ISysDictionaryDataServices _sysDictionaryDataServices;
-        private readonly ICoreCmsGoodsCategoryServices _coreCmsGoodsCategoryServices;
         private readonly IUnitOfWork _unitOfWork;
 
         ///  <summary>
@@ -68,7 +66,6 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
               ISysOrganizationServices sysOrganizationServices,
             ISysDictionaryDataServices sysDictionaryDataServices,
              ICoreOrderServices coreOrderServices,
-            ICoreCmsGoodsCategoryServices coreCmsGoodsCategoryServices,
             ICoreGoodOrderDetailServices coreGoodOrderDetailServices,
             ICoreGoodsServices coreGoodsServices
             )
@@ -84,8 +81,8 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             _coreGoodsServices = coreGoodsServices;
             _coreOrderServices = coreOrderServices;
             _coreGoodOrderDetailServices = coreGoodOrderDetailServices;
-            _coreCmsGoodsCategoryServices = coreCmsGoodsCategoryServices;
         }
+
         #region 首页数据============================================================
         // POST: Api/CoreCmsArticleType/GetIndex
         /// <summary>
@@ -104,6 +101,10 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             {
                 dictData = _sysDictionaryDataServices.QueryListByClause(p => p.dictId == dict.id);
             }
+
+            //商家
+            var busi = _businessServices.Query();
+
             //机构
             List<KV> orgkVs = new List<KV>();
             var organizations = _sysOrganizationServices.Query();
@@ -118,6 +119,7 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             {
                 dictData,
                 orgkVs,
+                busi
             };
             return Json(jm);
         }
@@ -166,8 +168,8 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             var status = Request.Form["status"].FirstOrDefault().ObjectToInt(0);
             if (status > 0) @where = @where.And(p => p.status == status);
 
-            var organizationId = Request.Form["organizationId"].FirstOrDefault().ObjectToInt(0);
-            if (organizationId > 0) @where = @where.And(p => p.organizationId == organizationId);
+            var businessName = Request.Form["businessName"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(businessName)) @where = @where.And(p => p.businessName.Contains(businessName));
 
             var text = Request.Form["text"].FirstOrDefault();
             if (!string.IsNullOrEmpty(text)) @where = @where.And(p => p.orderNo.Contains(text) || p.userName.Contains(text)|| p.telePhone.Contains(text));
@@ -269,7 +271,9 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         {
             var jm = new AdminUiCallBack();
             var model = await _coreOrderServices.QueryByClauseAsync(p=>p.id==entity.id);
+            model.balance = model.balance - model.amount;
             model.status = (int)OrderStatusEnum.Complete;
+
             //事物处理过程结束
             var bl = await _coreOrderServices.UpdateAsync(model);
             jm.code = bl ? 0 : 1;
@@ -369,6 +373,10 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             for (var i = 0; i < listmodel.Count; i++)
             {
                 var order = _coreOrderServices.QueryByClause(p=>p.orderNo== listmodel[i].orderNo);
+                order.status = (int)OrderStatusEnum.BH;
+                _coreOrderServices.Update(order);
+
+
                 var rowtemp = sheet1.CreateRow(i + 1);
                 rowtemp.CreateCell(0).SetCellValue(listmodel[i].orderNo.ToString());
                 rowtemp.CreateCell(1).SetCellValue(order.userName);
@@ -456,6 +464,7 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
                                 var goodNo = dt.Rows[row]["商品编号"].ToString();
                                 var orderdetail = _coreGoodOrderDetailServices.QueryByClause(p => p.orderNo == orderNo && p.goodNo == goodNo);
                                 var realNum = (int)(Convert.ToInt64(dt.Rows[row]["实发量"].ToString()));
+
                                 if (realNum> orderdetail.goodNum)
                                 {
                                     jm.msg = "实发量不能大于订购数量";
@@ -463,6 +472,9 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
                                     return new JsonResult(jm);
                                 }
                                 orderdetail.realNum = realNum;
+                                var order = _coreOrderServices.QueryByClause(p=>p.orderNo== orderNo);
+                                order.status = (int)OrderStatusEnum.BH;
+                                _coreOrderServices.Update(order);
                                 _coreGoodOrderDetailServices.Update(orderdetail);
                             }
                         }

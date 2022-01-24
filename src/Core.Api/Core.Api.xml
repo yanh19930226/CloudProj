@@ -120,7 +120,7 @@
             订单控制器
             </summary>
         </member>
-        <member name="M:Core.Api.Controllers.OrderController.#ctor(Core.Net.Service.DinnerCards.ICoreOrderServices,Core.Net.Service.DinnerCards.ICoreGoodOrderDetailServices,Core.Net.Service.Systems.ISysUserServices,Core.Net.Service.Systems.ISysOrganizationServices,Core.Net.Service.DinnerCards.ICoreGoodsServices,Core.Net.Data.IUnitOfWork)">
+        <member name="M:Core.Api.Controllers.OrderController.#ctor(Core.Net.Service.DinnerCards.ICoreOrderServices,Core.Net.Service.DinnerCards.ICoreGoodOrderDetailServices,Core.Net.Service.Systems.ISysUserServices,Core.Net.Service.Systems.ISysOrganizationServices,Core.Net.Service.DinnerCards.ICoreGoodsServices,Core.Net.Data.IUnitOfWork,Core.Net.Service.DinnerCards.IBusinessServices,Core.Net.Service.DinnerCards.IBusinessOrderServices)">
             <summary>
             OrderController
             </summary>
@@ -181,7 +181,7 @@
             <param name="allOrderDto">搜索参数</param>
             <returns></returns>
         </member>
-        <member name="M:Core.Api.Controllers.OrderController.GoodStatic(Core.Api.Models.Dtos.AllGoodDto)">
+        <member name="M:Core.Api.Controllers.OrderController.GoodStatic(Core.Api.Models.Dtos.BusinessGoodDto)">
             <summary>
              管理员商品统计查询
             </summary>
@@ -240,36 +240,6 @@
             Audience
             </summary>
         </member>
-        <member name="T:Core.Api.Models.Dtos.AllGoodDto">
-            <summary>
-            商品统计搜索
-            </summary>
-        </member>
-        <member name="P:Core.Api.Models.Dtos.AllGoodDto.goodText">
-            <summary>
-            商家名称
-            </summary>
-        </member>
-        <member name="P:Core.Api.Models.Dtos.AllGoodDto.goodStatus">
-            <summary>
-            商品状态
-            </summary>
-        </member>
-        <member name="P:Core.Api.Models.Dtos.AllGoodDto.orderStatus">
-            <summary>
-            订单状态
-            </summary>
-        </member>
-        <member name="P:Core.Api.Models.Dtos.AllGoodDto.startTime">
-            <summary>
-            开始时间
-            </summary>
-        </member>
-        <member name="P:Core.Api.Models.Dtos.AllGoodDto.endTime">
-            <summary>
-            结束时间
-            </summary>
-        </member>
         <member name="T:Core.Api.Models.Dtos.AllOrderDto">
             <summary>
             订单记录查询条件
@@ -306,6 +276,31 @@
             </summary>
         </member>
         <member name="P:Core.Api.Models.Dtos.AllOrderDto.endTime">
+            <summary>
+            结束时间
+            </summary>
+        </member>
+        <member name="T:Core.Api.Models.Dtos.BusinessGoodDto">
+            <summary>
+            商品统计搜索
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.BusinessGoodDto.businessId">
+            <summary>
+            商家名称
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.BusinessGoodDto.orderStatus">
+            <summary>
+            订单状态
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.BusinessGoodDto.startTime">
+            <summary>
+            开始时间
+            </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.BusinessGoodDto.endTime">
             <summary>
             结束时间
             </summary>
@@ -584,6 +579,11 @@
              <summary>
             商品数量
              </summary>
+        </member>
+        <member name="P:Core.Api.Models.Dtos.CoreOrderDetailDto.realNum">
+            <summary>
+            实发数量
+            </summary>
         </member>
         <member name="P:Core.Api.Models.Dtos.CoreOrderDetailDto.unitPrice">
              <summary>

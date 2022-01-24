@@ -13,7 +13,6 @@ using Core.Net.Entity.Model.Systems;
 using Core.Net.Entity.ViewModels;
 using Core.Net.Filter;
 using Core.Net.Service.DinnerCards;
-using Core.Net.Service.Goods;
 using Core.Net.Service.Systems;
 using Core.Net.Util.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -43,7 +42,6 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
         private readonly ICoreGoodsServices _coreGoodsServices;
         private readonly ISysDictionaryServices _sysDictionaryServices;
         private readonly ISysDictionaryDataServices _sysDictionaryDataServices;
-        private readonly ICoreCmsGoodsCategoryServices _coreCmsGoodsCategoryServices;
 
         ///  <summary>
         ///  构造函数
@@ -60,7 +58,6 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             ISysRoleServices sysRoleServices,
             ISysDictionaryDataServices sysDictionaryDataServices,
             ISysOrganizationServices sysOrganizationServices,
-                  ICoreCmsGoodsCategoryServices coreCmsGoodsCategoryServices,
             ICoreGoodsServices coreGoodsServices
             )
         {
@@ -74,7 +71,6 @@ namespace Core.Net.Web.Admin.Controllers.DinnerCards
             _dinnerCardServices = dinnerCardServices;
             _coreGoodsServices = coreGoodsServices;
             _coreOrderServices = coreOrderServices;
-            _coreCmsGoodsCategoryServices = coreCmsGoodsCategoryServices;
         }
         #region 首页数据============================================================
         // POST: Api/CoreCmsArticleType/GetIndex

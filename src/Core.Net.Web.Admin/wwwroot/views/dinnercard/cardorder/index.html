@@ -60,7 +60,9 @@
 <script type="text/html" id="LAY-app-CardOrder-tableBox-bar">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看详情</a>
 </script>
-
+<script type="text/html" id="zizeng">
+    {{d.LAY_TABLE_INDEX+1}}
+</script>
 <script>
     var indexData;
     var debug = layui.setter.debug;
@@ -113,11 +115,9 @@
                     text: { none: '暂无相关数据' },
                     cols: [
                         [
-                            { field: 'id', title: '序列', width: 60, sort: false },
-                            { field: 'organizationName', title: '部门', width: 150, sort: false },
-                            { field: 'userName', title: '用户', sort: false, width: 150 },
-                            //{ field: 'orderNo', title: '系统订单号', sort: false, width: 200 },
-                            //{ field: 'costOrderNo', title: '餐卡订单号', sort: false, width: 150 },
+                            { field: 'id', title: '序列', templet: '#zizeng', sort: false },
+                            { field: 'organizationName', title: '部门', sort: false },
+                            { field: 'userName', title: '用户', sort: false},
                             {
                                 field: 'orderType', title: '订单类型', sort: false, templet: function (data) {
                                     for (var i = 0; i < d.data.dictData.length; i++) {
@@ -128,11 +128,11 @@
                                     return "";
                                 }
                             },
-                            { field: 'amount', title: '消费金额', sort: false, width: 105 },
-                            { field: 'balance', title: '余额', sort: false, width: 105 },
-                            { field: 'telePhone', title: '手机号', sort: false, width: 105 },
-                            { field: 'createTime', title: '创建时间', sort: false, width: 150 },
-                            { width: 120, align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-CardOrder-tableBox-bar' }
+                            { field: 'amount', title: '消费金额', sort: false },
+                            { field: 'balance', title: '余额', sort: false },
+                            { field: 'telePhone', title: '手机号', sort: false },
+                            { field: 'createTime', title: '创建时间', sort: false },
+                            { align: 'center', title: '操作', fixed: 'right', toolbar: '#LAY-app-CardOrder-tableBox-bar' }
                         ]
                     ]
                 });

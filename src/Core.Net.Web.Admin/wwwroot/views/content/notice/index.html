@@ -115,9 +115,9 @@
                     text: { none: '暂无相关数据' },
                     cols: [
                         [
-                            { field: 'id', title: '序列', width: 60, sort: false },
+                            { field: 'id', title: '序列', templet: '#zizeng', width: 80,sort: false },
                             {
-                                field: 'noticeType', title: '公告类型', sort: false, width: 80, templet: function (data) {
+                                field: 'noticeType', title: '公告类型', sort: false,  templet: function (data) {
                                     for (var i = 0; i < d.data.dictData.length; i++) {
                                         if (d.data.dictData[i].dictDataCode == data.noticeType) {
                                             return d.data.dictData[i].dictDataName;
@@ -286,4 +286,7 @@
 <!--设置软删除位  有时间代表已删除-->
 <script type="text/html" id="switch_isDel">
     <input type="checkbox" name="switch_isDel" value="{{d.id}}" lay-skin="switch" lay-text="开启|关闭" lay-filter="switch_isDel" {{ d.isDel ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="zizeng">
+    {{d.LAY_TABLE_INDEX+1}}
 </script>

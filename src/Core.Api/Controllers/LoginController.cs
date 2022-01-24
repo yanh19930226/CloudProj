@@ -59,7 +59,7 @@ namespace Core.Api.Controllers
                 return Ok(jm);
             }
 
-            var user = await _sysUserServices.QueryByClauseAsync(p => p.userName == model.userName && p.passWord == CommonHelper.Md5For32(model.password));
+            var user = await _sysUserServices.QueryByClauseAsync(p => p.userName == model.userName || p.phone == model.userName && p.passWord == CommonHelper.Md5For32(model.password));
 
             if (user == null)
             {

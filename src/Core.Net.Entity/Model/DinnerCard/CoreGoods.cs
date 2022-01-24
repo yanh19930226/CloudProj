@@ -58,6 +58,12 @@ namespace Core.Net.Entity.Model.DinnerCard
         [Required(ErrorMessage = "请输入{0}")]
         public string url { get; set; }
         /// <summary>
+        ///图片
+        /// </summary>
+        [Display(Name = "图片")]
+        [SugarColumn(ColumnDescription = "图片")]
+        public string absUrl { get; set; }
+        /// <summary>
         ///库存
         /// </summary>
         [Display(Name = "库存")]

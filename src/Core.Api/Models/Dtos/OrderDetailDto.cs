@@ -136,8 +136,13 @@ namespace Core.Api.Models.Dtos
         /// </summary>
         public int goodNum { get; set; }
         /// <summary>
+        /// 实发数量
+        /// </summary>
+        public int realNum { get; set; }
+        /// <summary>
         ///商品单价
         /// </summary>
         public decimal unitPrice { get; set; }
+      
     }
 }

@@ -46,17 +46,17 @@
                     "jump": "dinnercard/good/index"
                 },
                 {
-                    "name": "good",
-                    "title": "商家金额管理",
-                    "jump": "dinnercard/good/index"
+                    "name": "businessorder",
+                    "title": "商家账目",
+                    "jump": "dinnercard/businessorder/index"
                 },
                 {
                     "name": "order",
-                    "title": "商品订单管理",
+                    "title": "商品订单",
                     "jump": "dinnercard/order/index"
                 }, {
                     "name": "cardorder",
-                    "title": "消费订单管理",
+                    "title": "消费记录",
                     "jump": "dinnercard/cardorder/index"
                 }, {
                     "name": "notice",

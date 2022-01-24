@@ -2,29 +2,10 @@
     <div class="layui-form coreshop-form layui-form-pane" lay-filter="LAY-app-Business-editForm" id="LAY-app-Business-editForm">
         <input type="hidden" name="id" id="id" value="{{d.params.data.model.id || '' }}" />
         <input type="hidden" name="businessCode" id="businessCode" value="{{d.params.data.model.businessCode }}" />
-
-        <!--<div class="layui-form-item">
-        <label for="name" class="layui-form-label">商家编码</label>
-        <div class="layui-input-block">
-        </div>
-    </div>-->
-
         <div class="layui-form-item">
             <label for="name" class="layui-form-label">商家名称</label>
             <div class="layui-input-block">
                 <input name="businessName" id="businessName" lay-verType="tips" lay-verify="required|verifyname" class="layui-input" lay-reqText="请输入商家名称" placeholder="请输入商家名称" value="{{d.params.data.model.businessName }}" />
-            </div>
-        </div>
-
-        <div class="layui-form-item">
-            <label class="layui-form-label layui-form-required">付款类型:</label>
-            <div class="layui-input-block">
-                <select name="payMode" lay-verType="tips" lay-verify="required" required>
-                    <option value="">请选择</option>
-                    {{# layui.each(d.params.data.dictData, function(index, item){ }}
-                    <option value="{{item.dictDataCode}}" {{item.dictDataCode==d.params.data.model.payMode?'selected="selected"':''}}>{{item.dictDataName}}</option>
-                    {{# }); }}
-                </select>
             </div>
         </div>
         <div class="layui-form-item">
@@ -33,7 +14,6 @@
                 <input type="checkbox" lay-filter="switch" name="status" id="status" {{ d.params.data.model.status ? 'checked' : '' }} lay-skin="switch" lay-text="启用|禁用">
             </div>
         </div>
-
         <div class="layui-form-item text-right core-hidden">
             <input type="button" class="layui-btn" lay-submit lay-filter="LAY-app-Business-editForm-submit" id="LAY-app-Business-editForm-submit" value="确认编辑">
         </div>

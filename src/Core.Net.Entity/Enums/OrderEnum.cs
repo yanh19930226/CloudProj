@@ -52,9 +52,9 @@ namespace Core.Net.Entity.Enums
         /// </summary>
         Payed=2,
         /// <summary>
-        /// 已退款
+        ///备货
         /// </summary>
-        Return=3,
+        BH=3,
         /// <summary>
         /// 已发货
         /// </summary>
@@ -82,5 +82,20 @@ namespace Core.Net.Entity.Enums
         /// 其他
         /// </summary>
         Other = 7
+    }
+
+    /// <summary>
+    /// 商家订单类型
+    /// </summary>
+    public enum BusinessOrderTypeEnum
+    {
+        /// <summary>
+        /// 商家消费
+        /// </summary>
+        Cost = 1,
+        /// <summary>
+        /// 商家提现
+        /// </summary>
+        Cash = 2
     }
 }

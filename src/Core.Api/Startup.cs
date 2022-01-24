@@ -42,7 +42,11 @@ namespace Core.Api
         {
             services.AddControllers();
 
-            services.AddControllers().AddNewtonsoftJson(option => {
+            services.AddControllers(
+                //模型可空
+                options => {
+                    options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+                }).AddNewtonsoftJson(option => {
                 //数据格式首字母小写 不使用驼峰
                 //option.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 //数据库数据类型为String 值为Null 返回 空字符串

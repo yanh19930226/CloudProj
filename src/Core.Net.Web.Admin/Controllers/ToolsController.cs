@@ -6,6 +6,7 @@ using Core.Net.Entity.ViewModels;
 using Core.Net.Service.Shops;
 using Core.Net.Service.Systems;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SqlSugar;
 using System;
@@ -15,6 +16,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.Net.Web.Admin.Controllers
@@ -34,8 +36,6 @@ namespace Core.Net.Web.Admin.Controllers
         private readonly ISysUserRoleServices _sysUserRoleServices;
         private readonly ISysRoleMenuServices _sysRoleMenuServices;
         private readonly ISysUserServices _sysUserServices;
-        private readonly ICoreCmsSettingServices _coreCmsSettingServices;
-        private readonly ICoreCmsAreaServices _areaServices;
 
         /// <summary>
         ///  构造函数
@@ -43,12 +43,10 @@ namespace Core.Net.Web.Admin.Controllers
         public ToolsController(
            IWebHostEnvironment webHostEnvironment
             , ISysUserServices sysUserServices
-             , ICoreCmsAreaServices areaServices
             , ISysRoleServices sysRoleServices
             , ISysMenuServices sysMenuServices
             , ISysUserRoleServices sysUserRoleServices
             , ISysOrganizationServices sysOrganizationServices,
-           ICoreCmsSettingServices coreCmsSettingServices,
             ISysRoleMenuServices sysRoleMenuServices)
         {
             _webHostEnvironment = webHostEnvironment;
@@ -58,8 +56,6 @@ namespace Core.Net.Web.Admin.Controllers
             _sysUserRoleServices = sysUserRoleServices;
             _sysOrganizationServices = sysOrganizationServices;
             _sysRoleMenuServices = sysRoleMenuServices;
-            _coreCmsSettingServices = coreCmsSettingServices;
-            _areaServices = areaServices;
         }
 
         #region 根据用户权限获取对应左侧菜单列表====================================================
@@ -150,11 +146,7 @@ namespace Core.Net.Web.Admin.Controllers
         public async Task<JsonResult> UploadFilesFByBase64([FromBody] FMBase64Post entity)
         {
             var jm = new AdminUiCallBack();
-
             //var _filesStorageOptions = await _coreCmsSettingServices.GetFilesStorageOptions();
-
-
-
             if (string.IsNullOrEmpty(entity.base64))
             {
                 jm.msg = "请上传合法内容";
@@ -268,69 +260,6 @@ namespace Core.Net.Web.Admin.Controllers
         }
         #endregion
 
-        #region 后台Select三级下拉联动配合
-
-        /// <summary>
-        ///  获取大类列表
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<JsonResult> GetAreaCheckedList([FromBody] FMIntId entity)
-        {
-            var res = new List<AreasDtoForAdminEdit>();
-
-            if (entity.id != 0)
-            {
-                var model3 = new AreasDtoForAdminEdit();
-                model3.info = await _areaServices.QueryByIdAsync(entity.id);
-                if (model3.info != null && model3.info.parentId != 0)
-                {
-                    model3.list = await _areaServices.QueryListByClauseAsync(p => p.parentId == model3.info.parentId);
-
-                    var model2 = new AreasDtoForAdminEdit();
-                    model2.info = await _areaServices.QueryByIdAsync(model3.info.parentId);
-                    if (model2.info != null && model2.info.parentId != 0)
-                    {
-                        model2.list =
-                            await _areaServices.QueryListByClauseAsync(p => p.parentId == model2.info.parentId);
-
-                        var model = new AreasDtoForAdminEdit();
-                        model.info = await _areaServices.QueryByIdAsync(model2.info.parentId);
-                        if (model.info != null)
-                            model.list =
-                                await _areaServices.QueryListByClauseAsync(p => p.parentId == model.info.parentId);
-                        res.Add(model);
-                    }
-
-                    res.Add(model2);
-                }
-
-                res.Add(model3);
-            }
-            else
-            {
-                var model4 = new AreasDtoForAdminEdit();
-                model4.list = await _areaServices.QueryListByClauseAsync(p => p.parentId == 0);
-                model4.info = model4.list.FirstOrDefault();
-                res.Add(model4);
-            }
-
-            return Json(res);
-        }
-
-        /// <summary>
-        ///  取地区的下级列表
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<JsonResult> GetAreaChildren([FromBody] FMIntId entity)
-        {
-            var list = await _areaServices.QueryListByClauseAsync(p => p.parentId == entity.id);
-            return Json(list);
-        }
-
-        #endregion
-
         #region CKEditor编辑上传接口====================================================
         /// <summary>
         ///     CKEditor编辑上传接口
@@ -397,5 +326,7 @@ namespace Core.Net.Web.Admin.Controllers
         #endregion
 
     }
+
+    
 
 }

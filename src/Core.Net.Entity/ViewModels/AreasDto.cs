@@ -12,9 +12,9 @@ namespace Core.Net.Entity.ViewModels
     /// <summary>
     ///     后端编辑三级下拉实体
     /// </summary>
-    public class AreasDtoForAdminEdit
-    {
-        public CoreCmsArea info { get; set; }
-        public List<CoreCmsArea> list { get; set; } = new List<CoreCmsArea>();
-    }
+    //public class AreasDtoForAdminEdit
+    //{
+    //    public CoreCmsArea info { get; set; }
+    //    public List<CoreCmsArea> list { get; set; } = new List<CoreCmsArea>();
+    //}
 }
